@@ -118,7 +118,7 @@ $count = count( $posts );
 												<?php foreach( $social as $name => $url ) : ?>
 												<td style="width:26px; margin:0; padding:0 4px;">
 													<a href="<?php echo $url; ?>" style="width:26px; height:26px; display:block; <?php echo $reset; ?>" target="_blank">
-														<img src="<?php echo get_template_directory_uri() . '/images/email/social/' . $name . '.png'; ?>" alt="<?php echo $name; ?>" width="26" height="26" style="<?php echo $reset; ?>" ondragstart="return false;">
+														<img src="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/images/email/social/' . $name . '.png'; ?>" alt="<?php echo $name; ?>" width="26" height="26" style="<?php echo $reset; ?>" ondragstart="return false;">
 													</a>
 												</td>
 												<?php endforeach; ?>
@@ -214,7 +214,7 @@ $count = count( $posts );
 												<?php foreach( $social as $name => $url ) : ?>
 												<td style="width:26px; margin:0; padding:0 6px;">
 													<a href="<?php echo $url; ?>" style="margin:0 12px; width:26px; height:26px; display:block; <?php echo $reset; ?>" target="_blank">
-														<img src="<?php echo get_template_directory_uri() . '/images/email/social/' . $name . '.png'; ?>" alt="<?php echo $name; ?>" width="26" height="26" style="<?php echo $reset; ?>" ondragstart="return false;">
+														<img src="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/images/email/social/' . $name . '.png'; ?>" alt="<?php echo $name; ?>" width="26" height="26" style="<?php echo $reset; ?>" ondragstart="return false;">
 													</a>
 												</td>
 												<?php endforeach; ?>
