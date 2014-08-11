@@ -65,7 +65,7 @@ class Popular {
 			'post_type' => $this->settings['post_type'],
 			'context' => 'side',
 			'priority' => 'core',
-			'view' => VIEWS_DIR . 'meta-box/popular.php',
+			'view' => INTOOR_VIEWS_DIR . 'meta-box/popular.php',
 			'array' => array( 'inflate' => $this->settings['inflate'] ),
 			'table' => static::$table
 		);

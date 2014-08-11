@@ -93,7 +93,7 @@ class Mailing_List {
 			'title' => 'Mailing List',
 			'menu_title' => 'Mailing List',
 			'icon' => 'dashicons-email-alt',
-			'view' => VIEWS_DIR . 'admin/mailing-list.php',
+			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list.php',
 			'table' => static::$table
 		);
 
@@ -284,7 +284,7 @@ class Mailing_List {
 				'reply_to' => $sender,
 				'recipient' => $email,
 				'subject' => 'Thanks for Subscribing!',
-				'template' => VIEWS_DIR . 'email/subscribe.php'
+				'template' => INTOOR_VIEWS_DIR . 'email/subscribe.php'
 			);
 
 			new Email( $subscribe_email );
@@ -354,7 +354,7 @@ class Mailing_List {
 				'reply_to' => $sender,
 				'recipient' => $email,
 				'subject' => 'Unsubscribe Confirmation',
-				'template' => VIEWS_DIR . 'email/unsubscribe.php'
+				'template' => INTOOR_VIEWS_DIR . 'email/unsubscribe.php'
 			);
 
 			new Email( $unsubscribe_email );
@@ -371,7 +371,7 @@ class Mailing_List {
 	public static function get_form( $desc = '', $desc_tag = '', $template = '' ) {
 
 		ob_start();
-		include ( !empty( $template ) ) ? $template : VIEWS_DIR . 'mailing-list-form.php';
+		include ( !empty( $template ) ) ? $template : INTOOR_VIEWS_DIR . 'mailing-list-form.php';
 		$html = ob_get_contents();
 		ob_end_clean();
 		return $html;
