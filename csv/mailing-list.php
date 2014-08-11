@@ -10,6 +10,7 @@
  * @version		Release: 1.0
  */
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( __FILE__ ) ) . '/config.php';
 
 // Verify encryption key

@@ -45,7 +45,7 @@ $table_cols = array(
 	'timestamp' => 'Timestamp'
 );
 
-$csv_api = dirname( dirname( __FILE__ ) ) . '/csv/mailing-list.php?action=export&file=mailing-list.csv&key=' . get_option( 'mailing_list_key' );
+$csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-list.php?action=export&file=mailing-list.csv&key=' . get_option( 'mailing_list_key' );
 
 ?>
 <div class="wrap">

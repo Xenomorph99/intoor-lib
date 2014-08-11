@@ -10,6 +10,7 @@
  * @version		Release: 1.0
  */
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( dirname( __FILE__ ) ) ) . '/config.php';
 
 $prefix = 'mailing_list_settings_';
@@ -34,7 +35,7 @@ endif;
 
 extract( $settings );
 
-$web_url = get_template_directory_uri() . '/views/email/unsubscribe.php?' . http_build_query( $settings );
+$web_url = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/views/email/unsubscribe.php?' . http_build_query( $settings );
 
 $social = array();
 if( get_option( $prefix . 'facebook' ) !== '' ) { $social['facebook'] = get_option( $prefix . 'facebook' ); }

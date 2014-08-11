@@ -11,7 +11,7 @@
  */
 
 // Wordpress config file (defines ABSPATH and includes 'wp-settings.php', etc.)
-require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
+//require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 
 // General library definitions
 define( 'INTOOR_LIB_VERSION', '1.0' );

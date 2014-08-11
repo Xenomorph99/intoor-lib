@@ -13,7 +13,7 @@
 $desc_tag = ( !empty( $desc_tag ) ) ? $desc_tag : 'p';
 
 ?>
-<form id="mailing-list-form" class="mailing-list-form" method="GET" action="<?php echo dirname( dirname( __FILE__ ) ) . '/api/mailing-list.php'; ?>">
+<form id="mailing-list-form" class="mailing-list-form" method="GET" action="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
 	<?php echo $desc = ( !empty( $desc ) ) ? "<$desc_tag>$desc</$desc_tag>" : ''; ?>
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="save">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?php bloginfo( 'url' ); ?>">
