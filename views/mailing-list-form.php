@@ -10,11 +10,12 @@
  * @version		Release: 1.0
  */
 
-$desc_tag = ( !empty( $desc_tag ) ) ? $desc_tag : 'p';
+$desc_tag_open = ( !empty( $desc_tag ) ) ? "<$desc_tag>" : '<label for="mailing-list-form-email">';
+$desc_tag_close = ( !empty( $desc_tag ) ) ? "</$desc_tag>" : '</label>';
 
 ?>
 <form id="mailing-list-form" class="mailing-list-form" method="GET" action="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
-	<?php echo $desc = ( !empty( $desc ) ) ? "<$desc_tag>$desc</$desc_tag>" : ''; ?>
+	<?php echo $desc = ( !empty( $desc ) ) ? $desc_tag_open . $desc . $desc_tag_close : ''; ?>
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="save">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?php bloginfo( 'url' ); ?>">
 	<input id="mailing-list-form-email" class="email" type="text" name="email" value="" placeholder="Email" required>
