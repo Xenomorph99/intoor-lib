@@ -8,18 +8,18 @@ Installation
 1. Navigate to your wordpress theme's directory and create a new directory called `lib`.  You can call the new directory anything you want just be sure to complete installation step 5.
 
 	```bash
-	cd yoursite.com/wp-content/themes/yourtheme/
-	mkdir lib
-	cd lib
+	$ cd yoursite.com/wp-content/themes/yourtheme/
+	$ mkdir lib
+	$ cd lib
 	```
 
 2. Initialize git and clone this repo into the new `lib` directory.
 
 	```bash
-	git init
-	git remote add origin git@github.com:Alekhen/intoor-lib.git
-	git fetch
-	git checkout -t origin/master
+	$ git init
+	$ git remote add origin git@github.com:Alekhen/intoor-lib.git
+	$ git fetch
+	$ git checkout -t origin/master
 	```
 
 3. Include the Intoor Lib config file in `yourtheme/functions.php`.
