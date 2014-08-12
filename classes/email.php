@@ -43,7 +43,7 @@ class Email {
 		$headers .= "X-Mailer: PHP/" . phpversion();
 
 		ob_start();
-		require_once dirname( dirname( __FILE__ ) ) . '/views/email/' . $template;
+		require_once '../views/email/' . $template;
 		$message = ob_get_contents();
 		ob_end_clean();
 
