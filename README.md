@@ -22,13 +22,13 @@ Installation
 	$ git checkout -t origin/master
 	```
 
-3. Include the Intoor Lib config file in `yourtheme/functions.php`.
+3. Include the Интоор Library config file in `yourtheme/functions.php`.
 
 	```php
 	require_once dirname( __FILE__ ) . "/lib/config.php";
 	```
 
-4. _Optional:_ Add `lib` directory to your `.gitignore` file if you don't want the Интоор Library to be stored in your theme's repo.
+4. _Optional:_ Add `lib` directory to your `.gitignore` file if you don't want the Интоор Library to be stored in your theme repo.
 
 5. _Optional:_ If you called your new directory something other than `lib` make sure to update the INTOOR_DIR_NAME definition in `config.php`.
 
@@ -57,7 +57,7 @@ Copyright © 2014, [Hazard Media Group LLC](http://hazardmediagroup.com)
 
 Development
 -----------
-* Source hosted at [GitHub](https://github.com/Alekhen/intoor).
+* Source hosted at [GitHub](https://github.com/Alekhen/intoor-lib).
 
 #### Author
 [Colton James Wiscombe](http://coltonjameswiscombe.com)
