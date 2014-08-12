@@ -20,7 +20,7 @@ class Email {
 		'recipient' => '',		// Email address to which the email will be sent
 		'subject' => '',		// Subject line of the email
 		'message' => '',		// HTML email string to be sent to recipient
-		'template' => '',		// URL path to HTML email template
+		'template' => '',		// File name of the HTML email template (templates must be located in lib/views/email)
 		'data' => array()		// Array of data to be used by the HTML email template
 	);
 
@@ -43,7 +43,7 @@ class Email {
 		$headers .= "X-Mailer: PHP/" . phpversion();
 
 		ob_start();
-		require_once $template;
+		require_once dirname( dirname( __FILE__ ) ) . '/views/email/' . $template;
 		$message = ob_get_contents();
 		ob_end_clean();
 

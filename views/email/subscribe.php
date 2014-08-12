@@ -34,6 +34,8 @@ else :
 	exit( 'You do not have permission to view this page.' );
 endif;
 
+$settings['template'] = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/views/email/' . $settings['template'];
+
 extract( $settings );
 
 $web_url = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/views/email/subscribe.php?' . http_build_query( $settings );

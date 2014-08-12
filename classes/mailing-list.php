@@ -284,7 +284,7 @@ class Mailing_List {
 				'reply_to' => $sender,
 				'recipient' => $email,
 				'subject' => 'Thanks for Subscribing!',
-				'template' => get_bloginfo( 'url' ) . '/' . INTOOR_DIR_NAME . '/views/email/subscribe.php'
+				'template' => 'subscribe.php'
 			);
 
 			new Email( $subscribe_email );
@@ -354,7 +354,7 @@ class Mailing_List {
 				'reply_to' => $sender,
 				'recipient' => $email,
 				'subject' => 'Unsubscribe Confirmation',
-				'template' => get_bloginfo( 'url' ) . '/' . INTOOR_DIR_NAME . '/views/email/unsubscribe.php'
+				'template' => 'unsubscribe.php'
 			);
 
 			new Email( $unsubscribe_email );
