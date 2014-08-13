@@ -56,14 +56,16 @@ $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-
 		<?php
 			$i = count( $views );
 			foreach( $views as $view => $view_data ) {
+				if( $view !== 'deleted' ) :
 
-				extract( $view_data );
-				$title = ucwords( $view );
-				$current = ( $current_view == $view ) ? ' class="current"' : '';
-				$spacer = '';
+					extract( $view_data );
+					$title = ucwords( $view );
+					$current = ( $current_view == $view ) ? ' class="current"' : '';
+					$spacer = '';
 
-				echo "<li class='$view'><a href='$url'$current>$title<span class='count'>($item_count)</span></a>$spacer</li>";
+					echo "<li class='$view'><a href='$url'$current>$title<span class='count'>($item_count)</span></a>$spacer</li>";
 
+				endif;
 			}
 		?>
 	</ul>
