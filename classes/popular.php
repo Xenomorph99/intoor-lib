@@ -240,7 +240,7 @@ class Popular {
 
 	}
 
-	public static function get_popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false ) {
+	public static function get_popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false, $offset = 0 ) {
 
 		// Get data
 		$data = Database::get_results( static::$table, array( 'post_id', 'views', 'likes' ) );
@@ -280,15 +280,15 @@ class Popular {
 					array_push( $popular, $views_list[$i] );
 				}
 			}
-			$popular = array_slice( $popular, 0, $count );
+			$popular = array_slice( $popular, $offset, ( $count + $offset ) );
 
 		elseif( $inc_views ) :
 
-			$popular = array_slice( $views_list, 0, $count );
+			$popular = array_slice( $views_list, $offset, ( $count + $offset ) );
 
 		elseif( $inc_likes ) :
 
-			$popular = array_slice( $likes_list, 0, $count );
+			$popular = array_slice( $likes_list, $offset, ( $count + $offset ) );
 
 		endif;
 
