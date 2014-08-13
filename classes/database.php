@@ -196,6 +196,25 @@ class Database {
 
 	}
 
+	public static function get_posts( $post_type = 'post', $reverse = false ) {
+
+		global $wpdb;
+		$table = $wpdb->prefix . 'posts';
+		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE post_type = '$post_type'", array() ), ARRAY_A );
+		$posts = array();
+		
+		foreach( $data as $row ) {
+			$name = ( $reverse ) ? $row['post_title'] : $row['ID'];
+			$value = ( $reverse ) ? $row['ID'] : $row['post_title'];
+			if( $row['post_status'] !== 'auto-draft' ) {
+				$posts[$name] = $value;
+			}
+		}
+
+		return $posts;
+
+	}
+
 	public static function save_data( $arr, $data ) {
 
 		if( !empty( $data['id'] ) ) {

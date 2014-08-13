@@ -82,28 +82,4 @@ class Functions {
 
 	}
 
-	/**
-	 *
-	 */
-	public static function post_data_array( $post_type, $reverse = false ) {
-
-		global $wpdb;
-		$table = $wpdb->prefix . 'posts';
-		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE post_type = '$post_type'", array() ), ARRAY_A );
-		$a = array();
-		
-		foreach( $data as $row ) {
-			$name = $row['post_title'];
-			$val = $row['ID'];
-			if( $reverse ) {
-				$a[$name] = $val;
-			} else {
-				$a[$val] = $name;
-			}
-		}
-
-		return $a;
-
-	}
-
 }
