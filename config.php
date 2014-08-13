@@ -22,6 +22,7 @@ require_once dirname( __FILE__ ) . '/paths.php';
 
 // Include required classes
 require_once INTOOR_ADMIN_MENU_CLASS;
+require_once INTOOR_COOKIE_CLASS;
 require_once INTOOR_DATABASE_CLASS;
 require_once INTOOR_EMAIL_CLASS;
 require_once INTOOR_ENCRYPTION_CLASS;
@@ -33,6 +34,8 @@ require_once INTOOR_META_BOX_CLASS;
 require_once INTOOR_POPULAR_CLASS;
 require_once INTOOR_POST_TYPE_CLASS;
 require_once INTOOR_QUICK_EDIT_CLASS;
+require_once INTOOR_SOCIAL_CLASS;
+require_once INTOOR_USER_CLASS;
 
 // Include required JavaScript
 function intoor_enqueue_scripts() {
