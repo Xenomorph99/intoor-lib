@@ -73,8 +73,10 @@ class Mailing_List {
 		'structure' => array(
 			'email' => array( 'VARCHAR(255)', true ),
 			'status' => array( 'VARCHAR(255)', false, 'active' ),
-			'timestamp' => array( 'TIMESTAMP' ),
-			'deleted' => array( 'VARCHAR(19)', false, '' )
+			'create_date' => array( 'DATE', false ),
+			'create_time' => array( 'TIME', false ),
+			'delete_date' => array( 'DATE', false ),
+			'delete_time' => array( 'TIME', false )
 		)
 	);
 
@@ -209,7 +211,7 @@ class Mailing_List {
 	public function get_mailing_list( $status = 'all' ) {
 
 		$data = array();
-		$list = Database::get_results( static::$table, array( 'id', 'email', 'status', 'timestamp' ) );
+		$list = Database::get_results( static::$table );
 		$count = count( $list );
 
 		// Filter and return retrieved data
@@ -312,7 +314,8 @@ class Mailing_List {
 
 		$data = array(
 			'email' => $email,
-			'timestamp' => date( 'Y-m-d H:i:s', time() )
+			'create_date' => date( 'Y-m-d', time() ),
+			'create_time' => date( 'H:i:s', time() )
 		);
 		$match = false;
 
@@ -402,9 +405,10 @@ class Mailing_List {
 		if( !empty( $data['email'] ) ) :
 
 			//Database::delete_row( static::$table, 'email', $email, true );
-			$data['email'] = rand( 9999, 999999999 );
+			$data['email'] = 'deleted-' . rand( 9999, 999999999 );
 			$data['status'] = 'deleted';
-			$data['deleted'] = date( 'Y-m-d H:i:s', time() );
+			$data['delete_date'] = date( 'Y-m-d', time() );
+			$data['delete_time'] = date( 'H:i:s', time() );
 			Database::update_row( static::$table, 'id', $data['id'], $data );
 
 			$sender = ( get_option( 'mailing_list_settings_sender' ) && get_option( 'mailing_list_settings_sender' ) !== '' ) ? get_option( 'mailing_list_settings_sender' ) : get_bloginfo( 'admin_email' );
