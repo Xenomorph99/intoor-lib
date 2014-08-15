@@ -20,13 +20,22 @@ if( $_GET['key'] == get_option( 'mailing_list_key' ) ) :
 	if( $_GET['action'] == 'export' ) :
 
 		// Define variables
+		$counter = 0;
+		$col_names = array();
 		$csv = fopen( 'php://memory', 'w' );
 		$data = ( !empty( $_GET['status'] ) ) ? Mailing_List::get_mailing_list( $_GET['status'] ) : Mailing_List::get_mailing_list();
 		$delimiter = ( !empty( $_GET['delimiter'] ) ) ? $_GET['delimiter'] : ',';
 
 		// Generate CSV lines
 		foreach( $data as $line ) {
+			if( $counter < 1 ) {
+				foreach( $line as $col_name => $col_value ) {
+					array_push( $col_names, $col_name );
+				}
+				fputcsv( $csv, $col_names, $delimiter );
+			}
 			fputcsv( $csv, $line, $delimiter );
+			$counter++;
 		}
 
 		// Rewind the CSV file

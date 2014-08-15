@@ -31,6 +31,14 @@
 
 class Mailing_List {
 
+	public $stats = array(
+		// key => array( default_value, field_type, label, options )
+		'subscribers' => array( '0', 'hidden', 'Total Subscribers' ),
+		'active' => array( '0', 'hidden', 'Current Active' ),
+		'inactive' => array( '0', 'hidden', 'Current Inactive' ),
+		'unsubscribers' => array( '0', 'hidden', 'Total Unsubscribers' )
+	);
+
 	public $settings = array(
 		// key => array( default_value, field_type, label, options )
 		'sender' => array( '', 'text', 'Send Mail From', NULL, 'no-reply@example.com' ),
@@ -61,11 +69,14 @@ class Mailing_List {
 	public static $table = array(
 		'name' => 'mailing_list',
 		'prefix' => 'ml',
-		'version' => '1.0',
+		'version' => '1.1',
 		'structure' => array(
 			'email' => array( 'VARCHAR(255)', true ),
 			'status' => array( 'VARCHAR(255)', false, 'active' ),
-			'timestamp' => array( 'TIMESTAMP' )
+			'create_date' => array( 'DATE', false ),
+			'create_time' => array( 'TIME', false ),
+			'delete_date' => array( 'DATE', false ),
+			'delete_time' => array( 'TIME', false )
 		)
 	);
 
@@ -97,6 +108,15 @@ class Mailing_List {
 			'table' => static::$table
 		);
 
+		$mailing_list_stats = array(
+			'type' => 'submenu_page',
+			'title' => 'Mailing List Stats',
+			'menu_title' => 'Stats',
+			'parent' => 'mailing_list',
+			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list-stats.php',
+			'defaults' => $this->stats
+		);
+
 		$mailing_list_settings = array(
 			'type' => 'submenu_page',
 			'title' => 'Mailing List Settings',
@@ -106,6 +126,7 @@ class Mailing_List {
 		);
 
 		new Admin_Menu( $mailing_list );
+		new Admin_Menu( $mailing_list_stats );
 		new Admin_Menu( $mailing_list_settings );
 
 	}
@@ -148,6 +169,41 @@ class Mailing_List {
 
 				}
 			}
+			static::update_stats();
+		}
+
+	}
+
+	public function update_stats() {
+
+		$data = Database::get_results( static::$table, array( 'status' ) );
+		$stats = array(
+			'subscribers' => count( $data ),
+			'active' => 0,
+			'inactive' => 0,
+			'unsubscribers' => 0
+		);
+		
+		foreach( $data as $row ) {
+			switch( $row['status'] ) {
+
+				case 'active' :
+					$stats['active'] = $stats['active'] + 1;
+					break;
+
+				case 'trash' :
+					$stats['inactive'] = $stats['inactive'] + 1;
+					break;
+
+				case 'deleted' :
+					$stats['unsubscribers'] = $stats['unsubscribers'] + 1;
+					break;
+
+			}
+		}
+
+		foreach( $stats as $name => $value ) {
+			update_option( 'mailing_list_stats_' . $name, $value );
 		}
 
 	}
@@ -155,7 +211,7 @@ class Mailing_List {
 	public function get_mailing_list( $status = 'all' ) {
 
 		$data = array();
-		$list = Database::get_results( static::$table, array( 'id', 'email', 'status', 'timestamp' ) );
+		$list = Database::get_results( static::$table );
 		$count = count( $list );
 
 		// Filter and return retrieved data
@@ -203,6 +259,7 @@ class Mailing_List {
 
 		}
 
+		static::update_stats();
 		return $resp;
 
 	}
@@ -257,7 +314,8 @@ class Mailing_List {
 
 		$data = array(
 			'email' => $email,
-			'timestamp' => date( 'Y-m-d H:i:s', time() )
+			'create_date' => date( 'Y-m-d', time() ),
+			'create_time' => date( 'H:i:s', time() )
 		);
 		$match = false;
 
@@ -346,7 +404,12 @@ class Mailing_List {
 
 		if( !empty( $data['email'] ) ) :
 
-			Database::delete_row( static::$table, 'email', $email, true );
+			//Database::delete_row( static::$table, 'email', $email, true );
+			$data['email'] = 'deleted-' . rand( 9999, 999999999 );
+			$data['status'] = 'deleted';
+			$data['delete_date'] = date( 'Y-m-d', time() );
+			$data['delete_time'] = date( 'H:i:s', time() );
+			Database::update_row( static::$table, 'id', $data['id'], $data );
 
 			$sender = ( get_option( 'mailing_list_settings_sender' ) && get_option( 'mailing_list_settings_sender' ) !== '' ) ? get_option( 'mailing_list_settings_sender' ) : get_bloginfo( 'admin_email' );
 			$unsubscribe_email = array(

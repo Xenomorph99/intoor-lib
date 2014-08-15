@@ -10,7 +10,7 @@
  * @version		Release: 1.0
  */
 
-$data = Database::get_results( $table, array( 'id', 'email', 'status', 'timestamp' ) );
+$data = Database::get_results( $table, array( 'id', 'email', 'status', 'create_date', 'create_time' ) );
 $default_view = 'active';
 $current_view = ( empty( $_GET['view'] ) ) ? $default_view : $_GET['view'];
 
@@ -42,7 +42,7 @@ foreach( $data as $row => $val ) {
 $table_cols = array(
 	'num' => '#',
 	'email' => 'Email Address',
-	'timestamp' => 'Timestamp'
+	'date' => 'Date'
 );
 
 $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-list.php?action=export&file=mailing-list.csv&key=' . get_option( 'mailing_list_key' );
@@ -56,14 +56,16 @@ $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-
 		<?php
 			$i = count( $views );
 			foreach( $views as $view => $view_data ) {
+				if( $view !== 'deleted' ) :
 
-				extract( $view_data );
-				$title = ucwords( $view );
-				$current = ( $current_view == $view ) ? ' class="current"' : '';
-				$spacer = '';
+					extract( $view_data );
+					$title = ucwords( $view );
+					$current = ( $current_view == $view ) ? ' class="current"' : '';
+					$spacer = '';
 
-				echo "<li class='$view'><a href='$url'$current>$title<span class='count'>($item_count)</span></a>$spacer</li>";
+					echo "<li class='$view'><a href='$url'$current>$title<span class='count'>($item_count)</span></a>$spacer</li>";
 
+				endif;
 			}
 		?>
 	</ul>
@@ -139,7 +141,7 @@ $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-
 								echo "</th>";
 								echo "<td>$item_count</td>";
 								echo "<td><strong>$email</strong></td>";
-								echo '<td>' . date( 'm/d/Y', strtotime( $timestamp ) ) . '</td>';
+								echo "<td>" . date( 'm/d/Y', strtotime( $create_date ) ) . " @" . date( 'H:i:s', strtotime( $create_time ) ) . "</td>";
 								echo "</tr>";
 								$item_count--;
 							}
