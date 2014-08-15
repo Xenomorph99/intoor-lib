@@ -17,14 +17,12 @@
 
 	<table class="form-table">
 		<tbody>
-
 			<?php foreach( $defaults as $name => $value ) : ?>
 			<tr>
 				<th scope="row"><?php echo $title = ( !empty( $value[2] ) ) ? $value[2] : ucwords( $name ); ?></th>
 				<td style="font-size:1.2em;"><?php echo $stat = get_option( $id . '_' . $name, $value[0] ) ?></td>
 			</tr>
 			<?php endforeach; ?>
-
 		</tbody>
 	</table>
 
