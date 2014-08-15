@@ -211,7 +211,7 @@ class Meta_Box {
 		$arr = $this->settings['table']['structure'][$key];
 		$prefix = ( isset( $this->settings['table']['prefix'] ) ) ? $this->settings['table']['prefix'] . '_' : '';
 
-		$field_type = ( !empty( $arr[3] ) ) ? $arr[3] : 'text';
+		$field_type = ( !empty( $arr[3] ) ) ? $arr[3] : '';
 		$name = $prefix . $key . "[]";
 		$options = ( !empty( $arr[4] ) ) ? $arr[4] : array();
 		$class = 'meta-box-form-field';

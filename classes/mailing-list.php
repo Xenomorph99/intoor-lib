@@ -32,7 +32,7 @@
 class Mailing_List {
 
 	public $stats = array(
-		// key => array( default_value, field_type, label, options )
+		// key => array( default_value, field_type, label, options, placeholder )
 		'subscribers' => array( '0', 'hidden', 'Total Subscribers' ),
 		'active' => array( '0', 'hidden', 'Current Active' ),
 		'inactive' => array( '0', 'hidden', 'Current Inactive' ),
@@ -40,7 +40,7 @@ class Mailing_List {
 	);
 
 	public $settings = array(
-		// key => array( default_value, field_type, label, options )
+		// key => array( default_value, field_type, label, options, placeholder )
 		'sender' => array( '', 'text', 'Send Mail From', NULL, 'no-reply@example.com' ),
 		'logo' => array( '', 'url', 'Email Logo <small style="font-weight:normal;"><em>(height: 90px)</em></small>', NULL, 'url' ),
 		'logo_width' => array( '250', 'number', 'Email Logo Width <small style="font-weight:normal;"><em>(px)</em></small>' ),

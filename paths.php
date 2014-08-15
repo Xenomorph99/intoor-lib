@@ -17,6 +17,7 @@ define( 'INTOOR_DIR', dirname( __FILE__ ) . '/' );
 define( 'INTOOR_API_DIR', INTOOR_DIR . 'api/' );
 define( 'INTOOR_CLASSES_DIR', INTOOR_DIR . 'classes/' );
 define( 'INTOOR_CSV_DIR', INTOOR_DIR . 'csv/' );
+define( 'INTOOR_IMAGES_DIR', INTOOR_DIR . 'images/' );
 define( 'INTOOR_JS_DIR', INTOOR_DIR . 'js/' );
 define( 'INTOOR_VIEWS_DIR', INTOOR_DIR . 'views/' );
 
