@@ -75,7 +75,7 @@ class Social {
 
 		$this->args = Functions::merge_array( $args, $this->args );
 		foreach( $this->settings as $key => $val ) {
-			$val[2] = '<span class="social-icon" style="width:30px; height:30px; line-height:30px; display:inline-block; overflow:hidden; float:left;">' . file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $key . '.svg' ) . '</span><span style="line-height:30px; margin-left:12px; display:inline-block; float:left;">' . $val[2] . '</span><span style="clear:both;"></span>'; 
+			$val[2] = '<span class="social-icon" style="width:30px; height:30px; line-height:30px; display:inline-block; overflow:hidden; float:left;">' . file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $key . '.svg' ) . '</span><span style="line-height:30px; margin-left:12px; display:inline-block; float:left;">' . $val[2] . '</span>'; 
 			$this->settings[$key] = $val;
 		}
 
@@ -129,4 +129,100 @@ class Social {
 
 	}
 
+	public static function get_social_media_icon( $key ) {
+
+		return file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $key . '.svg' );
+
+	}
+
+	public static function social_media_icon( $key ) {
+
+		echo static::get_social_media_icon( $key );
+
+	}
+
+	public static function get_social_media_url( $key ) {
+
+		return get_option( 'social_media_settings_' . $key );
+
+	}
+
+	public static function social_media_url( $key ) {
+
+		echo static::get_social_media_url( $key );
+
+	}
+
+	public static function get_social_media_share_url( $post_id, $key ) {
+
+		$data = Database::get_row( static::$table, 'post_id', $post_id );
+		return $data[$key.'_link'];
+
+	}
+
+	public static function social_media_share_url( $post_id, $key ) {
+
+		echo static::get_social_media_share_url( $post_id, $key );
+
+	}
+
+	public static function get_social_media_share_count( $post_id, $key ) {
+
+		$data = Database::get_row( static::$table, 'post_id', $post_id );
+		return $data[$key.'_count'];
+
+	}
+
+	public static function social_media_share_count( $post_id, $key ) {
+
+		echo static::get_social_media_share_count( $post_id, $key );
+
+	}
+
+	public static function get_social_media_button( $key ) {
+
+		return '<a href="' . get_social_media_url( $key ) . '">' . get_social_media_icon( $key ) . '</a>';
+
+	}
+
+	public static function social_media_button( $key ) {
+
+		echo static::get_social_media_button( $key );
+
+	}
+
+	public static function get_social_media_share_button( $key, $post_id = NULL, $show_count = true, $icon_left = true ) {
+
+		if( $icon_left ) {
+			$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . get_social_media_share_count( $post_id, $key ) . '</span>' : get_social_media_icon( $key );
+		} else {
+			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . get_social_media_share_count( $post_id, $key ) . '</span><span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span>' : get_social_media_icon( $key );
+		}
+		return '<a href="' . get_social_media_share_url( $key ) . '">' . $cont . '</a>';
+
+	}
+
+	public static function social_media_share_button( $key, $post_id = NULL, $show_count = true, $icon_left = true ) {
+
+		echo static::get_social_media_share_button( $key, $post_id, $show_count, $icon_left );
+
+	}
+
+	public static function get_social_media_share_buttons( $key_arr, $post_id = NULL, $show_count = true, $icon_left = true ) {
+
+		$s = '<ul class="social-media-share-buttons">';
+		foreach( $key_arr as $key ) {
+			$s .= '<li class="social-media-share-button">' . static::get_social_media_share_button( $key, $post_id, $show_count, $icon_left ) . '</li>';
+		}
+		$s .= '</ul>';
+		return $s;
+
+	}
+
+	public static function social_media_share_buttons( $key_arr, $post_id = NULL, $show_count = true, $icon_left = true ) {
+
+		echo static::get_social_media_share_buttons( $key_arr, $post_id, $show_count, $icon_left );
+
+	}
+ 
 }

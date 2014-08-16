@@ -306,6 +306,7 @@ class Meta_Box {
 				$field .= "<span class='field-type-$field_type'>";
 				$field .= "<label for='$id'>$label:&nbsp;&nbsp;</label>";
 				$field .= '<select class="' . $class . '" id="' . $id . '" name="' . $name . '">';
+				$field .= '<option value="">Select:</option>';
 				foreach( $options as $option_value => $option_label ) {
 					$selected = ( $option_value == $value ) ? " selected='selected'" : "";
 					$field .= '<option value="' . $option_value . '"' . $selected . '>' . $option_label . '</option>';
