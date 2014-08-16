@@ -210,9 +210,15 @@ class Social {
 
 	public static function get_social_media_share_buttons( $key_arr, $post_id = NULL, $show_count = true, $icon_left = true ) {
 
+		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$s = '<ul class="social-media-share-buttons">';
 		foreach( $key_arr as $key ) {
-			$s .= '<li class="social-media-share-button">' . static::get_social_media_share_button( $key, $post_id, $show_count, $icon_left ) . '</li>';
+			if( $icon_left ) {
+				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . $data[$key.'_count'] . '</span>' : get_social_media_icon( $key );
+			} else {
+				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $data[$key.'_count'] . '</span><span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span>' : get_social_media_icon( $key );
+			}
+			$s .= '<li class="social-media-share-button"><a href="' . $data[$key.'_link'] . '">' . $cont . '</a></li>';
 		}
 		$s .= '</ul>';
 		return $s;
