@@ -57,17 +57,17 @@ class Social {
 			'post_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ),
 			'infl' => array( 'TINYINT(3)', false, '0' ),
 			'facebook_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
-			'facebook_shares' => array( 'VARCHAR(255)', false, NULL ),
+			'facebook_shares' => array( 'BIGINT(20)', false, '0' ),
 			'twitter_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
-			'twitter_shares' => array( 'VARCHAR(255)', false, NULL ),
+			'twitter_shares' => array( 'BIGINT(20)', false, '0' ),
 			'google_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
-			'google_shares' => array( 'VARCHAR(255)', false, NULL ),
+			'google_shares' => array( 'BIGINT(20)', false, '0' ),
 			'pinterest_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
-			'pinterest_shares' => array( 'VARCHAR(255)', false, NULL ),
+			'pinterest_shares' => array( 'BIGINT(20)', false, '0' ),
 			'linkedin_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
-			'linkedin_shares' => array( 'VARCHAR(255)', false, NULL ),
+			'linkedin_shares' => array( 'BIGINT(20)', false, '0' ),
 			'reddit_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
-			'reddit_shares' => array( 'VARCHAR(255)', false, NULL ),
+			'reddit_shares' => array( 'BIGINT(20)', false, '0' ),
 		)
 	);
 
@@ -162,53 +162,54 @@ class Social {
 
 	}
 
-	public static function get_social_media_button( $key ) {
+	public static function get_social_media_button( $key, $class = '' ) {
 
-		return '<a href="' . get_social_media_url( $key ) . '">' . get_social_media_icon( $key ) . '</a>';
-
-	}
-
-	public static function social_media_button( $key ) {
-
-		echo static::get_social_media_button( $key );
+		return '<a class="' . $class . '" href="' . static::get_social_media_url( $key ) . '">' . static::get_social_media_icon( $key ) . '</a>';
 
 	}
 
-	public static function get_social_media_share_url( $post_id, $key ) {
+	public static function social_media_button( $key, $class = '' ) {
+
+		echo static::get_social_media_button( $key, $class );
+
+	}
+
+	public static function get_social_media_share_url( $key, $post_id ) {
 
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$url = ( !empty( $data[$key.'_link'] ) ) ? static::$share_url[$key] . $data[$key.'_link'] : static::$share_url[$key] . get_permalink( $post_id );
-		return $data[$key.'_link'];
+		return $url;
 
 	}
 
-	public static function social_media_share_url( $post_id, $key ) {
+	public static function social_media_share_url( $key, $post_id ) {
 
-		echo static::get_social_media_share_url( $post_id, $key );
+		echo static::get_social_media_share_url( $key, $post_id );
 
 	}
 
-	public static function get_social_media_share_count( $post_id, $key ) {
+	public static function get_social_media_share_count( $key, $post_id ) {
 
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
-		return $data[$key.'_count'];
+		$count = ( !empty( $data[$key.'_shares'] ) ) ? $data[$key.'_shares'] : '0';
+		return $count;
 
 	}
 
-	public static function social_media_share_count( $post_id, $key ) {
+	public static function social_media_share_count( $key, $post_id ) {
 
-		echo static::get_social_media_share_count( $post_id, $key );
+		echo static::get_social_media_share_count( $key, $post_id );
 
 	}
 
 	public static function get_social_media_share_button( $key, $post_id, $show_count = true, $icon_left = true ) {
 
 		if( $icon_left ) {
-			$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . get_social_media_share_count( $post_id, $key ) . '</span>' : get_social_media_icon( $key );
+			$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span>' : static::get_social_media_icon( $key );
 		} else {
-			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . get_social_media_share_count( $post_id, $key ) . '</span><span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span>' : get_social_media_icon( $key );
+			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 		}
-		return '<a href="' . get_social_media_share_url( $key ) . '">' . $cont . '</a>';
+		return '<a href="' . static::get_social_media_share_url( $key ) . '">' . $cont . '</a>';
 
 	}
 
@@ -223,13 +224,14 @@ class Social {
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$s = '<ul class="social-media-share-buttons">';
 		foreach( $key_arr as $key ) {
+			$url = ( !empty( $data[$key.'_link'] ) ) ? static::$share_url[$key] . $data[$key.'_link'] : static::$share_url[$key] . get_permalink( $post_id );
+			$count = ( !empty( $data[$key.'_shares'] ) ) ? $data[$key.'_shares'] : '0';
 			if( $icon_left ) {
-				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . $data[$key.'_count'] . '</span>' : get_social_media_icon( $key );
+				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . $count . '</span>' : static::get_social_media_icon( $key );
 			} else {
-				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $data[$key.'_count'] . '</span><span class="social-media-share-button-icon">' . get_social_media_icon( $key ) . '</span>' : get_social_media_icon( $key );
+				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 			}
-			$link = ( !empty( $data[$key.'_link'] ) ) ? static::$share_url[$key] . $data[$key.'_link'] : static::$share_url[$key] . get_permalink( $post_id );
-			$s .= '<li class="social-media-share-button"><a href="' . $data[$key.'_link'] . '">' . $cont . '</a></li>';
+			$s .= '<li class="social-media-share-button"><a href="' . $url . '">' . $cont . '</a></li>';
 		}
 		$s .= '</ul>';
 		return $s;
