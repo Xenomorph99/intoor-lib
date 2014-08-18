@@ -211,7 +211,7 @@ class Meta_Box {
 		$arr = $this->settings['table']['structure'][$key];
 		$prefix = ( isset( $this->settings['table']['prefix'] ) ) ? $this->settings['table']['prefix'] . '_' : '';
 
-		$field_type = ( !empty( $arr[3] ) ) ? $arr[3] : 'text';
+		$field_type = ( !empty( $arr[3] ) ) ? $arr[3] : '';
 		$name = $prefix . $key . "[]";
 		$options = ( !empty( $arr[4] ) ) ? $arr[4] : array();
 		$class = 'meta-box-form-field';
@@ -306,6 +306,7 @@ class Meta_Box {
 				$field .= "<span class='field-type-$field_type'>";
 				$field .= "<label for='$id'>$label:&nbsp;&nbsp;</label>";
 				$field .= '<select class="' . $class . '" id="' . $id . '" name="' . $name . '">';
+				$field .= '<option value="">Select:</option>';
 				foreach( $options as $option_value => $option_label ) {
 					$selected = ( $option_value == $value ) ? " selected='selected'" : "";
 					$field .= '<option value="' . $option_value . '"' . $selected . '>' . $option_label . '</option>';
