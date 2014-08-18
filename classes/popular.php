@@ -127,7 +127,7 @@ class Popular {
 				break;
 
 			case 'custom' :
-				$num = rand( $this->settings['infl_min'], $this->settings['infl'] );
+				$num = rand( $this->settings['infl_min'], $this->settings['infl_max'] );
 				break;
 
 			default :

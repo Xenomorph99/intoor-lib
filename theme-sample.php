@@ -58,6 +58,9 @@ public function __construct() {
 		// Register custom meta boxes
 		static::register_custom_meta_boxes();
 
+		// Register social media
+		static::register_social_media();
+
 		// Register mailing list
 		static::register_mailing_list();
 
@@ -87,6 +90,14 @@ public function __construct() {
 	protected static function register_custom_meta_boxes() {
 
 		// new Meta_Box();
+
+	}
+
+	protected static function register_social_media() {
+
+		$args = array();
+
+		$Social = new Social( $args );
 
 	}
 

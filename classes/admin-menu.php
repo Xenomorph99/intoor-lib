@@ -176,7 +176,7 @@ class Admin_Menu {
 			case 'text' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '"></td>';
 				$field .= "</tr>";
 
@@ -184,7 +184,7 @@ class Admin_Menu {
 			case 'number' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '"></td>';
 				$field .= "</tr>";
 
@@ -192,7 +192,7 @@ class Admin_Menu {
 			case 'password' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '"></td>';
 				$field .= "</tr>";
 
@@ -200,7 +200,7 @@ class Admin_Menu {
 			case 'email' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '"></td>';
 				$field .= "</tr>";
 
@@ -208,7 +208,7 @@ class Admin_Menu {
 			case 'url' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '"></td>';
 				$field .= "</tr>";
 
@@ -216,7 +216,7 @@ class Admin_Menu {
 			case 'tel' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '"></td>';
 				$field .= "</tr>";
 
@@ -224,7 +224,7 @@ class Admin_Menu {
 			case 'textarea' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= '<td><textarea id="' . $id . '" name="' . $name . '" rows="10" cols="50">' . $value . '</textarea>';
 				$field .= "</tr>";
 
@@ -232,7 +232,7 @@ class Admin_Menu {
 			case 'select' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'><label for='$id'>$label</label></th>";
+				$field .= "<th scope='row'><label for='$id' style='display:block; overflow:hidden;'>$label</label></th>";
 				$field .= "<td><select id='$id' name='$name'>";
 				foreach( $options as $option_value => $option_label ) {
 					$selected = ( $option_value === $value ) ? " selected='selected'" : "";
@@ -246,7 +246,7 @@ class Admin_Menu {
 
 				$checked = ( $value ) ? " checked='checked'" : "";
 				$field .= "<tr>";
-				$field .= "<th scope='row'>$title</label></th>";
+				$field .= "<th scope='row'>$title</th>";
 				$field .= "<td><fieldset>";
 				$field .= "<legend class='screen-reader-text'>$title</legend>";
 				$field .= "<label for='$id'><input type='hidden' id='hidden-$id' name='$name' value='$value'><input type='$type' id='$id'$checked>&nbsp;$label</label>";
@@ -257,7 +257,7 @@ class Admin_Menu {
 			case 'radio' :
 
 				$field .= "<tr>";
-				$field .= "<th scope='row'>$title</label></th>";
+				$field .= "<th scope='row'>$title</th>";
 				$field .= "<td><fieldset>";
 				$field .= "<legend class='screen-reader-text'>$title</legend>";
 				foreach( $options as $option_value => $option_label ) {
