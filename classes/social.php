@@ -231,7 +231,7 @@ class Social {
 
 	public static function get_social_media_button( $key, $class = '' ) {
 
-		return '<a class="' . $class . '" href="' . static::get_social_media_url( $key ) . '">' . static::get_social_media_icon( $key ) . '</a>';
+		return '<a class="' . $class . '" href="' . static::get_social_media_url( $key ) . '" rel="nofollow">' . static::get_social_media_icon( $key ) . '</a>';
 
 	}
 
@@ -276,7 +276,7 @@ class Social {
 		} else {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 		}
-		return '<a href="' . static::get_social_media_share_url( $key ) . '">' . $cont . '</a>';
+		return '<a href="' . static::get_social_media_share_url( $key ) . '" rel="nofollow">' . $cont . '</a>';
 
 	}
 
@@ -298,7 +298,7 @@ class Social {
 			} else {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 			}
-			$s .= '<li class="social-media-share-button"><a href="' . $url . '">' . $cont . '</a></li>';
+			$s .= '<li class="social-media-share-button"><a href="' . $url . '" rel="nofollow">' . $cont . '</a></li>';
 		}
 		$s .= '</ul>';
 		return $s;
