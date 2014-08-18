@@ -2,6 +2,8 @@
 /**
  * This model controls the interaction with social networks.
  *
+ * Required classes: Database, Functions
+ *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
  * @copyright	2014 Hazard Media Group LLC
@@ -55,19 +57,24 @@ class Social {
 		'structure' => array(
 			// key => array( db_column_type, encrypted, default_val, form_field_type, options_array( val => display_name ), form_field_label )
 			'post_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ),
-			'infl' => array( 'TINYINT(3)', false, '0' ),
 			'facebook_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
 			'facebook_shares' => array( 'BIGINT(20)', false, '0' ),
+			'facebook_infl' => array( 'TINYINT(3)', false, '0' ),
 			'twitter_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
 			'twitter_shares' => array( 'BIGINT(20)', false, '0' ),
+			'twitter_infl' => array( 'TINYINT(3)', false, '0' ),
 			'google_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
 			'google_shares' => array( 'BIGINT(20)', false, '0' ),
+			'google_infl' => array( 'TINYINT(3)', false, '0' ),
 			'pinterest_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
 			'pinterest_shares' => array( 'BIGINT(20)', false, '0' ),
+			'pinterest_infl' => array( 'TINYINT(3)', false, '0' ),
 			'linkedin_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
 			'linkedin_shares' => array( 'BIGINT(20)', false, '0' ),
+			'linkedin_infl' => array( 'TINYINT(3)', false, '0' ),
 			'reddit_link' => array( 'VARCHAR(255)', false, NULL, 'text' ),
 			'reddit_shares' => array( 'BIGINT(20)', false, '0' ),
+			'reddit_infl' => array( 'TINYINT(3)', false, '0' )
 		)
 	);
 
@@ -134,7 +141,67 @@ class Social {
 
 	protected function wp_hooks() {
 
-		// Do nothing
+		// Setup inflation
+		add_action( 'save_post', array( &$this, 'set_infl' ) );
+
+	}
+
+	public function set_infl() {
+
+		global $post;
+
+		if( $this->args['inflate'] ) :
+
+			$data = Database::get_row( static::$table, 'post_id', $post->ID );
+
+			if( !empty( $data['id'] ) ) :
+
+				$data['facebook_infl'] = ( empty( $data['facebook_infl'] ) ) ? $this->generate_infl_num() : $data['facebook_infl'];
+				$data['twitter_infl'] = ( empty( $data['twitter_infl'] ) ) ? $this->generate_infl_num() : $data['twitter_infl'];
+				$data['google_infl'] = ( empty( $data['google_infl'] ) ) ? $this->generate_infl_num() : $data['google_infl'];
+				$data['pinterest_infl'] = ( empty( $data['pinterest_infl'] ) ) ? $this->generate_infl_num() : $data['pinterest_infl'];
+				$data['linkedin_infl'] = ( empty( $data['linkedin_infl'] ) ) ? $this->generate_infl_num() : $data['linkedin_infl'];
+				$data['reddit_infl'] = ( empty( $data['reddit_infl'] ) ) ? $this->generate_infl_num() : $data['reddit_infl'];
+
+				Database::save_data( static::$table, $data );
+
+			endif;
+
+		endif;
+
+	}
+
+	protected function generate_infl_num() {
+
+		switch( $this->args['infl_range'] ) {
+
+			case 'low' :
+				$num = rand( 0, 10 );
+				break;
+
+			case 'mid' :
+				$num = rand( 10, 50 );
+				break;
+
+			case 'high' :
+				$num = rand( 50, 100 );
+				break;
+
+			case 'ultra' :
+				$num = rand( 100, 500 );
+				break;
+
+			case 'custom' :
+				$num = rand( $this->args['infl_min'], $this->args['infl_max'] );
+				break;
+
+			default :
+				$num = 1;
+				break;
+
+		}
+
+		return $num;
 
 	}
 
@@ -191,7 +258,7 @@ class Social {
 	public static function get_social_media_share_count( $key, $post_id ) {
 
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
-		$count = ( !empty( $data[$key.'_shares'] ) ) ? $data[$key.'_shares'] : '0';
+		$count = ( !empty( $data[$key.'_shares'] ) ) ? (int)$data[$key.'_shares'] + (int)$data[$key.'_infl'] : $data[$key.'_infl'];
 		return $count;
 
 	}
@@ -225,7 +292,7 @@ class Social {
 		$s = '<ul class="social-media-share-buttons">';
 		foreach( $key_arr as $key ) {
 			$url = ( !empty( $data[$key.'_link'] ) ) ? static::$share_url[$key] . $data[$key.'_link'] : static::$share_url[$key] . get_permalink( $post_id );
-			$count = ( !empty( $data[$key.'_shares'] ) ) ? $data[$key.'_shares'] : '0';
+			$count = ( !empty( $data[$key.'_shares'] ) ) ? (int)$data[$key.'_shares'] + (int)$data[$key.'_infl'] : $data[$key.'_infl'];
 			if( $icon_left ) {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . $count . '</span>' : static::get_social_media_icon( $key );
 			} else {
