@@ -310,5 +310,79 @@ class Social {
 		echo static::get_social_media_share_buttons( $key_arr, $post_id, $show_count, $icon_left );
 
 	}
+
+	public static function run_api_action( $action, $post_id, $key ) {
+
+		$resp = array();
+
+		switch( $action ) {
+
+			case 'share' :
+				$resp = static::add_share( $post_id, $key );
+				break;
+
+			default :
+				$resp['status'] = 'error';
+				$resp['desc'] = 'invalid-action';
+				$resp['message'] = 'Defined API action cannot be performed.';
+
+		}
+
+		return $resp;
+
+	}
+
+	public static function add_share( $post_id, $key ) {
+
+		$resp = array();
+
+		// Scrub out invalid post_id's
+		if( preg_match( '/^[0-9]+$/', $post_id ) ) :
+
+			$networks = array();
+			foreach( static::$share_url as $name => $value ) {
+				array_push( $networks, $name );
+			}
+
+			// Scrub out invalid keys
+			if( in_array( $key, $networks ) ) :
+
+				$data = Database::get_row( static::$table, 'post_id', $post_id );
+				$data[$key.'_shares'] = (int)$data[$key.'_shares'] + 1;
+
+				if( !empty( $data['post_id'] ) ) :
+
+					Database::save_data( static::$table, $data );
+					$resp['status'] = 'success';
+					$resp['desc'] = 'submitted';
+					$resp['message'] = 'Thanks for sharing the page!';
+
+				else:
+
+					$resp['status'] = 'error';
+					$resp['desc'] = 'page-not-found';
+					$resp['message'] = 'The page you shared cannot be found.';
+
+				endif;
+
+			else :
+
+				$resp['status'] = 'error';
+				$resp['desc'] = 'not-supported';
+				$resp['message'] = 'The submitted key is not supported.';
+
+			endif;
+
+		else :
+
+			$resp['status'] = 'error';
+			$resp['desc'] = 'invalid-format';
+			$resp['message'] = 'The submitted post ID does not match the required format.';
+
+		endif;
+
+		return $resp;
+
+	}
  
 }

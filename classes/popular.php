@@ -185,7 +185,7 @@ class Popular {
 			default :
 				$resp['status'] = 'error';
 				$resp['desc'] = 'invalid-action';
-				$resp['message'] = 'Defined API action cannot be performed';
+				$resp['message'] = 'Defined API action cannot be performed.';
 				break;
 
 		}
