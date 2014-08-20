@@ -33,7 +33,7 @@ class Social {
 		'youtube' => array( '', 'url', 'YouTube Link', NULL, 'http://youtube.com' ),
 		'linkedin' => array( '', 'url', 'LinkedIn Link', NULL, 'http://linkedin.com' ),
 		'tumblr' => array( '', 'url', 'Tumblr Link', NULL, 'http://tumblr.com' ),
-		'vine' => array( '', 'url', 'Vine Link', NULL, 'http://vine.com' ),
+		'vine' => array( '', 'url', 'Vine Link', NULL, 'http://vine.co' ),
 		'vimeo' => array( '', 'url', 'Vimeo Link', NULL, 'http://vimeo.com' ),
 		'soundcloud' => array( '', 'url', 'SoundCloud Link', NULL, 'http://soundcloud.com' ),
 		'flickr' => array( '', 'url', 'Flickr Link', NULL, 'http://flickr.com' ),
@@ -231,7 +231,7 @@ class Social {
 
 	public static function get_social_media_button( $key, $class = '' ) {
 
-		return '<a class="' . $class . '" href="' . static::get_social_media_url( $key ) . '">' . static::get_social_media_icon( $key ) . '</a>';
+		return '<a class="' . $class . '" href="' . static::get_social_media_url( $key ) . '" rel="nofollow">' . static::get_social_media_icon( $key ) . '</a>';
 
 	}
 
@@ -276,7 +276,8 @@ class Social {
 		} else {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 		}
-		return '<a href="' . static::get_social_media_share_url( $key ) . '">' . $cont . '</a>';
+		$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
+		return '<a class="share-counter share-link-disabled" href="' . static::get_social_media_share_url( $key ) . '" rel="nofollow" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $key . '">' . $cont . '</a>';
 
 	}
 
@@ -298,7 +299,8 @@ class Social {
 			} else {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 			}
-			$s .= '<li class="social-media-share-button"><a href="' . $url . '">' . $cont . '</a></li>';
+			$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
+			$s .= '<li class="social-media-share-button"><a class="share-counter share-link-disabled" href="' . $url . '" rel="nofollow" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $key . '">' . $cont . '</a></li>';
 		}
 		$s .= '</ul>';
 		return $s;
@@ -308,6 +310,80 @@ class Social {
 	public static function social_media_share_buttons( $key_arr, $post_id, $show_count = true, $icon_left = true ) {
 
 		echo static::get_social_media_share_buttons( $key_arr, $post_id, $show_count, $icon_left );
+
+	}
+
+	public static function run_api_action( $action, $post_id, $key ) {
+
+		$resp = array();
+
+		switch( $action ) {
+
+			case 'share' :
+				$resp = static::add_share( $post_id, $key );
+				break;
+
+			default :
+				$resp['status'] = 'error';
+				$resp['desc'] = 'invalid-action';
+				$resp['message'] = 'Defined API action cannot be performed.';
+
+		}
+
+		return $resp;
+
+	}
+
+	public static function add_share( $post_id, $key ) {
+
+		$resp = array();
+
+		// Scrub out invalid post_id's
+		if( preg_match( '/^[0-9]+$/', $post_id ) ) :
+
+			$networks = array();
+			foreach( static::$share_url as $name => $value ) {
+				array_push( $networks, $name );
+			}
+
+			// Scrub out invalid keys
+			if( in_array( $key, $networks ) ) :
+
+				$data = Database::get_row( static::$table, 'post_id', $post_id );
+				$data[$key.'_shares'] = (int)$data[$key.'_shares'] + 1;
+
+				if( !empty( $data['post_id'] ) ) :
+
+					Database::save_data( static::$table, $data );
+					$resp['status'] = 'success';
+					$resp['desc'] = 'submitted';
+					$resp['message'] = 'Thanks for sharing the page!';
+
+				else:
+
+					$resp['status'] = 'error';
+					$resp['desc'] = 'page-not-found';
+					$resp['message'] = 'The page you shared cannot be found.';
+
+				endif;
+
+			else :
+
+				$resp['status'] = 'error';
+				$resp['desc'] = 'not-supported';
+				$resp['message'] = 'The submitted key is not supported.';
+
+			endif;
+
+		else :
+
+			$resp['status'] = 'error';
+			$resp['desc'] = 'invalid-format';
+			$resp['message'] = 'The submitted post ID does not match the required format.';
+
+		endif;
+
+		return $resp;
 
 	}
  

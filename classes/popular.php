@@ -185,7 +185,7 @@ class Popular {
 			default :
 				$resp['status'] = 'error';
 				$resp['desc'] = 'invalid-action';
-				$resp['message'] = 'Defined API action cannot be performed';
+				$resp['message'] = 'Defined API action cannot be performed.';
 				break;
 
 		}
@@ -237,6 +237,12 @@ class Popular {
 		$data = Database::get_row( static::$table, 'post_id', $post->ID );
 		$likes = ( $infl && !empty( $data['post_id'] ) ) ? (int)$data['likes'] + (int)$data['infl'] : (int)$data['likes'];
 		return $likes;
+
+	}
+
+	public static function likes( $infl = true ) {
+
+		echo static::get_likes( $infl );
 
 	}
 
@@ -297,6 +303,12 @@ class Popular {
 		}
 
 		return $popular;
+
+	}
+
+	public static function popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false, $offset = 0 ) {
+
+		echo static::get_popular( $count, $inc_views, $inc_likes, $random, $offset );
 
 	}
 
