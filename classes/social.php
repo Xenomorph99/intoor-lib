@@ -276,7 +276,8 @@ class Social {
 		} else {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 		}
-		return '<a href="' . static::get_social_media_share_url( $key ) . '" rel="nofollow">' . $cont . '</a>';
+		$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
+		return '<a class="share-counter share-link-disabled" href="' . static::get_social_media_share_url( $key ) . '" rel="nofollow" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $key . '">' . $cont . '</a>';
 
 	}
 
@@ -298,7 +299,8 @@ class Social {
 			} else {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 			}
-			$s .= '<li class="social-media-share-button"><a href="' . $url . '" rel="nofollow">' . $cont . '</a></li>';
+			$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
+			$s .= '<li class="social-media-share-button"><a class="share-counter share-link-disabled" href="' . $url . '" rel="nofollow" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $key . '">' . $cont . '</a></li>';
 		}
 		$s .= '</ul>';
 		return $s;
