@@ -33,7 +33,7 @@ class Social {
 		'youtube' => array( '', 'url', 'YouTube Link', NULL, 'http://youtube.com' ),
 		'linkedin' => array( '', 'url', 'LinkedIn Link', NULL, 'http://linkedin.com' ),
 		'tumblr' => array( '', 'url', 'Tumblr Link', NULL, 'http://tumblr.com' ),
-		'vine' => array( '', 'url', 'Vine Link', NULL, 'http://vine.com' ),
+		'vine' => array( '', 'url', 'Vine Link', NULL, 'http://vine.co' ),
 		'vimeo' => array( '', 'url', 'Vimeo Link', NULL, 'http://vimeo.com' ),
 		'soundcloud' => array( '', 'url', 'SoundCloud Link', NULL, 'http://soundcloud.com' ),
 		'flickr' => array( '', 'url', 'Flickr Link', NULL, 'http://flickr.com' ),

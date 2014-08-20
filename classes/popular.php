@@ -240,6 +240,12 @@ class Popular {
 
 	}
 
+	public static function likes( $infl = true ) {
+
+		echo static::get_likes( $infl );
+
+	}
+
 	public static function get_popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false, $offset = 0 ) {
 
 		// Get data
@@ -297,6 +303,12 @@ class Popular {
 		}
 
 		return $popular;
+
+	}
+
+	public static function popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false, $offset = 0 ) {
+
+		echo static::get_popular( $count, $inc_views, $inc_likes, $random, $offset );
 
 	}
 
