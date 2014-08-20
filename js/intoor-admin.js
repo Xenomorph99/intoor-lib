@@ -1,5 +1,5 @@
 /**
- * Интоор Library JS Object
+ * Интоор Library Admin JS Object
  *
  * @require jquery.js
  * @version 1.0
@@ -7,7 +7,7 @@
 
 (function($) {
 
-var Intoor = {
+var IntoorAdmin = {
 
 	init: function() {
 
@@ -65,7 +65,7 @@ var Intoor = {
 				box.find('.meta-box-form-section').remove();
 				box.find('.meta-box-buttons').before('<div class="meta-box-form-section">' + defaults + '</div>');
 				box.find('.meta-box-form-section .meta-box-section-id').val(id);
-				Intoor.setMetaBoxToggles();
+				IntoorAdmin.setMetaBoxToggles();
 			}
 		});
 
@@ -74,7 +74,7 @@ var Intoor = {
 			var box = $(this).parent().parent();
 			var defaults = box.find('.meta-box-form-defaults').html();
 			box.find('.meta-box-buttons').before('<div class="meta-box-form-section">' + defaults + '</div>');
-			Intoor.setMetaBoxToggles();
+			IntoorAdmin.setMetaBoxToggles();
 		});
 
 		$('.meta-box-remove-form-section').on('click', function(e) {
@@ -117,7 +117,7 @@ var Intoor = {
 };
 
 $(function() {
-	Intoor.init();
+	IntoorAdmin.init();
 });
 
 })(jQuery);

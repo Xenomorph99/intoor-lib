@@ -28,7 +28,7 @@ Installation
 	require_once dirname( __FILE__ ) . "/lib/config.php";
 	```
 
-4. _Optional:_ Add `lib` directory to your `.gitignore` file if you don't want the Интоор Library to be stored in your theme repo.
+4. _Optional:_ Add `lib` directory to your `.gitignore` file if you don't want the Интоор Library to be stored in your theme repo if you're using git versioning to manage your theme development.
 
 5. _Optional:_ If you called your new directory something other than `lib` make sure to update the INTOOR_DIR_NAME definition in `config.php`.
 
