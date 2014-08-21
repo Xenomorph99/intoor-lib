@@ -243,6 +243,8 @@ class Social {
 
 	public static function get_social_media_share_url( $key, $post_id ) {
 
+		global $post;
+		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$url = ( !empty( $data[$key.'_link'] ) ) ? static::$share_url[$key] . $data[$key.'_link'] : static::$share_url[$key] . get_permalink( $post_id );
 		return $url;
@@ -257,6 +259,8 @@ class Social {
 
 	public static function get_social_media_share_count( $key, $post_id ) {
 
+		global $post;
+		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$count = ( !empty( $data[$key.'_shares'] ) ) ? (int)$data[$key.'_shares'] + (int)$data[$key.'_infl'] : $data[$key.'_infl'];
 		return $count;
@@ -271,6 +275,8 @@ class Social {
 
 	public static function get_social_media_share_button( $key, $post_id, $show_count = true, $icon_left = true ) {
 
+		global $post;
+		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		if( $icon_left ) {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span><span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span>' : static::get_social_media_icon( $key );
 		} else {
@@ -289,6 +295,8 @@ class Social {
 
 	public static function get_social_media_share_buttons( $key_arr, $post_id, $show_count = true, $icon_left = true ) {
 
+		global $post;
+		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$s = '<ul class="social-media-share-buttons">';
 		foreach( $key_arr as $key ) {
