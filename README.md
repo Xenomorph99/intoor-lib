@@ -37,8 +37,8 @@ Installation
 	```
 
 
-Usage Documentation
--------------------
+Usage & Documentation
+---------------------
 The following documentation is provided as a users manual for the Интоор Library.
 
 ### General Usage
@@ -76,65 +76,45 @@ new Post_Type( $args );
 ```
 
 #### Parameters
-* __post_type__: (_string_) (_required_) Name of the custom post type you want to create.  Additionally, this value will be used as the slug for the archive page (_eg, www.yoursite.com/posttype_) (__max. 20 characters, can not contain capital letters or spaces__)
-Default: None
+* __post_type__: (_string_) (_required_) Name of the custom post type you want to create.  Additionally, this value will be used as the slug for the archive page (__max. 20 characters, can not contain capital letters or spaces__) -- Default: None
 
-* __name_singular__: (_string_) (_required_) Singular display name of the post type (_eg. Book_)
-Default: None
+* __name_singular__: (_string_) (_required_) Singular display name of the post type (_eg. Book_) -- Default: None
 
-* __name_plural__: (_string_) (_required_) Plural display name of the post type (_eg. Books_)
-Default: None
+* __name_plural__: (_string_) (_required_) Plural display name of the post type (_eg. Books_) -- Default: None
 
-* __namespace__: (_string_) (_optional_) Namespace declaration (_used for translation_)
-Default: wp
+* __namespace__: (_string_) (_optional_) Namespace declaration (_used for translation_) -- Default: wp
 
-* __heirarchial__: (_boolean_) (_optional_) Create a hierarchy allowing parent and child posts within the custom post type
-Default: false
+* __heirarchial__: (_boolean_) (_optional_) Create a hierarchy allowing parent and child posts within the custom post type -- Default: false
 
-* __supports__: (_array_) (_optional_) Wordpress meta boxes to include on the custom post type post edit pages.  Allowed options: title, editor, author, thumbnail, excerpt, trackbacks, custom-fields, comments, revisions, page-attributes, post-formats
-Default: array( 'title', 'editor' )
+* __supports__: (_array_) (_optional_) Wordpress meta boxes to include on the custom post type post edit pages.  Allowed options: title, editor, author, thumbnail, excerpt, trackbacks, custom-fields, comments, revisions, page-attributes, post-formats -- Default: array( 'title', 'editor' )
 
-* __taxonomies__: (_array_) (_optional_) Registered taxonomies
-Default: array()
+* __taxonomies__: (_array_) (_optional_) Registered taxonomies -- Default: array()
 
-* __public__: (_boolean_) (_optional_) Should the post type be displayed outwardly to general users or is it only to be displayed in the Wordpress admin
-Default: true
+* __public__: (_boolean_) (_optional_) Should the post type be displayed outwardly to general users or is it only to be displayed in the Wordpress admin -- Default: true
 
-* __show_ui__: (_boolean_) (_optional_) Display a user interface for the post type
-Default: true
+* __show_ui__: (_boolean_) (_optional_) Display a user interface for the post type -- Default: true
 
-* __show_in_menu__: (_boolean_) (_optional_) Display the post type in the Wordpress admin sidebar nav menu
-Default: true
+* __show_in_menu__: (_boolean_) (_optional_) Display the post type in the Wordpress admin sidebar nav menu -- Default: true
 
-* __menu_icon__: (_string_) (_optional_) Dashicons icon name - select from [http://melchoyce.github.io/dashicons/](http://melchoyce.github.io/dashicons/)
-Default: NULL (_defaults to the same icon as posts - a push pin_)
+* __menu_icon__: (_string_) (_optional_) Dashicons icon name - select from [http://melchoyce.github.io/dashicons/](http://melchoyce.github.io/dashicons/) -- Default: NULL (_defaults to push pin_)
 
-* __menu_position__: (_number_) (_optional_) The location of the custom post type in the Wordpress admin sidebar nav menu (_5 - below Posts, 10 - below Media, 15 - below Links, 20 - below Pages, 25 - below comments, 60 - below first separator, 65 - below Plugins, 70 - below Users, 75 - below Tools, 80 - below Settings, 100 - below second separator_)
-Default: NULL
+* __menu_position__: (_number_) (_optional_) The location of the custom post type in the Wordpress admin sidebar nav menu (_5 below Posts, 10 below Media, 15 below Links, 20 below Pages, 25 below comments, 60 below first separator, 65 below Plugins, 70 below Users, 75 below Tools, 80 below Settings, 100 below second separator_) -- Default: NULL
 
-* __show_in_nav_menus__: (_boolean_) (_optional_) Allows the post type to be shown in outwardly displayed navigation menus
-Default: true
+* __show_in_nav_menus__: (_boolean_) (_optional_) Allows the post type to be shown in outwardly displayed navigation menus -- Default: true
 
-* __publicly_queryable__: (_boolean_) (_optional_) The front end code can query this post type and display its posts
-Default: true
+* __publicly_queryable__: (_boolean_) (_optional_) The front end code can query this post type and display its posts -- Default: true
 
-* __exclude_from_search__: (_boolean_) (_optional_) Should posts from the custom post type show up in searches performed by users on the front end
-Default: false
+* __exclude_from_search__: (_boolean_) (_optional_) Should posts from the custom post type show up in searches performed by users on the front end -- Default: false
 
-* __has_archive__: (_boolean_) (_optional_) Enable/disable the archive page for the custom post type
-Default: true
+* __has_archive__: (_boolean_) (_optional_) Enable/disable the archive page for the custom post type -- Default: true
 
-* __query_var__: (_boolean_) (_optional_) Sets the query variable for the custom post type (_true - uses post type, false, custom string_)
-Default: true
+* __query_var__: (_boolean_) (_optional_) Sets the query variable for the custom post type (_true - uses post type, false, custom string_) -- Default: true
 
-* __can_export__: (_boolean_) (_optional_) The custom post type can be exported
-Default: true
+* __can_export__: (_boolean_) (_optional_) The custom post type can be exported -- Default: true
 
-* __rewrite__: (_boolean_) (_optional_) Custom post type posts can be rewritten
-Default: true
+* __rewrite__: (_boolean_) (_optional_) Custom post type posts can be rewritten -- Default: true
 
-* __capability_type__: (_string_) (_optional_) Set the functionality of the custom post type similar to either _'post'_ or _'page'_
-Default: post
+* __capability_type__: (_string_) (_optional_) Set the functionality of the custom post type similar to either _'post'_ or _'page'_ -- Default: post
 
 
 ### WP Custom Admin Menu Pages
@@ -179,6 +159,35 @@ The following social networks are supported by the Интоор Library for shar
 * [Pinterest](http://pinterest.com)
 * [LinkedIn](http://linkedin.com)
 * [Reddit](http://reddit.com)
+
+#### Usage
+```php
+<?php
+$args = array(
+	'meta_box' => true,
+	'post_type' => array( 'post' ),
+	'inflate' => false,
+	'infl_range' => 'mid',
+	'infl_min' => 10,
+	'infl_max' => 50
+);
+new Social( $args );
+?>
+```
+
+#### Parameters
+* __meta_box__: (_boolean_) (_optional_) Display the social share custom meta box in the Wordpress admin -- Default: true
+
+* __post_type__: (_array_) (_optional_) Type of screen(s) on which to display the social share custom meta box in the Wordpress admin (_post, page, etc._) -- Default: array( 'post' )
+
+* __inflate__: (_boolean_) (_optional_) Artificially inflate the initial 'share' count of each social network -- Default: false
+
+* __infl_range__: (_string_) (_optional_) Range of inflated numbers to be generated (_low_ = 0-10, _mid_ = 10-50, _high_ = 50-100, _ultra_ = 100-500, _custom_) -- Default: mid
+
+* __infl_min__: (_number_) (_optional_) Custom inflation range min number -- Default: 10
+
+* __infl_max__: (_number_) (_optional_) Custom inflation range max number -- Default: 50
+
 
 #### Methods
 The following methods are available to be used throughout your theme.
