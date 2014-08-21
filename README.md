@@ -182,7 +182,7 @@ new Social( $args );
 
 * __inflate__: (_boolean_) (_optional_) Artificially inflate the initial 'share' count of each social network -- Default: false
 
-* __infl_range__: (_string_) (_optional_) Range of inflated numbers to be generated (_low_ = 0-10, _mid_ = 10-50, _high_ = 50-100, _ultra_ = 100-500, _custom_) -- Default: mid
+* __infl_range__: (_string_) (_optional_) Range of inflated numbers to be auto generated (_low_ 0-10, _mid_ 10-50, _high_ 50-100, _ultra_ 100-500, _custom_) -- Default: mid
 
 * __infl_min__: (_number_) (_optional_) Custom inflation range min number -- Default: 10
 
