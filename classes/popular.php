@@ -21,7 +21,7 @@
 
 class Popular {
 
-	public $settings = array(
+	public $args = array(
 		'post_type' => array( 'post' ),		// Type of screen(s) on which to track views & likes (post, page)
 		'inflate' => false,					// Artificailly inflate initial 'like' count
 		'infl_range' => 'mid',				// Range of inflated numbers to be generated 'low' = 0-10, 'mid' = 10-50, 'high' = 50-100, 'ultra' = 100-500, 'custom'
@@ -44,7 +44,7 @@ class Popular {
 
 	public function __construct( $args ) {
 
-		$this->settings = Functions::merge_array( $args, $this->settings );
+		$this->args = Functions::merge_array( $args, $this->args );
 
 		$this->setup_popular_tracking();
 		$this->register_meta_boxes();
@@ -62,11 +62,11 @@ class Popular {
 
 		$popular = array(
 			'title' => 'Popularity',
-			'post_type' => $this->settings['post_type'],
+			'post_type' => $this->args['post_type'],
 			'context' => 'side',
 			'priority' => 'core',
 			'view' => INTOOR_VIEWS_DIR . 'meta-box/popular.php',
-			'array' => array( 'inflate' => $this->settings['inflate'] ),
+			'array' => array( 'inflate' => $this->args['inflate'] ),
 			'table' => static::$table
 		);
 
@@ -90,25 +90,30 @@ class Popular {
 	public function get_data( $save_data = true ) {
 
 		global $post;
-		$data = Database::get_row( static::$table, 'post_id', $post->ID );
 
-		if( empty( $data['post_id'] ) ) :
+		if( in_array( $post->post_type, $this->args['post_type'] ) ) :
 
-			$data['post_id'] = $post->ID;
-			$data['infl'] = ( $this->settings['inflate'] ) ? $this->generate_infl_num() : $data['infl'];
-			if( $save_data ) {
-				Database::save_data( static::$table, $data );
-			}
+			$data = Database::get_row( static::$table, 'post_id', $post->ID );
+
+			if( empty( $data['post_id'] ) ) :
+
+				$data['post_id'] = $post->ID;
+				$data['infl'] = ( $this->args['inflate'] ) ? $this->generate_infl_num() : $data['infl'];
+				if( $save_data ) {
+					Database::save_data( static::$table, $data );
+				}
+
+			endif;
+
+			return $data;
 
 		endif;
-
-		return $data;
 
 	}
 
 	protected function generate_infl_num() {
 
-		switch( $this->settings['infl_range'] ) {
+		switch( $this->args['infl_range'] ) {
 
 			case 'low' :
 				$num = rand( 0, 10 );
@@ -127,7 +132,7 @@ class Popular {
 				break;
 
 			case 'custom' :
-				$num = rand( $this->settings['infl_min'], $this->settings['infl_max'] );
+				$num = rand( $this->args['infl_min'], $this->args['infl_max'] );
 				break;
 
 			default :
@@ -143,7 +148,7 @@ class Popular {
 	protected function set_tracking_variable() {
 
 		global $post;
-		$post_types = $this->settings['post_type'];
+		$post_types = $this->args['post_type'];
 
 		if( !WP_DEBUG && !is_admin() && !empty( $post_types ) ) {
 			foreach( $post_types as $post_type ) {
