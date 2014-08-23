@@ -13,6 +13,7 @@
  */
 
 $form = array(
+	'id' => 'mailing-list-form',
 	'label' => '',
 	'label_tag' => '',
 	'submit_btn' => 'Subscribe',
@@ -25,7 +26,7 @@ $label_tag_open = ( !empty( $form['label_tag'] ) ) ? '<' . $form['label_tag'] . 
 $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] . '>' : '</label>';
 
 ?>
-<form id="mailing-list-form" class="mailing-list-form" method="GET" action="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
+<form id="<?php echo $form['id']; ?>" class="mailing-list-form" method="GET" action="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
 	<?php echo ( !empty( $form['label'] ) ) ? $label_tag_open . $form['label'] . $label_tag_close : ''; ?>
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="save">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?php bloginfo( 'url' ); ?>">
@@ -37,7 +38,7 @@ $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] 
 <?php if( get_option( 'mailing_list_settings_ajax' ) ) : ?>
 <script>
 $(function() {
-	var form = $('#mailing-list-form');
+	<?php echo "var form = $('#" . $form['id'] . "');"; ?>
 	form.on('submit', function(e) {
 		e.preventDefault();
 		form.find('.redirect').remove();
