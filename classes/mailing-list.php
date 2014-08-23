@@ -431,7 +431,7 @@ class Mailing_List {
 
 	}
 
-	public static function get_form( $desc = '', $desc_tag = '', $template = '' ) {
+	public static function get_form( $args = array(), $template = '' ) {
 
 		ob_start();
 		include ( !empty( $template ) ) ? $template : INTOOR_VIEWS_DIR . 'mailing-list-form.php';
@@ -441,7 +441,7 @@ class Mailing_List {
 
 	}
 
-	public static function form( $desc = '', $desc_tag = '', $template = '' ) {
+	public static function form( $args = array(), $template = '' ) {
 
 		echo static::get_form( $desc, $desc_tag, $template );
 

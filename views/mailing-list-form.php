@@ -2,6 +2,8 @@
 /**
  * Mailing list subscription form
  *
+ * Required models: Functions
+ *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
  * @copyright	2014 Hazard Media Group LLC
@@ -10,17 +12,26 @@
  * @version		Release: 1.0
  */
 
-$desc_tag_open = ( !empty( $desc_tag ) ) ? "<$desc_tag>" : '<label for="mailing-list-form-email">';
-$desc_tag_close = ( !empty( $desc_tag ) ) ? "</$desc_tag>" : '</label>';
+$form = array(
+	'label' => '',
+	'label_tag' => '',
+	'submit_btn' => 'Subscribe',
+	'placeholder' => 'Email'
+);
+
+$form = Functions::merge_array( $args, $form );
+
+$label_tag_open = ( !empty( $form['label_tag'] ) ) ? '<' . $form['label_tag'] . '>' : '<label for="mailing-list-form-email">';
+$label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] . '>' : '</label>';
 
 ?>
 <form id="mailing-list-form" class="mailing-list-form" method="GET" action="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
-	<?php echo $desc = ( !empty( $desc ) ) ? $desc_tag_open . $desc . $desc_tag_close : ''; ?>
+	<?php echo ( !empty( $form['label'] ) ) ? $label_tag_open . $form['label'] . $label_tag_close : ''; ?>
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="save">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?php bloginfo( 'url' ); ?>">
-	<input id="mailing-list-form-email" class="email" type="text" name="email" value="" placeholder="Email" required>
-	<input id="mailing-list-form-submit" type="submit" value="Subscribe">
-	<?php echo $message = ( !empty( $_GET['user'] ) ) ? '<p class="message">' . urldecode( $_GET['user'] ) . '</p>' : ''; ?>
+	<input id="mailing-list-form-email" class="email" type="text" name="email" value="" placeholder="<?php echo $form['placeholder']; ?>" required>
+	<input id="mailing-list-form-submit" type="submit" value="<?php echo $form['submit_btn']; ?>">
+	<?php echo ( !empty( $_GET['user'] ) ) ? '<p class="message">' . urldecode( $_GET['user'] ) . '</p>' : ''; ?>
 </form>
 
 <?php if( get_option( 'mailing_list_settings_ajax' ) ) : ?>
