@@ -443,7 +443,7 @@ class Mailing_List {
 
 	public static function form( $args = array(), $template = '' ) {
 
-		echo static::get_form( $desc, $desc_tag, $template );
+		echo static::get_form( $args, $template );
 
 	}
 
