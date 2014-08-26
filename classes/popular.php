@@ -29,7 +29,7 @@ class Popular {
 	public static $table = array(
 		'name' => 'popular',
 		'prefix' => 'pop',
-		'version' => '1.3',
+		'version' => '1.0',
 		'structure' => array(
 			// key => array( db_column_type, encrypted, default_val, form_field_type, options_array( val => display_name ), form_field_label )
 			'post_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ),
@@ -256,7 +256,8 @@ class Popular {
 			'include_likes' => true,			// Include likes when assessing popularity
 			'include_shares' => true,			// Include social media shares when assessing popularity
 			'random' => false,					// Randomize the returned posts
-			'offset' => 0						// Offset the posts returned - maybe you want top 10-20 not 1-10
+			'offset' => 0,						// Offset the posts returned - maybe you want top 10-20 not 1-10
+			'inflated' => false					// Include inflated numbers
 		);
 
 		$args = Functions::merge_array( $custom_args, $args );
@@ -273,7 +274,9 @@ class Popular {
 		// MySQL variables
 		$sql = "";
 		$n = "\n";
-		$share_sum = "($social_table.facebook_shares + $social_table.twitter_shares + $social_table.google_shares + $social_table.linkedin_shares + $social_table.pinterest_shares + $social_table.reddit_shares) AS shares";
+		$share_sum = ( $inflated )
+			? "($social_table.facebook_shares + $social_table.facebook_infl + $social_table.twitter_shares + $social_table.twitter_infl + $social_table.google_shares + $social_table.google_infl + $social_table.linkedin_shares + $social_table.linkedin_infl + $social_table.pinterest_shares + $social_table.pinterest_infl + $social_table.reddit_shares + $social_table.reddit_infl) AS shares"
+			: "($social_table.facebook_shares + $social_table.twitter_shares + $social_table.google_shares + $social_table.linkedin_shares + $social_table.pinterest_shares + $social_table.reddit_shares) AS shares";
 		$select_post_type = ( !empty( $post_type ) ) ? ", $posts_table.post_type" : "";
 		$select_category = ( !empty( $category ) ) ? ", $term_table.term_taxonomy_id AS cat_id" : "";
 
@@ -282,19 +285,23 @@ class Popular {
 
 			if( $include_likes ) :
 				if( $include_views ) {
-					$select = "$popular_table.views, $popular_table.likes, $share_sum"; // shares, likes, views
+					$select = ( $inflated ) // shares, likes, views
+						? "$popular_table.views, ($popular_table.likes + $popular_table.infl) AS likes, $share_sum"
+						: "$popular_table.views, $popular_table.likes, $share_sum";
 					$order_by = "ORDER BY shares DESC, likes DESC";
 				} else {
-					$select = "$popular_table.likes, $share_sum";
-					$order_by = "ORDER BY shares DESC, likes DESC"; // shares, likes
+					$select = ( $inflated ) // shares, likes
+						? "($popular_table.likes + $popular_table.infl) AS likes, $share_sum"
+						: "$popular_table.likes, $share_sum";
+					$order_by = "ORDER BY shares DESC, likes DESC";
 				}
 			else :
-				if( $include_views ) {
+				if( $include_views ) { // shares, views
 					$select = "$popular_table.views, $share_sum";
-					$order_by = "ORDER BY shares DESC, views DESC"; // shares, views
+					$order_by = "ORDER BY shares DESC, views DESC";
 				} else {
-					$select = "$share_sum";
-					$order_by = "ORDER BY shares DESC"; // shares
+					$select = "$share_sum"; // shares
+					$order_by = "ORDER BY shares DESC";
 				}
 			endif;
 
@@ -302,10 +309,14 @@ class Popular {
 
 			if( $include_likes ) :
 				if( $include_views ) {
-					$select = "$popular_table.views, $popular_table.likes"; // likes, views
+					$select = ( $inflated ) // likes, views
+						? "$popular_table.views, ($popular_table.likes + $popular_table.infl) AS likes"
+						: "$popular_table.views, $popular_table.likes";
 					$order_by = "ORDER BY likes DESC, views DESC";
 				} else {
-					$select = "$popular_table.likes"; // likes
+					$select = ( $inflated ) // likes
+						? "($popular_table.likes + $popular_table.infl) AS likes"
+						: "$popular_table.likes";
 					$order_by = "ORDER BY likes DESC";
 				}
 			else :
