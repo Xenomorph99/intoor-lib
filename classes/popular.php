@@ -2,14 +2,11 @@
 /**
  * This model tracks views and likes on posts. (Views are defined as page loads)
  *
- * Required classes: Database, Functions
+ * Required classes: Database, Functions, Social
  *
  * Future:
- * - Add custom meta box to display views and likes
  * - Wordpress admin page to display the top ranking pages - both views and likes
- * - A session cookie to prevent multiple likes/views
- * - Integrate nonce
- * - get_popular() for only a specific post_type
+ * - A session cookie to prevent multiple likes/views (integrate nonce)
  *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
@@ -22,7 +19,7 @@
 class Popular {
 
 	public $args = array(
-		'post_type' => array( 'post' ),		// Type of screen(s) on which to track views & likes (post, page)
+		'post_type' => array( 'post' ),		// Type of screen(s) on which to track views & likes (post, page, custom_post_type)
 		'inflate' => false,					// Artificailly inflate initial 'like' count
 		'infl_range' => 'mid',				// Range of inflated numbers to be generated 'low' = 0-10, 'mid' = 10-50, 'high' = 50-100, 'ultra' = 100-500, 'custom'
 		'infl_min' => 10,					// Custom inflation range min number
@@ -87,11 +84,12 @@ class Popular {
 
 	}
 
-	public function get_data( $save_data = true ) {
+	public function get_data() {
 
 		global $post;
+		extract( $this->args );
 
-		if( in_array( $post->post_type, $this->args['post_type'] ) ) :
+		if( in_array( $post->post_type, $post_type ) ) :
 
 			$data = Database::get_row( static::$table, 'post_id', $post->ID );
 
@@ -99,13 +97,10 @@ class Popular {
 
 				$data['post_id'] = $post->ID;
 				$data['infl'] = ( $this->args['inflate'] ) ? $this->generate_infl_num() : $data['infl'];
-				if( $save_data ) {
-					Database::save_data( static::$table, $data );
-				}
 
 			endif;
 
-			return $data;
+			return Database::save_data( static::$table, $data );
 
 		endif;
 
@@ -251,69 +246,133 @@ class Popular {
 
 	}
 
-	public static function get_popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false, $offset = 0 ) {
+	public static function get_popular( $custom_args = array() ) {
 
-		// Get data
-		$data = Database::get_results( static::$table, array( 'post_id', 'views', 'likes' ) );
-		$row_count = count( $data );
+		$args = array(
+			'count' => 10,						// Number of posts to retrieve
+			'post_type' => array( 'post' ),		// This is where you would also include custom post types
+			'category' => 0,					// Filter by categories (only one post type allowed if filtering by categories)
+			'include_views' => true,			// Include views when assessing popularity
+			'include_likes' => true,			// Include likes when assessing popularity
+			'include_shares' => true,			// Include social media shares when assessing popularity
+			'random' => false,					// Randomize the returned posts
+			'offset' => 0,						// Offset the posts returned - maybe you want top 10-20 not 1-10
+			'inflated' => false					// Include inflated numbers
+		);
 
-		// Sort data into array
-		$views = array();
-		$likes = array();
-		foreach( $data as $key => $val ) {
-			$views[$val['post_id']] = $val['views'];
-			$likes[$val['post_id']] = $val['likes'];
-		}
+		$args = Functions::merge_array( $custom_args, $args );
+		extract( $args );
 
-		// Sort the arrays (greatest to least)
-		arsort( $views );
-		arsort( $likes );
+		// Database variables
+		global $wpdb;
+		$p = $wpdb->prefix;
+		$popular_table = $p . static::$table['name'];
+		$social_table = $p . Social::$table['name'];
+		$posts_table = $p . 'posts';
+		$term_table = $p . 'term_relationships';
 
-		// Save list of post ID's 
-		$views_list = array();
-		$likes_list = array();
-		foreach( $views as $key => $val ) {
-			array_push( $views_list, $key );
-		}
-		foreach( $likes as $key => $val ) {
-			array_push( $likes_list, $key );
-		}
+		// MySQL variables
+		$sql = "";
+		$n = "\n";
+		$share_sum = ( $inflated )
+			? "($social_table.facebook_shares + $social_table.facebook_infl + $social_table.twitter_shares + $social_table.twitter_infl + $social_table.google_shares + $social_table.google_infl + $social_table.linkedin_shares + $social_table.linkedin_infl + $social_table.pinterest_shares + $social_table.pinterest_infl + $social_table.reddit_shares + $social_table.reddit_infl) AS shares"
+			: "($social_table.facebook_shares + $social_table.twitter_shares + $social_table.google_shares + $social_table.linkedin_shares + $social_table.pinterest_shares + $social_table.reddit_shares) AS shares";
+		$select_post_type = ( !empty( $post_type ) ) ? ", $posts_table.post_type" : "";
+		$select_category = ( !empty( $category ) ) ? ", $term_table.term_taxonomy_id AS cat_id" : "";
 
-		// Create final merged list of post ID's to return
-		$popular = array();
-		if( $inc_views && $inc_likes ) :
+		// Filter views, likes, and shares
+		if( $include_shares ) : // 'Social' class is required in order to include shares
 
-			for( $i = 0; $i < ( $count * 2 ); $i++ ) {
-				if( !in_array( $likes_list[$i], $popular ) && $i < count( $likes_list ) ) {
-					array_push( $popular, $likes_list[$i] );
+			if( $include_likes ) :
+				if( $include_views ) {
+					$select = ( $inflated ) // shares, likes, views
+						? "$popular_table.views, ($popular_table.likes + $popular_table.infl) AS likes, $share_sum"
+						: "$popular_table.views, $popular_table.likes, $share_sum";
+					$order_by = "ORDER BY shares DESC, likes DESC";
+				} else {
+					$select = ( $inflated ) // shares, likes
+						? "($popular_table.likes + $popular_table.infl) AS likes, $share_sum"
+						: "$popular_table.likes, $share_sum";
+					$order_by = "ORDER BY shares DESC, likes DESC";
 				}
-				if( !in_array( $views_list[$i], $popular ) && $i < count( $views_list ) ) {
-					array_push( $popular, $views_list[$i] );
+			else :
+				if( $include_views ) { // shares, views
+					$select = "$popular_table.views, $share_sum";
+					$order_by = "ORDER BY shares DESC, views DESC";
+				} else {
+					$select = "$share_sum"; // shares
+					$order_by = "ORDER BY shares DESC";
 				}
-			}
-			$popular = array_slice( $popular, $offset, ( $count + $offset ) );
+			endif;
 
-		elseif( $inc_views ) :
+		else :
 
-			$popular = array_slice( $views_list, $offset, ( $count + $offset ) );
-
-		elseif( $inc_likes ) :
-
-			$popular = array_slice( $likes_list, $offset, ( $count + $offset ) );
+			if( $include_likes ) :
+				if( $include_views ) {
+					$select = ( $inflated ) // likes, views
+						? "$popular_table.views, ($popular_table.likes + $popular_table.infl) AS likes"
+						: "$popular_table.views, $popular_table.likes";
+					$order_by = "ORDER BY likes DESC, views DESC";
+				} else {
+					$select = ( $inflated ) // likes
+						? "($popular_table.likes + $popular_table.infl) AS likes"
+						: "$popular_table.likes";
+					$order_by = "ORDER BY likes DESC";
+				}
+			else :
+				$select = "$popular_table.views"; // views
+				$order_by = "ORDER BY views DESC";
+			endif;
 
 		endif;
 
-		if( $random ) {
-			shuffle( $popular );
-		}
+		// Filter post types and categories
+		if( !empty( $post_type ) ) :
 
-		return $popular;
+			if( !empty( $category ) ) :
+				// filter by post_type and category
+				$where = "WHERE $posts_table.post_type = '" . $post_type[0] . "' AND $term_table.term_taxonomy_id = $category";
+			else :
+				// filter by post_type
+				$where = "WHERE ";
+				$i = 1;
+				foreach( $post_type as $type ) {
+					if( $i < count( $post_type ) ) {
+						$where .= "$posts_table.post_type = '$type' OR ";
+					} else {
+						$where .= "$posts_table.post_type = '$type'";
+					}
+					$i++;
+				}
+			endif;
+
+		endif;
+		
+		// Build MySQL Statement
+		$sql = "SELECT $popular_table.post_id, " . $select . $select_post_type . $select_category . $n;
+		$sql .= "FROM $popular_table" . $n;
+		$sql .= ( $include_shares ) ? "LEFT JOIN $social_table ON $social_table.post_id = $popular_table.post_id" . $n : "";
+		$sql .= ( !empty( $post_type ) ) ? "LEFT JOIN $posts_table ON $posts_table.ID = $popular_table.post_id" . $n : "";
+		$sql .= ( !empty( $category ) ) ? "LEFT JOIN $term_table ON $term_table.object_id = $popular_table.post_id" . $n : "";
+		$sql .= ( !empty( $where ) ) ? $where . $n : "";
+		$sql .= $order_by;
+
+		// Retrieve data from database
+		$data = $wpdb->get_results( $wpdb->prepare( $sql, array() ), ARRAY_A );
+
+		// Build and return response
+		$popular = array();
+		foreach($data as $row) {
+			array_push( $popular, $row['post_id'] );
+		}
+		$popular = ( $random ) ? shuffle( $popular ) : $popular;
+		return array_slice( $popular, $offset, ( $count + $offset ) );
 
 	}
 
-	public static function popular( $count = 10, $inc_views = true, $inc_likes = true, $random = false, $offset = 0 ) {
+	public static function popular( $custom_args = array() ) {
 
-		echo static::get_popular( $count, $inc_views, $inc_likes, $random, $offset );
+		echo static::get_popular( $custom_args );
 
 	}
 
