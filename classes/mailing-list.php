@@ -6,15 +6,10 @@
  * Required models: Database
  *
  * Future:
- * - Integrate social media links with site-wide social media link settings
- * - Count subscribers and unsubscribers
  * - Add support for more social media links
- * - Add form support that uses JS (require jQuery?) (and if JS is not enabled?)
- * - Add send email functionality on subscribe and unsubscribe
  * - Setup cron job to manage monthly/weekly newsletter distribution of latest posts
  * - Add subscribe, unsubscribe, and message default HTML email templates
  * - Add MailChimp & other 3rd party integrations
- * - Add stats (number of subscribers, unsubscribers, etc)
  * - Add ability to send out email to members of the subscription list
  * - Shortcode and function capability to pull a subscribe form into any view
  * - Extract into Wordpress plugin format
