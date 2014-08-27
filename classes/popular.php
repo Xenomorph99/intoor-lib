@@ -277,7 +277,6 @@ class Popular {
 		$share_sum = ( $inflated )
 			? "($social_table.facebook_shares + $social_table.facebook_infl + $social_table.twitter_shares + $social_table.twitter_infl + $social_table.google_shares + $social_table.google_infl + $social_table.linkedin_shares + $social_table.linkedin_infl + $social_table.pinterest_shares + $social_table.pinterest_infl + $social_table.reddit_shares + $social_table.reddit_infl) AS shares"
 			: "($social_table.facebook_shares + $social_table.twitter_shares + $social_table.google_shares + $social_table.linkedin_shares + $social_table.pinterest_shares + $social_table.reddit_shares) AS shares";
-		$select_post_type = ( !empty( $post_type ) ) ? ", $posts_table.post_type" : "";
 		$select_category = ( !empty( $category ) ) ? ", $term_table.term_taxonomy_id AS cat_id" : "";
 
 		// Filter views, likes, and shares
@@ -331,10 +330,10 @@ class Popular {
 
 			if( !empty( $category ) ) :
 				// filter by post_type and category
-				$where = "WHERE $posts_table.post_type = '" . $post_type[0] . "' AND $term_table.term_taxonomy_id = $category";
+				$where = "WHERE $posts_table.post_status = 'publish' AND $posts_table.post_type = '" . $post_type[0] . "' AND $term_table.term_taxonomy_id = $category";
 			else :
 				// filter by post_type
-				$where = "WHERE ";
+				$where = "WHERE $posts_table.post_status = 'publish' AND ";
 				$i = 1;
 				foreach( $post_type as $type ) {
 					if( $i < count( $post_type ) ) {
@@ -349,12 +348,12 @@ class Popular {
 		endif;
 		
 		// Build MySQL Statement
-		$sql = "SELECT $popular_table.post_id, " . $select . $select_post_type . $select_category . $n;
+		$sql = "SELECT $popular_table.post_id, " . $select . $select_category . $n;
 		$sql .= "FROM $popular_table" . $n;
 		$sql .= ( $include_shares ) ? "LEFT JOIN $social_table ON $social_table.post_id = $popular_table.post_id" . $n : "";
 		$sql .= ( !empty( $post_type ) ) ? "LEFT JOIN $posts_table ON $posts_table.ID = $popular_table.post_id" . $n : "";
 		$sql .= ( !empty( $category ) ) ? "LEFT JOIN $term_table ON $term_table.object_id = $popular_table.post_id" . $n : "";
-		$sql .= ( !empty( $where ) ) ? $where . $n : "";
+		$sql .= ( !empty( $where ) ) ? $where . $n : "WHERE $posts_table.post_status = 'publish'";
 		$sql .= $order_by;
 
 		// Retrieve data from database
@@ -367,12 +366,6 @@ class Popular {
 		}
 		$popular = ( $random ) ? shuffle( $popular ) : $popular;
 		return array_slice( $popular, $offset, ( $count + $offset ) );
-
-	}
-
-	public static function popular( $custom_args = array() ) {
-
-		echo static::get_popular( $custom_args );
 
 	}
 
