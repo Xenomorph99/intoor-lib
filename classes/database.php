@@ -136,7 +136,15 @@ class Database {
 
 			if( isset( $match_arr ) ) {
 				foreach( $match_arr as $match_name => $match_value ) {
-					$match .= $match_name . ' = ' . $match_value;
+					if( !is_array( $match_value ) ) {
+						$match .= "$match_name = $match_value";
+					} else {
+						$match_value_count = 1;
+						foreach( $match_value as $match_value_single ) {
+							$match .= ( $match_value_count < count( $match_value ) ) ? "$match_name = $match_value_single OR " : "$match_name = $match_value_single";
+							$match_value_count++;
+						}
+					}
 				}
 			}
 
