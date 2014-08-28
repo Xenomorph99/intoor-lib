@@ -20,6 +20,7 @@ class Popular {
 
 	public $args = array(
 		'post_type' => array( 'post' ),		// Type of screen(s) on which to track views & likes (post, page, custom_post_type)
+		'track_views' => true,				// Track page views
 		'inflate' => false,					// Artificailly inflate initial 'like' count
 		'infl_range' => 'mid',				// Range of inflated numbers to be generated 'low' = 0-10, 'mid' = 10-50, 'high' = 50-100, 'ultra' = 100-500, 'custom'
 		'infl_min' => 10,					// Custom inflation range min number
@@ -74,7 +75,7 @@ class Popular {
 	protected function wp_hooks() {
 
 		// Check for and save database rows (generate inflation numbers)
-		add_action( 'save_post', array( &$this, 'get_data' ) );
+		add_action( 'save_post', array( &$this, 'create_row' ) );
 
 		// Track page views
 		add_action( 'shutdown', array( &$this, 'track_page_view' ) );
@@ -84,23 +85,19 @@ class Popular {
 
 	}
 
-	public function get_data() {
+	public function create_row() {
 
 		global $post;
 		extract( $this->args );
 
-		if( in_array( $post->post_type, $post_type ) ) :
+		if( !empty( $post ) && in_array( $post->post_type, $post_type ) ) :
 
 			$data = Database::get_row( static::$table, 'post_id', $post->ID );
-
-			if( empty( $data['post_id'] ) ) :
-
+			if( empty( $data['post_id'] ) ) {
 				$data['post_id'] = $post->ID;
-				$data['infl'] = ( $this->args['inflate'] ) ? $this->generate_infl_num() : $data['infl'];
-
-			endif;
-
-			return Database::save_data( static::$table, $data );
+				$data['infl'] = $this->generate_infl_num();
+				Database::save_data( static::$table, $data );
+			}
 
 		endif;
 
@@ -140,35 +137,44 @@ class Popular {
 
 	}
 
-	protected function set_tracking_variable() {
-
-		global $post;
-		$post_types = $this->args['post_type'];
-
-		if( !WP_DEBUG && !is_admin() && !empty( $post_types ) ) {
-			foreach( $post_types as $post_type ) {
-				$this->track = ( $post_type == $post->post_type && ( is_single() || is_page() ) ) ? true : $this->track;
-			}
-		}
-
-	}
-
 	public function track_page_view() {
 
-		$this->set_tracking_variable();
+		global $post;
+		extract( $this->args );
 
-		if( $this->track ) {
-			$data = $this->get_data( false );
-			$data['views'] = (int)$data['views'] + 1;
-			Database::save_data( static::$table, $data );
-		}
+		if( !WP_DEBUG && !is_admin() && !empty( $post ) && !empty( $post_type ) && ( is_single() || is_page() ) ) :
+
+			if( $track_views && in_array( $post->post_type, $post_type ) ) :
+
+				$data = Database::get_row( static::$table, 'post_id', $post->ID );
+				if( !empty( $data['post_id'] ) ) {
+					$data['views'] = (int)$data['views'] + 1;
+					Database::save_data( static::$table, $data );
+				}
+			
+			endif;
+
+		endif;
 
 	}
 
-	public function delete_popular( $post_id ) {
+	public function delete_popular() {
+		
+		if( isset( $_GET ) && !empty( $_GET['post'] ) ) :
 
-		global $post;
-		$status = Database::delete_row( static::$table, 'post_id', $post->ID );
+			if( is_array( $_GET['post'] ) ) :
+
+				foreach( $_GET['post'] as $post_id ) {
+					Database::delete_row( static::$table, 'post_id', $post_id );
+				}
+
+			elseif( is_string( $_GET['post'] ) ) :
+
+				Database::delete_row( static::$table, 'post_id', $_GET['post'] );
+
+			endif;
+
+		endif;
 
 	}
 
