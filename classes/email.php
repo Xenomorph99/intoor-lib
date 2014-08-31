@@ -2,8 +2,6 @@
 /**
  * This model manages the creation and distribution of HTML Emails.
  *
- * Required classes: Functions
- *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
  * @copyright	2014 Hazard Media Group LLC
@@ -26,7 +24,7 @@ class Email {
 
 	public function __construct( $args ) {
 
-		$this->settings = Functions::merge_array( $args, $this->settings );
+		$this->settings = wp_parse_args( $args, $this->settings );
 		$this->send_mail();
 
 	}

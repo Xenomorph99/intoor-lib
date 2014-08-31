@@ -36,7 +36,7 @@ class Meta_Box {
 
 	public function __construct( $arr ) {
 
-		$this->settings = Functions::merge_array( $arr, $this->settings );
+		$this->settings = wp_parse_args( $arr, $this->settings );
 		$this->settings['meta_box_id'] = Functions::str_smash( $this->settings['title'] );
 
 		foreach( $this->settings['table']['structure'] as $name => $value ) {

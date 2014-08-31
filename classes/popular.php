@@ -2,7 +2,7 @@
 /**
  * This model tracks views and likes on posts. (Views are defined as page loads)
  *
- * Required classes: Database, Functions, Social
+ * Required classes: Database, Social
  *
  * Future:
  * - Wordpress admin page to display the top ranking pages - both views and likes
@@ -42,7 +42,7 @@ class Popular {
 
 	public function __construct( $args ) {
 
-		$this->args = Functions::merge_array( $args, $this->args );
+		$this->args = wp_parse_args( $args, $this->args );
 
 		$this->setup_popular_tracking();
 		$this->register_meta_boxes();
@@ -266,7 +266,7 @@ class Popular {
 			'inflated' => false					// Include inflated numbers
 		);
 
-		$args = Functions::merge_array( $custom_args, $args );
+		$args = wp_parse_args( $custom_args, $args );
 		extract( $args );
 
 		// Database variables

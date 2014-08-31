@@ -13,22 +13,6 @@
 
 class Functions {
 
-	/**
-	 * Take the values of a new array and replace corresponding
-	 * values of an old array with the updated values ignoring any
-	 * values in the new array that do not correspond directly
-	 * with values in the old array.
-	 */
-	public static function merge_array( $new_array, $old_array ) {
-
-		foreach( $new_array as $name => $value ) {
-			$old_array[$name] = $value;
-		}
-
-		return $old_array;
-
-	}
-
 	/** 
 	 * Convert strings like "Hello World" to "hello_world".
 	 */

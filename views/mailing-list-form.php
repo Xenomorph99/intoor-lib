@@ -2,8 +2,6 @@
 /**
  * Mailing list subscription form
  *
- * Required models: Functions
- *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
  * @copyright	2014 Hazard Media Group LLC
@@ -20,7 +18,7 @@ $form = array(
 	'placeholder' => 'Email'
 );
 
-$form = Functions::merge_array( $args, $form );
+$form = wp_parse_args( $args, $form );
 
 $label_tag_open = ( !empty( $form['label_tag'] ) ) ? '<' . $form['label_tag'] . '>' : '<label for="mailing-list-form-email">';
 $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] . '>' : '</label>';

@@ -29,7 +29,7 @@ class Admin_Menu {
 
 	public function __construct( $args ) {
 
-		$this->settings = Functions::merge_array( $args, $this->settings );
+		$this->settings = wp_parse_args( $args, $this->settings );
 		$this->settings['id'] = Functions::str_smash( $this->settings['title'] );
 		$this->settings['menu_title'] = ( empty( $this->settings['menu_title'] ) ) ? $this->settings['title'] : $this->settings['menu_title'];
 		
