@@ -205,6 +205,18 @@ class Social {
 
 	}
 
+	public static function get_api_url() {
+
+		return INTOOR_API_DIR . 'social.php';
+
+	}
+
+	public static function api_url() {
+
+		echo static::get_api_url();
+
+	}
+
 	public static function get_social_media_icon( $key ) {
 
 		return file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $key . '.svg' );
