@@ -207,7 +207,7 @@ class Social {
 
 	public static function get_api_url() {
 
-		return INTOOR_API_DIR . 'social.php';
+		return get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
 
 	}
 
