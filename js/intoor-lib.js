@@ -34,7 +34,7 @@ var Intoor = {
 					//alert(resp.message);
 				},
 				complete: function() {
-					window.location = el.attr('href');
+					window.open(el.attr('href'));
 				}
 			});
 		});
