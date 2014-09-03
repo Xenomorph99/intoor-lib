@@ -27,9 +27,9 @@ $settings = array(
 );
 
 if( isset( $this ) ) :
-	$settings = Functions::merge_array( $this->settings, $settings );
+	$settings = wp_parse_args( $this->settings, $settings );
 elseif( !empty( $_GET['sender'] ) && !empty( $_GET['reply_to'] ) && !empty( $_GET['recipient'] ) && !empty( $_GET['subject'] ) && !empty( $_GET['template'] ) ) :
-	$settings = Functions::merge_array( $_GET, $settings );
+	$settings = wp_parse_args( $_GET, $settings );
 else :
 	exit( 'You do not have permission to view this page.' );
 endif;

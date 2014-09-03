@@ -2,7 +2,7 @@
 /**
  * This model controls the interaction with social networks.
  *
- * Required classes: Database, Functions
+ * Required classes: Database
  *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
@@ -89,7 +89,7 @@ class Social {
 
 	public function __construct( $args ) {
 
-		$this->args = Functions::merge_array( $args, $this->args );
+		$this->args = wp_parse_args( $args, $this->args );
 		foreach( $this->settings as $key => $val ) {
 			$val[2] = '<span class="social-icon" style="width:30px; height:30px; line-height:30px; display:inline-block; overflow:hidden; float:left;">' . file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $key . '.svg' ) . '</span><span style="line-height:30px; margin-left:12px; display:inline-block; float:left;">' . $val[2] . '</span>'; 
 			$this->settings[$key] = $val;

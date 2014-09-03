@@ -36,7 +36,7 @@ class Meta_Box {
 
 	public function __construct( $arr ) {
 
-		$this->settings = Functions::merge_array( $arr, $this->settings );
+		$this->settings = wp_parse_args( $arr, $this->settings );
 		$this->settings['meta_box_id'] = Functions::str_smash( $this->settings['title'] );
 
 		foreach( $this->settings['table']['structure'] as $name => $value ) {
@@ -371,7 +371,7 @@ class Meta_Box {
 	public function save_meta_box() {
 
 		// Run this method only once
-		if( $this->save_count < 1 ) {
+		if( $this->save_count < 1 ) :
 
 			// Define variables
 			$prefix = $this->settings['table']['prefix'] . '_';
@@ -414,7 +414,7 @@ class Meta_Box {
 
 			}
 
-		}
+		endif;
 
 		$this->save_count++;
 

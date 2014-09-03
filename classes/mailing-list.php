@@ -77,7 +77,7 @@ class Mailing_List {
 
 	public function __construct( $args ) {
 
-		$this->settings = Functions::merge_array( $args, $this->settings );
+		$this->settings = wp_parse_args( $args, $this->settings );
 
 		$this->setup_mailing_list();
 		$this->setup_admin_menus();
