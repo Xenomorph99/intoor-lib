@@ -16,6 +16,7 @@
 // General library definitions
 define( 'INTOOR_LIB_VERSION', '1.0' );
 define( 'INTOOR_DIR_NAME', 'lib' );
+define( 'GOOGLE_ANALYTICS', true );
 
 // Define file and directory paths
 require_once dirname( __FILE__ ) . '/paths.php';

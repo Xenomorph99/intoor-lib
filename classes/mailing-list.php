@@ -279,7 +279,7 @@ class Mailing_List {
 					break;
 
 				case "duplicate" :
-					$resp['status'] = 'error';
+					$resp['status'] = 'duplicate';
 					$resp['desc'] = 'duplicate';
 					$resp['message'] = 'The submitted email address is already on the mailing list.';
 					$resp['user'] = 'Welcome back!  It looks like you already subscribed.';

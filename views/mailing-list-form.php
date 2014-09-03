@@ -48,17 +48,24 @@ $(function() {
 			data: $(this).serialize(),
 			error: function() {
 				form.append('<p class="message">Sorry, something went wrong.  Please try again later.</p>');
+				<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'API Status', 'Error' );" : ''; ?>
 			},
 			success: function(resp) {
 				if(resp.status === 'success') {
 					form.find('.email').val('');
 					form.append('<p class="message">' + resp.user + '</p>');
+					<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'Subscribe', 'Success' );" : ''; ?>
+				} else if(resp.status === 'duplicate') {
+					form.append('<p class="message">' + resp.user + '</p>');
+					<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'Subscribe', 'Duplicate Email' );" : ''; ?>
 				} else {
 					form.append('<p class="message">' + resp.user + '</p>');
+					<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'Subscribe', 'Invalid Email' );" : ''; ?>
 				}
+				<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'API Status', 'Success' );" : ''; ?>
 			}
 		});
 	});
 });
 </script>
-<?php endif; ?>
+<?php endif;
