@@ -1,6 +1,6 @@
 <?php
 /**
- * This model adds additional functionality to categories, tags, and other custom taxonomies.
+ * This model is used to add custom taxonomies.
  *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
@@ -13,7 +13,6 @@
 class Taxonomy {
 
 	public $args = array(
-		'new_taxonomy' => true,
 		'name_plural' => '',
 		'name_singular' => '',
 		'slug' => '',
@@ -41,13 +40,7 @@ class Taxonomy {
 
 	protected function wp_hooks() {
 
-		extract( $this->args );
-
-		if( $new_taxonomy && !empty( $id ) ) {
-
-			add_action( 'init', array( &$this, 'register_custom_taxonomy' ) );
-
-		}
+		add_action( 'init', array( &$this, 'register_custom_taxonomy' ) );
 
 	}
 

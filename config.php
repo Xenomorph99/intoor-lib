@@ -22,6 +22,7 @@ require_once dirname( __FILE__ ) . '/paths.php';
 
 // Include required classes
 require_once INTOOR_ADMIN_MENU_CLASS;
+require_once INTOOR_CATEGORY_FORM_CLASS;
 require_once INTOOR_COOKIE_CLASS;
 require_once INTOOR_DATABASE_CLASS;
 require_once INTOOR_EMAIL_CLASS;

@@ -371,7 +371,7 @@ class Meta_Box {
 	public function save_meta_box() {
 
 		// Run this method only once
-		if( $this->save_count < 1 ) {
+		if( $this->save_count < 1 ) :
 
 			// Define variables
 			$prefix = $this->settings['table']['prefix'] . '_';
@@ -414,7 +414,7 @@ class Meta_Box {
 
 			}
 
-		}
+		endif;
 
 		$this->save_count++;
 
