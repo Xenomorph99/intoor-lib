@@ -29,7 +29,7 @@ $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] 
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="save">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?php bloginfo( 'url' ); ?>">
 	<input id="mailing-list-form-email" class="email" type="text" name="email" value="" placeholder="<?php echo $form['placeholder']; ?>" required>
-	<input id="mailing-list-form-submit" type="submit" value="<?php echo $form['submit_btn']; ?>">
+	<input id="mailing-list-form-submit" class="subscribe" type="submit" value="<?php echo $form['submit_btn']; ?>">
 	<?php echo ( !empty( $_GET['user'] ) ) ? '<p class="message">' . urldecode( $_GET['user'] ) . '</p>' : ''; ?>
 </form>
 
@@ -48,21 +48,21 @@ $(function() {
 			data: $(this).serialize(),
 			error: function() {
 				form.append('<p class="message">Sorry, something went wrong.  Please try again later.</p>');
-				<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'API Status', 'Error' );" : ''; ?>
+				<?php echo ( GOOGLE_ANALYTICS ) ? "ga('send', 'event', 'Mailing List', 'API Status', 'Error');" : ''; ?>
 			},
 			success: function(resp) {
 				if(resp.status === 'success') {
 					form.find('.email').val('');
 					form.append('<p class="message">' + resp.user + '</p>');
-					<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'Subscribe', 'Success' );" : ''; ?>
+					<?php echo ( GOOGLE_ANALYTICS ) ? "ga('send', 'event', 'Mailing List', 'Subscribe', 'Success');" : ''; ?>
 				} else if(resp.status === 'duplicate') {
 					form.append('<p class="message">' + resp.user + '</p>');
-					<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'Subscribe', 'Duplicate Email' );" : ''; ?>
+					<?php echo ( GOOGLE_ANALYTICS ) ? "ga('send', 'event', 'Mailing List', 'Subscribe', 'Duplicate Email');" : ''; ?>
 				} else {
 					form.append('<p class="message">' + resp.user + '</p>');
-					<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'Subscribe', 'Invalid Email' );" : ''; ?>
+					<?php echo ( GOOGLE_ANALYTICS ) ? "ga('send', 'event', 'Mailing List', 'Subscribe', 'Invalid Email');" : ''; ?>
 				}
-				<?php echo ( GOOGLE_ANALYTICS ) ? "ga( 'send', 'event', 'Mailing List', 'API Status', 'Success' );" : ''; ?>
+				<?php echo ( GOOGLE_ANALYTICS ) ? "ga('send', 'event', 'Mailing List', 'API Status', 'Success');" : ''; ?>
 			}
 		});
 	});
