@@ -23,6 +23,7 @@ define( 'INTOOR_VIEWS_DIR', INTOOR_DIR . 'views/' );
 
 // Classes
 define( 'INTOOR_ADMIN_MENU_CLASS', INTOOR_CLASSES_DIR . 'admin-menu.php' );
+define( 'INTOOR_ANALYTICS_CLASS', INTOOR_CLASSES_DIR . 'analytics.php' );
 define( 'INTOOR_CATEGORY_FORM_CLASS', INTOOR_CLASSES_DIR . 'category_form.php' );
 define( 'INTOOR_COOKIE_CLASS', INTOOR_CLASSES_DIR . 'cookie.php' );
 define( 'INTOOR_DATABASE_CLASS', INTOOR_CLASSES_DIR . 'database.php' );
