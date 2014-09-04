@@ -25,13 +25,17 @@ var Intoor = {
 				post_id: el.data('id'),
 				key: el.data('key')
 			};
+			ga('send', 'event', 'Social', 'Share', data.key);
 			$.ajax({
 				url: $(this).data('api'),
 				type: 'POST',
 				data: data,
 				dataType: 'json',
-				success: function(resp) {
-					//alert(resp.message);
+				error: function() {
+					ga('send', 'event', 'Social', 'API Status', 'Error');
+				},
+				success: function() {
+					ga('send', 'event', 'Social', 'API Status', 'Success');
 				},
 				complete: function() {
 					window.open(el.attr('href'));

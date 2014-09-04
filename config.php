@@ -16,13 +16,13 @@
 // General library definitions
 define( 'INTOOR_LIB_VERSION', '1.0' );
 define( 'INTOOR_DIR_NAME', 'lib' );
-define( 'GOOGLE_ANALYTICS', true );
 
 // Define file and directory paths
 require_once dirname( __FILE__ ) . '/paths.php';
 
 // Include required classes
 require_once INTOOR_ADMIN_MENU_CLASS;
+require_once INTOOR_ANALYTICS_CLASS;
 require_once INTOOR_CATEGORY_FORM_CLASS;
 require_once INTOOR_COOKIE_CLASS;
 require_once INTOOR_DATABASE_CLASS;
@@ -54,3 +54,6 @@ function intoor_enqueue_admin_scripts() {
 	wp_enqueue_script( 'intoor_admin', get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/js/min/intoor-admin-min.js', array( 'jquery' ), '1.0' );
 }
 add_action( 'admin_enqueue_scripts', 'intoor_enqueue_admin_scripts' );
+
+// Setup Google Analytics
+new Analytics();
