@@ -104,6 +104,10 @@ class Social {
 
 	protected function setup_social_media() {
 
+		if( !get_option( 'social_inflated' ) ) {
+			add_option( 'social_inflated', $this->args['inflate'] );
+		}
+
 		Database::install_table( static::$table );
 
 	}
