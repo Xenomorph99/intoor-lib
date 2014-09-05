@@ -2,6 +2,10 @@
 /**
  * This model creates and adds shortcodes to Wordpress.
  *
+ * Note: The shortcodes parameter of the __construct method must contain an
+ * associative array of 'name' => 'callback'.  If callbacks are methods within
+ * a class they must be in the format of array( Class, 'method_name' );
+ *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
  * @copyright	2014 Hazard Media Group LLC
@@ -10,23 +14,26 @@
  * @version		Release: 1.0
  */
 
-class Shortcode {
+class Shortcodes {
 
-	public $args = array(
-		'name' => '',			// Name of the shortcode
-		'callback' => ''		// If the call back is a method contained within a class this must be an array.  ie. array( 'class', 'method' )
-	);
+	public $shortcodes = array();
 
-	public function __construct( $args ) {
+	public function __construct( $shortcodes ) {
 
-		$this->args = wp_parse_args( $args, $this->args );
-		$this->wp_hooks();
+		if( !empty( $shortcodes ) && is_array( $shortcodes ) ) :
+
+			$this->shortcodes = $shortcodes;
+			$this->wp_hooks();
+		
+		endif;
 
 	}
 
 	protected function wp_hooks() {
 
-		add_shortcode( $this->args['name'], $this->args['callback'] );
+		foreach( $this->shortcodes as $name => $callback ) {
+			add_shortcode( $name, $callback );
+		}
 
 	}
 
