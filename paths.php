@@ -37,6 +37,7 @@ define( 'INTOOR_META_BOX_CLASS', INTOOR_CLASSES_DIR . 'meta-box.php' );
 define( 'INTOOR_POPULAR_CLASS', INTOOR_CLASSES_DIR . 'popular.php' );
 define( 'INTOOR_POST_TYPE_CLASS', INTOOR_CLASSES_DIR . 'post-type.php' );
 define( 'INTOOR_QUICK_EDIT_CLASS', INTOOR_CLASSES_DIR . 'quick-edit.php' );
+define( 'INTOOR_SHORTCODE_CLASS', INTOOR_CLASSES_DIR . 'shortcode.php' );
 define( 'INTOOR_SOCIAL_CLASS', INTOOR_CLASSES_DIR . 'social.php' );
 define( 'INTOOR_TAXONOMY_CLASS', INTOOR_CLASSES_DIR . 'taxonomy.php' );
 define( 'INTOOR_UPSELL_CLASS', INTOOR_CLASSES_DIR . 'upsell.php' );
