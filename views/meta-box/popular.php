@@ -18,55 +18,45 @@ $social = Database::get_row( Social::$table, 'post_id', $post->ID );
 if( !empty( $data[0] ) ) :
 	extract( $data[0] );
 
+	echo "<table style='font-size:1.2em; width:100%;'>";
+	echo ( $inflated ) ? "<thead><tr><th style='width:30%;'></th><td style='width:23%;'><em><small>Real</small></em></td><td style='width:23%;'><em><small>Infl</small></em></td><td style='width:23%;'><em><small>Total</small></em></td></thead>" : "";
+	echo "<tbody>";
+
 	// Display views
-	echo "<h2>Views: <strong style='font-size:1.2em;'>$views</strong></h2>";
+	$views_math = ( $inflated ) ? "<td><small>+0</small></td><td><small>= $views</small></td>" : "";
+	echo "<tr><th style='text-align:left;'>Views:</th><td><strong>$views</strong></td>$views_math</tr>";
 
 	// Display likes
-	$likes_math = ( $inflated ) ? " <small>(+$infl = " . ( $likes + $infl ) . ")</small>" : "";
-	echo "<h2>Likes: <strong style='font-size:1.2em;'>$likes</strong>$likes_math</h2>";
+	$likes_math = ( $inflated ) ? "<td><small>+$infl</small></td><td><small>= " . ( $likes + $infl ) . "</small></td>" : "";
+	echo "<tr><th style='text-align:left;'>Likes:</th><td><strong>$likes</strong></td>$likes_math</tr>";
 
 	// Display shares
 	if( !empty( $social ) ) :
 		extract( $social );
 
 		$total_shares = ( $facebook_shares + $twitter_shares + $google_shares + $pinterest_shares + $linkedin_shares + $reddit_shares );
-		$total_infl = ( $facebook_infl + $twitter_infl + $google_infl + $pinterest_infl + $linkedin_infl + $reddit_infl );
-		$shares_infl = ( get_option( 'social_inflated' ) ) ? " <small>(+$total_infl = " . ( $total_shares + $total_infl ) . ")</small>" : "";
-		echo "<h2>Shares: <strong style='font-size:1.2em;'>$total_shares</strong>$shares_infl</h2>";
+		$total_infl = ( $inflated ) ? ( $facebook_infl + $twitter_infl + $google_infl + $pinterest_infl + $linkedin_infl + $reddit_infl ) : '';
+		$shares_infl = ( $inflated && get_option( 'social_inflated' ) ) ? "<td><small>+$total_infl</small></td><td><small>= " . ( $total_shares + $total_infl ) . "</small></td>" : "";
+		echo "<tr><th style='text-align:left;'>Shares:</th><td><strong>$total_shares</strong></td>$shares_infl</tr>";
 
+		echo "</tbody>";
+		echo "</table>";
 		echo "<hr>";
-		echo "<ol>";
+		echo "<table style='width:100%;'>";
+		echo "<tbody>";
 
-			// Facebook shares
-			$facebook_math = ( get_option( 'social_inflated' ) ) ? " <small>(+$facebook_infl = " . ( $facebook_infl + $facebook_shares ) . ")</small>" : "";
-			echo "<li>Facebook: <strong style='font-size:1.2em;'>$facebook_shares</strong>$facebook_math</li>";
-
-			// Twitter shares
-			$twitter_math = ( get_option( 'social_inflated' ) ) ? " <small>(+$twitter_infl = " . ( $twitter_infl + $twitter_shares ) . ")</small>" : "";
-			echo "<li>Twitter: <strong style='font-size:1.2em;'>$twitter_shares</strong>$twitter_math</li>";
-
-			// Google Plus shares
-			$google_math = ( get_option( 'social_inflated' ) ) ? " <small>(+$google_infl = " . ( $google_infl + $google_shares ) . ")</small>" : "";
-			echo "<li>Google Plus: <strong style='font-size:1.2em;'>$google_shares</strong>$google_math</li>";
-
-			// Pinterest shares
-			$pinterest_math = ( get_option( 'social_inflated' ) ) ? " <small>(+$pinterest_infl = " . ( $pinterest_infl + $pinterest_shares ) . ")</small>" : "";
-			echo "<li>Pinterest: <strong style='font-size:1.2em;'>$pinterest_shares</strong>$pinterest_math</li>";
-
-			// Linkedin shares
-			$linkedin_math = ( get_option( 'social_inflated' ) ) ? " <small>(+$linkedin_infl = " . ( $linkedin_infl + $linkedin_shares ) . ")</small>" : "";
-			echo "<li>Linkedin: <strong style='font-size:1.2em;'>$linkedin_shares</strong>$linkedin_math</li>";
-
-			// Reddit shares
-			$reddit_math = ( get_option( 'social_inflated' ) ) ? " <small>(+$reddit_infl = " . ( $reddit_infl + $reddit_shares ) . ")</small>" : "";
-			echo "<li>Reddit: <strong style='font-size:1.2em;'>$reddit_shares</strong>$reddit_math</li>";
-
-		echo "</ol>";
+		foreach( Social::$share_url as $network => $value ) {
+			$network_math = ( get_option( 'social_inflated' ) ) ? '<td style="width:23%;"><small>+' . $social[$network.'_infl'] . '</small></td><td style="width:23%;"><small>= ' . ( $social[$network.'_infl'] + $social[$network.'_shares'] ) . '</small></td>' : '';
+			echo '<tr><th style="text-align:left; width:30%;">' . ucwords( $network ) . ':</th><td style="width:23%;"><strong style="font-size:1.2em;">' . $social[$network.'_shares'] . '</strong></td>' . $network_math . '</tr>';
+		}
 
 	endif;
 
+	echo "</tbody>";
+	echo "</table>";
+
 else :
 
-	echo "<p>No Data</p>";
+	echo "<h3>No Data</h3>";
 
 endif;
