@@ -14,15 +14,15 @@
  * @version		Release: 1.0
  */
 
-class Shortcodes {
+class Shortcode {
 
-	public $shortcodes = array();
+	public $shortcode = array();
 
-	public function __construct( $shortcodes ) {
+	public function __construct( $arr ) {
 
-		if( !empty( $shortcodes ) && is_array( $shortcodes ) ) :
+		if( !empty( $arr ) && is_array( $arr ) ) :
 
-			$this->shortcodes = $shortcodes;
+			$this->shortcode = $arr;
 			$this->wp_hooks();
 		
 		endif;
@@ -31,7 +31,7 @@ class Shortcodes {
 
 	protected function wp_hooks() {
 
-		foreach( $this->shortcodes as $name => $callback ) {
+		foreach( $this->shortcode as $name => $callback ) {
 			add_shortcode( $name, $callback );
 		}
 
