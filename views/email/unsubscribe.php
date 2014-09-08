@@ -66,7 +66,7 @@ if( get_option( $prefix . 'color_text_primary' ) !== '' ) { $color['text_primary
 if( get_option( $prefix . 'color_text_secondary' ) !== '' ) { $color['text_secondary'] = get_option( $prefix . 'color_text_secondary' ); }
 if( get_option( $prefix . 'color_text_link' ) !== '' ) { $color['text_link'] = get_option( $prefix . 'color_text_link' ); }
 
-$posts = wp_get_recent_posts( array( 'numberposts' => 3 ), OBJECT );
+$posts = wp_get_recent_posts( array( 'numberposts' => 3, 'post_status' => 'publish' ), OBJECT );
 $count = count( $posts );
 
 ?><!DOCTYPE html>
