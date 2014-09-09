@@ -1,6 +1,6 @@
 <?php
 /**
- * Mailing list subscription form
+ * Google Analytics code snippet
  *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>

@@ -29,6 +29,7 @@ var Intoor = {
 			$.ajax({
 				url: $(this).data('api'),
 				type: 'POST',
+				async: false,
 				data: data,
 				dataType: 'json',
 				error: function() {

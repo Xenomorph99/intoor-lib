@@ -24,6 +24,7 @@ class Admin_Menu {
 		'capability' => 'manage_options',	// Required capability for the admin menu to be displayed to the user
 		'view' => NULL,						// Path to the admin menu view (if set to null a default view will be created)
 		'defaults' => array(),				// Array of default key/value pairs
+		'array' => array(),					// Array of custom data to pass to the view
 		'table' => NULL						// Table array (defined if Admin_Menu is created by a Meta_Box class)
 	);
 
