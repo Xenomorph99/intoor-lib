@@ -129,7 +129,7 @@ class Social {
 		if( $this->args['meta_box'] ) :
 
 			$social = array(
-				'title' => 'Social Sharing',
+				'title' => 'Social Sharing Overrides',
 				'post_type' => $this->args['post_type'],
 				'context' => 'side',
 				'priority' => 'core',
