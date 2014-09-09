@@ -23,6 +23,7 @@ class Meta_Box {
 		'title' => '',					// Meta box title (will be converted and used as html ID attr)
 		'callback' => 'none',			// Callback function
 		'post_type' => array( 'post' ),	// Type of screen(s) on which to show the meta box
+		'ref_post_id' => true,			// Reference the custom meta box database table by post_id and include post_id column
 		'context' => 'advanced',		// Where on the screen the meta box should be shown (normal, advanced, side)
 		'priority' => 'default',		// Priority within the context where the meta box will be shown (high, core, default, low)
 		'callback_args' => NULL,		// Arguments to pass into the callback function
@@ -38,6 +39,7 @@ class Meta_Box {
 
 		$this->settings = wp_parse_args( $arr, $this->settings );
 		$this->settings['meta_box_id'] = Functions::str_smash( $this->settings['title'] );
+		$this->settings['table']['structure'] = ( $this->settings['ref_post_id'] ) ? array_merge( array( 'post_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ) ), $this->settings['table']['structure'] ) : $this->settings['table']['structure'];
 
 		foreach( $this->settings['table']['structure'] as $name => $value ) {
 			if( $name !== 'post_id' ) {
@@ -389,13 +391,13 @@ class Meta_Box {
 			for( $i = $num; $i < $total; $i++ ) {
 
 				// Delete data
-				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) {
+				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
 
 					$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
-					Database::delete_row( $this->settings['table']['name'], 'id', $row_id );
+					Database::delete_row( $this->settings['table'], 'id', $row_id );
 
 				// Save data
-				} else {
+				else :
 
 					$data = array();
 					foreach( $this->settings['table']['structure'] as $name => $value ) {
@@ -410,7 +412,8 @@ class Meta_Box {
 							Database::insert_row( $this->settings['table'], $data );
 						}
 					}
-				}
+				
+				endif;
 
 			}
 
