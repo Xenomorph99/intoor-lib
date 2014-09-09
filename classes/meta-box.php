@@ -389,13 +389,13 @@ class Meta_Box {
 			for( $i = $num; $i < $total; $i++ ) {
 
 				// Delete data
-				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) {
+				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
 
 					$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
-					Database::delete_row( $this->settings['table']['name'], 'id', $row_id );
+					Database::delete_row( $this->settings['table'], 'id', $row_id );
 
 				// Save data
-				} else {
+				else :
 
 					$data = array();
 					foreach( $this->settings['table']['structure'] as $name => $value ) {
@@ -410,7 +410,8 @@ class Meta_Box {
 							Database::insert_row( $this->settings['table'], $data );
 						}
 					}
-				}
+				
+				endif;
 
 			}
 
