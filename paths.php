@@ -23,7 +23,6 @@ define( 'INTOOR_VIEWS_DIR', INTOOR_DIR . 'views/' );
 
 // Classes
 define( 'INTOOR_ADMIN_MENU_CLASS', INTOOR_CLASSES_DIR . 'admin-menu.php' );
-define( 'INTOOR_ANALYTICS_CLASS', INTOOR_CLASSES_DIR . 'analytics.php' );
 define( 'INTOOR_CATEGORY_FORM_CLASS', INTOOR_CLASSES_DIR . 'category-form.php' );
 define( 'INTOOR_COOKIE_CLASS', INTOOR_CLASSES_DIR . 'cookie.php' );
 define( 'INTOOR_DATABASE_CLASS', INTOOR_CLASSES_DIR . 'database.php' );
@@ -41,5 +40,6 @@ define( 'INTOOR_QUICK_EDIT_CLASS', INTOOR_CLASSES_DIR . 'quick-edit.php' );
 define( 'INTOOR_SHORTCODE_CLASS', INTOOR_CLASSES_DIR . 'shortcode.php' );
 define( 'INTOOR_SOCIAL_CLASS', INTOOR_CLASSES_DIR . 'social.php' );
 define( 'INTOOR_TAXONOMY_CLASS', INTOOR_CLASSES_DIR . 'taxonomy.php' );
+define( 'INTOOR_TRACKING_CLASS', INTOOR_CLASSES_DIR . 'tracking.php' );
 define( 'INTOOR_UPSELL_CLASS', INTOOR_CLASSES_DIR . 'upsell.php' );
 define( 'INTOOR_USER_CLASS', INTOOR_CLASSES_DIR . 'user.php' );
