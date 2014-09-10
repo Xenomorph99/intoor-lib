@@ -299,7 +299,7 @@ class Social {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $key, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $key ) . '</span>' : static::get_social_media_icon( $key );
 		}
 		$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-		return '<a class="share-counter share-link-disabled" href="' . static::get_social_media_share_url( $key ) . '" rel="nofollow" target="_blank" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $key . '">' . $cont . '</a>';
+		return '<a class="share-counter" href="' . static::get_social_media_share_url( $key ) . '" rel="nofollow" target="_blank" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $key . '">' . $cont . '</a>';
 
 	}
 
