@@ -16,6 +16,7 @@ var IntoorAdmin = {
 		this.setMetaBoxButtons();
 		this.exportCSV();
 		this.setPopularMetaBox();
+		this.setTrackingAdminMenu();
 
 	},
 
@@ -110,6 +111,18 @@ var IntoorAdmin = {
 				popularCount = temp - 1;
 			}
 			$('#total-popular-count').text(popularCount);
+		});
+
+	},
+
+	setTrackingAdminMenu: function() {
+
+		var form, temp;
+
+		$('#add-param').on('click', function() {
+			form = $(this).parent().parent();
+			temp = form.find('table#template tr').html();
+			form.find('table.form-table tbody').append('<tr>' + temp + '</tr>');
 		});
 
 	}

@@ -22,11 +22,10 @@ require_once dirname( __FILE__ ) . '/paths.php';
 
 // Include required classes
 require_once INTOOR_ADMIN_MENU_CLASS;
-require_once INTOOR_ANALYTICS_CLASS;
 require_once INTOOR_CATEGORY_FORM_CLASS;
 require_once INTOOR_COOKIE_CLASS;
 require_once INTOOR_DATABASE_CLASS;
-require_once INTOOR_DOCS_CLASS;
+//require_once INTOOR_DOCS_CLASS;
 require_once INTOOR_EMAIL_CLASS;
 require_once INTOOR_ENCRYPTION_CLASS;
 require_once INTOOR_FORMS_CLASS;
@@ -40,6 +39,7 @@ require_once INTOOR_QUICK_EDIT_CLASS;
 require_once INTOOR_SHORTCODE_CLASS;
 require_once INTOOR_SOCIAL_CLASS;
 //require_once INTOOR_TAXONOMY_CLASS;
+require_once INTOOR_TRACKING_CLASS;
 require_once INTOOR_UPSELL_CLASS;
 require_once INTOOR_USER_CLASS;
 
@@ -56,6 +56,3 @@ function intoor_enqueue_admin_scripts() {
 	wp_enqueue_script( 'intoor_admin', get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/js/min/intoor-admin-min.js', array( 'jquery' ), '1.0' );
 }
 add_action( 'admin_enqueue_scripts', 'intoor_enqueue_admin_scripts' );
-
-// Setup Google Analytics
-new Analytics();
