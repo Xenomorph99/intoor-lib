@@ -2,6 +2,8 @@
 /**
  * This model manages site-wide tracking.
  *
+ * Note: The session_start() PHP function must appear BEFORE the <html> tag in the header
+ *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
  * @copyright	2014 Hazard Media Group LLC
@@ -37,9 +39,12 @@ class Tracking {
 	public function __construct( $args = array() ) {
 
 		$this->args = wp_parse_args( $args, $this->args );
+		
+		session_start();
 
 		$this->install_tables();
 		$this->setup_admin_menus();
+		$this->setup_session_params();
 		$this->wp_hooks();
 
 	}
@@ -117,6 +122,47 @@ class Tracking {
 			}
 
 		endif;
+
+	}
+
+	protected function setup_session_params() {
+
+		$params = static::get_params();
+
+		foreach( $params as $key => $default ) {
+			$_SESSION[$key] = ( isset( $_GET[$key] ) ) ? $_GET[$key] : $default;
+		}
+
+	}
+
+	public static function get_params() {
+
+		$params = array();
+		$data = Database::get_results( static::$table );
+		foreach( $data as $row => $arr ) {
+			$params[$arr['param']] = $arr['value'];
+		}
+		return $params;
+
+	}
+
+	public static function get_query_string() {
+
+		$s = '';
+		$count = 0;
+
+		foreach( $_SESSION as $key => $value ) {
+			$s .= ( $count == 0 ) ? "?$key=$value" : "&$key=$value";
+			$count++;
+		}
+
+		return $s;
+
+	}
+
+	public static function query_string() {
+
+		echo static::get_query_string();
 
 	}
 

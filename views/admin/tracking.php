@@ -29,7 +29,7 @@ $data = Database::get_results( Tracking::$table );
 					<input type="hidden" id="" name="<?php echo $p; ?>id[]" value="">
 					<input type="text" id="" name="<?php echo $p; ?>param[]" value="" placeholder="Key">
 				</th>
-				<td><input type="text" id="" name="<?php echo $p; ?>value[]" value="" placeholder="Value"></td>
+				<td><input type="text" id="" name="<?php echo $p; ?>value[]" value="" placeholder="Default"></td>
 			</tr>
 		</table><!--#template-->
 
@@ -45,7 +45,7 @@ $data = Database::get_results( Tracking::$table );
 						<input type="hidden" id="" name="<?php echo $p; ?>id[]" value="<?php echo $id; ?>">
 						<input type="text" id="" name="<?php echo $p; ?>param[]" value="<?php echo $param; ?>" placeholder="Key">
 					</th>
-					<td><input type="text" id="" name="<?php echo $p; ?>value[]" value="<?php echo $value; ?>" placeholder="Value"></td>
+					<td><input type="text" id="" name="<?php echo $p; ?>value[]" value="<?php echo $value; ?>" placeholder="Default"></td>
 				</tr>
 
 				<?php endforeach; ?>
@@ -57,7 +57,7 @@ $data = Database::get_results( Tracking::$table );
 						<input type="hidden" id="" name="<?php echo $p; ?>id[]" value="">
 						<input type="text" id="" name="<?php echo $p; ?>param[]" value="" placeholder="Key">
 					</th>
-					<td><input type="text" id="" name="<?php echo $p; ?>value[]" value="" placeholder="Value"></td>
+					<td><input type="text" id="" name="<?php echo $p; ?>value[]" value="" placeholder="Default"></td>
 				</tr>
 
 			<?php endif; ?>
