@@ -12,7 +12,7 @@
 
 $id = 'google_analytics_';
 $data = array();
-foreach( $this->settings as $name => $value ) {
+foreach( $this->ga_options as $name => $value ) {
 	$data[$name] = get_option( $id . $name, $value[0] );
 }
 extract( $data );
