@@ -178,17 +178,18 @@ class Tracking {
 				$params = $_SESSION;
 				$url_arr = explode( '?', $url );
 				$query_arr = explode( '&', $url_arr[1] );
-
+				$arr = array();
 				foreach( $query_arr as $param ) {
 					$param = explode( '=', $param );
-					$params[$param[0]] = $param[1];
+					$arr[$param[0]] = $param[1];
 				}
-
+				$params = $arr + $params;
+				$count = 0;
 				foreach( $params as $key => $value ) {
-					$s .= "&$key=$value";
+					$s .= ( $count == 0 ) ? "?$key=$value" : "&$key=$value";
+					$count++;
 				}
-
-				$new_url = $url_arr[0] . '?' . $s;
+				$new_url = $url_arr[0] . $s;
 
 			else :
 
