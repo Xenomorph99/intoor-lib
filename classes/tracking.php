@@ -188,7 +188,7 @@ class Tracking {
 					$s .= "&$key=$value";
 				}
 
-				$new_url = $url . $s;
+				$new_url = $url_arr[0] . '?' . $s;
 
 			else :
 
