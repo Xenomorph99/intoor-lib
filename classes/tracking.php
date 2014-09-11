@@ -166,4 +166,40 @@ class Tracking {
 
 	}
 
+	public static function append_params( $url = '' ) {
+
+		$new_url = '';
+
+		if( !empty( $url ) ) :
+
+			if( strpos( $url, '?' ) ) :
+
+				$s = '';
+				$params = $_SESSION;
+				$url_arr = explode( '?', $url );
+				$query_arr = explode( '&', $url_arr[1] );
+
+				foreach( $query_arr as $param ) {
+					$param = explode( '=', $param );
+					$params[$param[0]] = $param[1];
+				}
+
+				foreach( $params as $key => $value ) {
+					$s .= "&$key=$value";
+				}
+
+				$new_url = $url . $s;
+
+			else :
+
+				$new_url = $url . static::get_query_string();
+
+			endif;
+
+		endif;
+
+		return $new_url;
+
+	}
+
 }
