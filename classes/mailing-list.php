@@ -14,7 +14,6 @@
  * - Shortcode and function capability to pull a subscribe form into any view
  * - Extract into Wordpress plugin format
  * - Create ability to add custom HTML email templates
- * - Add additional layers of security
  *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
@@ -26,58 +25,154 @@
 
 class Mailing_List {
 
-	public $stats = array(
-		// key => array( default_value, field_type, label, options, placeholder )
-		'subscribers' => array( '0', 'hidden', 'Total Subscribers' ),
-		'active' => array( '0', 'hidden', 'Current Active' ),
-		'inactive' => array( '0', 'hidden', 'Current Inactive' ),
-		'unsubscribers' => array( '0', 'hidden', 'Total Unsubscribers' )
-	);
+	public static $settings = [
+		'sender' => [
+			'type' => 'text',
+			'label' => 'Send Mail From',
+			'placeholder' => 'no-reply@example.com'
+		],
+		'logo' => [
+			'type' => 'url',
+			'label' => 'Email Logo <small style="font-weight:normal;"><em>(height: 90px)</em></small>',
+			'placeholder' => 'url'
+		],
+		'logo_width' => [
+			'type' => 'number',
+			'label' => 'Email Logo Width <small style="font-weight:normal;"><em>(px)</em></small>',
+			'default' => '250'
+		],
+		'subscribe_banner' => [
+			'type' => 'url',
+			'label' => 'Subscribe Banner <small style="font-weight:normal;"><em>(width: 600px)</em></small>',
+			'placeholder' => 'url'
+		],
+		'subscribe_banner_height' => [
+			'type' => 'number',
+			'label' => 'Subscribe Banner Height <small style="font-weight:normal;"><em>(px)</em></small>',
+			'default' => '200'
+		],
+		'unsubscribe_banner' => [
+			'type' => 'url',
+			'label' => 'Unsubscribe Banner <small style="font-weight:normal;"><em>(width: 600px)</em></small>',
+			'placeholder' => 'url'
+		],
+		'unsubscribe_banner_height' => [
+			'type' => 'number',
+			'label' => 'Unsubscribe Banner Height <small style="font-weight:normal;"><em>(px)</em></small>',
+			'default' => '200'
+		],
+		'facebook' => [
+			'type' => 'checkbox',
+			'label' => 'Include Facebook Link',
+			'default' => '0'
+		],
+		'twitter' => [
+			'type' => 'checkbox',
+			'label' => 'Include Twitter Link',
+			'default' => '0'
+		],
+		'pinterest' => [
+			'type' => 'checkbox',
+			'label' => 'Include Pinterest Link',
+			'default' => '0'
+		],
+		'instagram' => [
+			'type' => 'checkbox',
+			'label' => 'Include Instagram Link',
+			'default' => '0'
+		],
+		'linkedin' => [
+			'type' => 'checkbox',
+			'label' => 'Include LinkedIn Link',
+			'default' => '0'
+		],
+		'google' => [
+			'type' => 'checkbox',
+			'label' => 'Include Google Link',
+			'default' => '0'
+		],
+		'youtube' => [
+			'type' => 'checkbox',
+			'label' => 'Include YouTube Link',
+			'default' => '0'
+		],
+		'tumblr' => [
+			'type' => 'checkbox',
+			'label' => 'Include Tumblr Link',
+			'default' => '0'
+		],
+		'ajax' => [
+			'type' => 'checkbox',
+			'label' => 'Enabel AJAX Form Submit',
+			'default' => '1'
+		],
+		'color_body' => [
+			'type' => 'text',
+			'label' => 'Body Color #',
+			'placeholder' => '000000'
+		],
+		'color_container' => [
+			'type' => 'text',
+			'label' => 'Container Color #',
+			'placeholder' => '000000'
+		],
+		'color_banner' => [
+			'type' => 'text',
+			'label' => 'Banner Background Color #',
+			'placeholder' => '000000'
+		],
+		'color_text_heading' => [
+			'type' => 'text',
+			'label' => 'Primary Text Color #',
+			'placeholder' => '000000'
+		],
+		'color_text_primary' => [
+			'type' => 'text',
+			'label' => 'Primary Text Color #',
+			'placeholder' => '000000'
+		],
+		'color_text_secondary' => [
+			'type' => 'text',
+			'label' => 'Secondary Text Color #',
+			'placeholder' => '000000'
+		],
+		'color_text_link' => [
+			'type' => 'text',
+			'label' => 'Text Link Color #',
+			'placeholder' => '000000'
+		]
+	];
 
-	public $settings = array(
-		// key => array( default_value, field_type, label, options, placeholder )
-		'sender' => array( '', 'text', 'Send Mail From', NULL, 'no-reply@example.com' ),
-		'logo' => array( '', 'url', 'Email Logo <small style="font-weight:normal;"><em>(height: 90px)</em></small>', NULL, 'url' ),
-		'logo_width' => array( '250', 'number', 'Email Logo Width <small style="font-weight:normal;"><em>(px)</em></small>' ),
-		'subscribe_banner' => array( '', 'url', 'Subscribe Banner <small style="font-weight:normal;"><em>(width: 600px)</em></small>', NULL, 'url' ),
-		'subscribe_banner_height' => array( '200', 'number', 'Subscribe Banner Height <small style="font-weight:normal;"><em>(px)</em></small>' ),
-		'unsubscribe_banner' => array( '', 'url', 'Unsubscribe Banner <small style="font-weight:normal;"><em>(width: 600px)</em></small>', NULL, 'url' ),
-		'unsubscribe_banner_height' => array( '200', 'number', 'Unsubscribe Banner Height <small style="font-weight:normal;"><em>(px)</em></small>' ),
-		'facebook' => array( '', 'url', 'Facebook Link', NULL, 'http://facebook.com' ),
-		'twitter' => array( '', 'url', 'Twitter Link', NULL, 'http://twitter.com' ),
-		'pinterest' => array( '', 'url', 'Pinterest Link', NULL, 'http://pinterest.com' ),
-		'instagram' => array( '', 'url', 'Instagram Link', NULL, 'http://instagram.com' ),
-		'linkedin' => array( '', 'url', 'LinkedIn Link', NULL, 'http://linkedin.com' ),
-		'google' => array( '', 'url', 'Google Link', NULL, 'http://plus.google.com' ),
-		'youtube' => array( '', 'url', 'YouTube Link', NULL, 'http://youtube.com' ),
-		'tumblr' => array( '', 'url', 'Tumblr Link', NULL, 'http://tumblr.com' ),
-		'ajax' => array( '1', 'checkbox', 'Enable Ajax Form Submit' ),
-		'color_body' => array( '', 'text', 'Body Color #', NULL, '000000' ),
-		'color_container' => array( '', 'text', 'Container Color #', NULL, '000000' ),
-		'color_banner' => array( '', 'text', 'Banner Background Color #', NULL, '000000' ),
-		'color_text_heading' => array( '', 'text', 'Heading Color #', NULL, '000000' ),
-		'color_text_primary' => array( '', 'text', 'Primary Text Color #', NULL, '000000' ),
-		'color_text_secondary' => array( '', 'text', 'Secondary Text Color #', NULL, '000000' ),
-		'color_text_link' => array( '', 'text', 'Text Link Color #', NULL, '000000' )
-	);
-
-	public static $table = array(
+	public static $table [
 		'name' => 'mailing_list',
 		'prefix' => 'ml',
-		'version' => '1.1',
-		'structure' => array(
-			'email' => array( 'VARCHAR(255)', true ),
-			'status' => array( 'VARCHAR(255)', false, 'active' ),
-			'create_date' => array( 'DATE', false ),
-			'create_time' => array( 'TIME', false ),
-			'delete_date' => array( 'DATE', false ),
-			'delete_time' => array( 'TIME', false )
-		)
-	);
+		'version' => '1.0',
+		'key' => INTOOR_MAIL_KEY,
+		'structure' => [
+			'email' => [
+				'sql' => 'VARCHAR(255)',
+				'encrypt' => true
+			],
+			'status' => [
+				'sql' => 'VARCHAR(255)',
+				'default' => 'active'
+			],
+			'create_date' => [
+				'sql' => 'DATE'
+			],
+			'create_time' => [
+				'sql' => 'TIME'
+			],
+			'delete_date' => [
+				'sql' => 'DATE'
+			],
+			'delete_time' => [
+				'sql' => 'TIME'
+			]
+		]
+	];
 
-	public function __construct( $args ) {
-
-		$this->settings = wp_parse_args( $args, $this->settings );
+	public function __construct() {
 
 		$this->setup_mailing_list();
 		$this->setup_admin_menus();
@@ -87,38 +182,37 @@ class Mailing_List {
 
 	protected function setup_mailing_list() {
 
-		Encryption::generate_key( 'mailing_list_key' );
 		Database::install_table( static::$table );
+		API::new_key( 'mailing_list' );
 
 	}
 
 	protected function setup_admin_menus() {
 
-		$mailing_list = array(
+		$mailing_list = [
 			'type' => 'menu_page',
 			'title' => 'Mailing List',
 			'menu_title' => 'Mailing List',
 			'icon' => 'dashicons-email-alt',
 			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list.php',
 			'table' => static::$table
-		);
+		];
 
-		$mailing_list_stats = array(
+		$mailing_list_stats = [
 			'type' => 'submenu_page',
 			'title' => 'Mailing List Stats',
 			'menu_title' => 'Stats',
 			'parent' => 'mailing_list',
-			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list-stats.php',
-			'defaults' => $this->stats
-		);
+			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list-stats.php'
+		];
 
-		$mailing_list_settings = array(
+		$mailing_list_settings = [
 			'type' => 'submenu_page',
 			'title' => 'Mailing List Settings',
 			'menu_title' => 'Settings',
 			'parent' => 'mailing_list',
-			'defaults' => $this->settings
-		);
+			'fields' => static::$settings
+		];
 
 		new Admin_Menu( $mailing_list );
 		new Admin_Menu( $mailing_list_stats );
@@ -135,17 +229,10 @@ class Mailing_List {
 
 	public function update_mailing_list() {
 
-		// Retrieve action to be taken
-		if( !empty( $_GET['action1'] ) ) {
-			$action = $_GET['action1'];
-		} elseif( !empty( $_GET['action2'] ) ) {
-			$action = $_GET['action2'];
-		} else {
-			$action = '';
-		}
+		$action = !empty( $_GET['action1'] ) ? $_GET['action1'] : !empty( $_GET['action2'] ) ? $_GET['action2'] : '';
 
-		// Execute action
-		if( !empty( $action ) ) {
+		if( !empty( $action ) ) :
+
 			$selected = ( !empty( $_GET['ckd'] ) ) ? $_GET['ckd'] : array();
 			foreach( $selected as $row_id ) {
 				switch( $action ) {
@@ -159,72 +246,34 @@ class Mailing_List {
 						break;
 
 					case 'delete' :
-						Database::delete_row( static::$table, 'id', $row_id );
+						Database::update_row( static::$table, 'id', $row_id, array( 'status' => 'deleted' ) );
 						break;
 
 				}
 			}
-			static::update_stats();
-		}
-
-	}
-
-	public function update_stats() {
-
-		$data = Database::get_results( static::$table, array( 'status' ) );
-		$stats = array(
-			'subscribers' => count( $data ),
-			'active' => 0,
-			'inactive' => 0,
-			'unsubscribers' => 0
-		);
 		
-		foreach( $data as $row ) {
-			switch( $row['status'] ) {
-
-				case 'active' :
-					$stats['active'] = $stats['active'] + 1;
-					break;
-
-				case 'trash' :
-					$stats['inactive'] = $stats['inactive'] + 1;
-					break;
-
-				case 'deleted' :
-					$stats['unsubscribers'] = $stats['unsubscribers'] + 1;
-					break;
-
-			}
-		}
-
-		foreach( $stats as $name => $value ) {
-			update_option( 'mailing_list_stats_' . $name, $value );
-		}
+		endif;
 
 	}
 
-	public function get_mailing_list( $status = 'all' ) {
+	public function get_mailing_list( $status = NULL ) {
 
-		$data = array();
-		$list = Database::get_results( static::$table );
-		$count = count( $list );
-
-		// Filter and return retrieved data
 		switch( $status ) {
 
-			case 'all' :
-				return $data = $list;
+			case 'active' :
+				return Database::get_results( static::$table, NULL, array( 'status' => 'active' ) );
+				break;
+
+			case 'trash' :
+				return Database::get_results( static::$table, NULL, array( 'status' => 'trash' ) );
+				break;
+
+			case 'deleted' :
+				return Database::get_results( static::$table, NULL, array( 'status' => 'deleted' ) );
 				break;
 
 			default :
-				$data = $list;
-				foreach( $list as $row ) {
-					if( $row['status'] !== $status ) {
-						unset( $data[$count] );
-					}
-					$count--;
-				}
-				return $data;
+				return Database::get_results( static::$table );
 				break;
 
 		}
@@ -234,10 +283,11 @@ class Mailing_List {
 	public static function run_api_action( $action, $email ) {
 
 		$resp = array();
+		$email = strtolower( $email );
 
 		switch( $action ) {
 
-			case 'save' :
+			case 'subscribe' :
 				$resp = static::save_email( $email );
 				break;
 
@@ -253,8 +303,7 @@ class Mailing_List {
 				break;
 
 		}
-
-		static::update_stats();
+		
 		return $resp;
 
 	}

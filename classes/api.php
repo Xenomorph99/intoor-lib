@@ -37,7 +37,7 @@ class API {
 	public static function new_key( $name ) {
 
 		$data = Database::get_row( static::$table, 'name', strtolower( str_replace( ' ', '_', $name ) ) );
-		return empty( $data['name'] ) ? Database::save_data( static::$table, array( 'name' => $name, 'key' => Encryption::keygen() ) ) : false;
+		return empty( $data['name'] ) ? Database::insert_row( static::$table, array( 'name' => $name, 'key' => Encryption::keygen() ) ) : false;
 
 	}
 
