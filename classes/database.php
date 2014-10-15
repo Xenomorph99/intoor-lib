@@ -120,6 +120,7 @@ class Database {
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
+			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
 			$columns = '*';
 			$match = '';
 			$data = array();
@@ -166,7 +167,7 @@ class Database {
 				foreach( $db as $row ) {
 					$value_array = array();
 					foreach( $row as $col => $col_value) {
-						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value ) : html_entity_decode( $col_value );
+						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : html_entity_decode( $col_value );
 						$value = stripslashes( $value );
 						$value_array[$col] = $value;
 					}
@@ -184,20 +185,21 @@ class Database {
 
 	}
 
-	public static function get_row( $table, $unique_key, $unique_value, $encrypted = false ) {
+	public static function get_row( $table, $unique_key, $unique_value ) {
 
 		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) {
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
+			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
 			$data = array();
-			$unique_value = ( $encrypted ) ? Encryption::encrypt( $unique_value ) : $unique_value;
+			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value, $key ) : $unique_value;
 			$db = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %s WHERE %s = '%s'", $table_name, $unique_key, $unique_value ), ARRAY_A );
 
 			if( !empty( $db ) ) :
 
 				foreach( $db as $col => $col_value ) {
-					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value ) : html_entity_decode( $col_value );
+					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : html_entity_decode( $col_value );
 					$value = stripslashes( $value );
 					$data[$col] = $value;
 				}
@@ -257,10 +259,11 @@ class Database {
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
+			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value ) : htmlentities( $col_value );
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : htmlentities( $col_value );
 				$row[$col] = $value;
 			}
 
@@ -279,11 +282,12 @@ class Database {
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
-			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Database::encrypt( $unique_value ) : $unique_value;
+			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
+			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value, $key ) : $unique_value;
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value ) : htmlentities( $col_value );
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : htmlentities( $col_value );
 				$row[$col] = $value;
 			}
 
@@ -302,7 +306,8 @@ class Database {
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
-			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value ) : $unique_value;
+			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
+			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value, $key ) : $unique_value;
 			$has_row = $wpdb->get_var( $wpdb->prepare( "SELECT * FROM %s WHERE %s = '%s'", $table_name, $unique_key, $unique_value ) );
 
 			if( $has_row ) :
