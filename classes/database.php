@@ -14,25 +14,67 @@
 
 class Database {
 
-	public static function install_table( $arr ) {
+	public static function install_table( $table ) {
 
-		if( !empty( $arr['name'] ) && !empty( $arr['version'] ) && !empty( $arr['structure'] ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['version'] ) && !empty( $table['structure'] ) ) :
 
 			global $wpdb;
-			$table = $wpdb->prefix . $arr['name'];
-			$has_table = $wpdb->get_var( "SHOW TABLES LIKE '$table'" );
+			$table_name = $wpdb->prefix . $table['name'];
+			$has_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $table_name ) );
 
-			if( !$has_table ) {
-				add_option( $arr['name'] . '_table_version', $arr['version'] );
-				$sql = static::create_table_sql( $arr );
+			if( !$has_table ) :
+
+				add_option( $table['name'] . '_table_version', $table['version'] );
+				$sql = static::create_table_sql( $table );
 				require_once( ABSPATH . 'wp-admin/upgrade-functions.php' );
 				dbDelta( $sql );
 				return true;
-			} else {
-				return static::upgrade_table( $arr );
-			}
 
+			else :
+
+				return static::upgrade_table( $table );
+			
+			endif;
+
+		endif;
+
+		return false;
+
+	}
+
+	protected static function create_table_sql( $table ) {
+
+		global $wpdb;
+		$sql = "CREATE TABLE " . $wpdb->prefix . $table['name'] . " (\n";
+		$sql .= "id BIGINT(20) NOT NULL AUTO_INCREMENT,\n";
+
+		foreach( $table['structure'] as $col => $args ) {
+			$default = ( isset( $args['default'] ) && $args['sql'] !== 'LONGTEXT' ) ? " DEFAULT '" . $args['default'] . "'" : "";
+			$sql .= $col . " " . $args['sql'] . " NOT NULL" . $default . ",\n";
 		}
+
+		$sql .= "UNIQUE KEY id (id) )";
+		return $sql;
+
+	}
+
+	public static function upgrade_table( $table ) {
+
+		if( !empty( $table['name'] ) && !empty( $table['version'] ) && !empty( $table['structure'] ) ) :
+
+			$installed_version = get_option( $table['name'] . '_table_version' );
+
+			if( $installed_version != $table['version'] ) :
+
+				$sql = static::create_table_sql( $table );
+				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+				dbDelta( $sql );
+				update_option( $table['name'] . '_table_version', $table['version'] );
+				return true;
+
+			endif;
+
+		endif;
 
 		return false;
 
@@ -41,35 +83,15 @@ class Database {
 	public static function delete_table( $table_name ) {
 
 		global $wpdb;
-		$table = $wpdb->prefix . $table_name;
-		$has_table = $wpdb->get_var( "SHOW TABLES LIKE '$table'" );
+		$table_name = $wpdb->prefix . $table_name;
+		$has_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $table_name ) );
 
-		if( $has_table ) {
-			$wpdb->query( "DROP TABLE IF EXISTS $table" );
+		if( $has_table ) :
+
+			$wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS %s", $table_name ) );
 			return true;
-		}
 
-		return false;
-
-	}
-
-	public static function upgrade_table( $arr ) {
-
-		if( !empty( $arr['name'] ) && !empty( $arr['version'] ) && !empty( $arr['structure'] ) ) {
-
-			global $wpdb;
-			$table = $wpdb->prefix . $arr['name'];
-			$installed_version = get_option( $arr['name'] . '_table_version' );
-
-			if( $installed_version != $arr['version'] ) {
-				$sql = static::create_table_sql( $arr );
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-				dbDelta( $sql );
-				update_option( $arr['name'] . '_table_version', $arr['version'] );
-				return true;
-			}
-
-		}
+		endif;
 
 		return false;
 
@@ -78,40 +100,26 @@ class Database {
 	public static function delete_column( $table_name, $column_name ) {
 
 		global $wpdb;
-		$table = $wpdb->prefix . $table_name;
-		$has_column = $wpdb->get_var( "SHOW COLUMNS FROM $table LIKE '$column_name'" );
+		$table_name = $wpdb->prefix . $table_name;
+		$has_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM %s LIKE '%s'", $table_name, $column_name ) );
 
-		if( $has_column ) {
-			$wpdb->query( "ALTER TABLE $table DROP COLUMN $column_name" );
+		if( $has_column ) :
+
+			$wpdb->query( $wpdb->prepare( "ALTER TABLE %s DROP COLUMN %s", $table_name, $column_name ) );
 			return true;
-		}
+		
+		endif;
 
 		return false;
 		
 	}
 
-	protected static function create_table_sql( $arr ) {
+	public static function get_results( $table, $col_arr = NULL, $match_arr = NULL ) {
 
-		global $wpdb;
-		$sql = "CREATE TABLE " . $wpdb->prefix . $arr['name'] . " (\n";
-		$sql .= "id BIGINT(20) NOT NULL AUTO_INCREMENT,\n";
-
-		foreach( $arr['structure'] as $name => $value ) {
-			$default = ( isset( $value[2] ) && $value[0] !== 'LONGTEXT' ) ? " DEFAULT '" . $value[2] . "'" : "";
-			$sql .= $name . " " . $value[0] . " NOT NULL" . $default . ",\n";
-		}
-
-		$sql .= "UNIQUE KEY id (id) )";
-		return $sql;
-
-	}
-
-	public static function get_results( $arr, $col_arr = NULL, $match_arr = NULL ) {
-
-		if( !empty( $arr['name'] ) && !empty( $arr['structure'] ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) {
 
 			global $wpdb;
-			$table = $wpdb->prefix . $arr['name'];
+			$table_name = $wpdb->prefix . $table['name'];
 			$columns = '*';
 			$match = '';
 			$data = array();
@@ -149,22 +157,24 @@ class Database {
 			}
 
 			$db = ( isset( $match_arr ) )
-				? $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM $table WHERE $match", array() ), ARRAY_A )
-				: $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM $table", array() ), ARRAY_A );
+				? $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM %s WHERE $match", $table_name ), ARRAY_A )
+				: $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM %s", $table_name ), ARRAY_A );
 
-			if( !empty( $db ) ) {
+			if( !empty( $db ) ) :
+
 				$count = 0;
 				foreach( $db as $row ) {
 					$value_array = array();
 					foreach( $row as $col => $col_value) {
-						$value = ( $arr['structure'][$col][1] ) ? Encryption::decrypt( $col_value ) : html_entity_decode( $col_value );
+						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value ) : html_entity_decode( $col_value );
 						$value = stripslashes( $value );
 						$value_array[$col] = $value;
 					}
 					$data[$count] = $value_array;
 					$count++;
 				}
-			}
+
+			endif;
 
 			return $data;
 
@@ -174,27 +184,31 @@ class Database {
 
 	}
 
-	public static function get_row( $arr, $unique_key, $unique_value, $encrypted = false ) {
+	public static function get_row( $table, $unique_key, $unique_value, $encrypted = false ) {
 
-		if( !empty( $arr['name'] ) && !empty( $arr['structure'] ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) {
 
 			global $wpdb;
-			$table = $wpdb->prefix . $arr['name'];
+			$table_name = $wpdb->prefix . $table['name'];
 			$data = array();
 			$unique_value = ( $encrypted ) ? Encryption::encrypt( $unique_value ) : $unique_value;
-			$db = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE $unique_key = '$unique_value'", array() ), ARRAY_A );
+			$db = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %s WHERE %s = '%s'", $table_name, $unique_key, $unique_value ), ARRAY_A );
 
-			if( !empty( $db ) ) {
+			if( !empty( $db ) ) :
+
 				foreach( $db as $col => $col_value ) {
-					$value = ( $arr['structure'][$col][1] ) ? Encryption::decrypt( $col_value ) : html_entity_decode( $col_value );
+					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value ) : html_entity_decode( $col_value );
 					$value = stripslashes( $value );
 					$data[$col] = $value;
 				}
-			} else {
-				foreach( $arr['structure'] as $col => $col_value ) {
-					$data[$col] = ( isset( $col_value[2] ) ) ? $col_value[2] : '';
+
+			else :
+
+				foreach( $table['structure'] as $col => $col_value ) {
+					$data[$col] = ( isset( $col_value['default'] ) ) ? $col_value['default'] : '';
 				}
-			}
+
+			endif;
 
 			return $data;
 
@@ -207,8 +221,8 @@ class Database {
 	public static function get_posts( $post_type = 'post', $reverse = false ) {
 
 		global $wpdb;
-		$table = $wpdb->prefix . 'posts';
-		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE post_type = '$post_type'", array() ), ARRAY_A );
+		$table_name = $wpdb->prefix . 'posts';
+		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %s WHERE post_type = '%s'", $table_name, $post_type ), ARRAY_A );
 		$posts = array();
 		
 		foreach( $data as $row ) {
@@ -223,76 +237,82 @@ class Database {
 
 	}
 
-	public static function save_data( $arr, $data ) {
+	public static function save_data( $table, $data ) {
 
-		if( !empty( $data['id'] ) ) {
+		if( !empty( $data['id'] ) ) :
 
-			return static::update_row( $arr, 'id', $data['id'], $data );
+			return static::update_row( $table, 'id', $data['id'], $data );
 
-		} else {
+		else :
 
-			return static::insert_row( $arr, $data );
+			return static::insert_row( $table, $data );
 
-		}
+		endif;
 
 	}
 
-	public static function insert_row( $arr, $data ) {
+	public static function insert_row( $table, $data ) {
 
-		if( !empty( $arr['name'] ) && !empty( $arr['structure'] ) && isset( $data ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) && isset( $data ) ) :
 
 			global $wpdb;
-			$table = $wpdb->prefix . $arr['name'];
+			$table_name = $wpdb->prefix . $table['name'];
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $arr['structure'][$col][1] ) ? Encryption::encrypt( $col_value ) : htmlentities( $col_value );
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value ) : htmlentities( $col_value );
 				$row[$col] = $value;
 			}
 
-			$wpdb->insert( $table, $row );
+			$wpdb->insert( $table_name, $row );
 			return true;
 
-		}
+		endif;
 
 		return false;
 
 	}
 
-	public static function update_row( $arr, $unique_key, $unique_value, $data, $encrypted = false ) {
+	public static function update_row( $table, $unique_key, $unique_value, $data ) {
 
-		if( !empty( $arr['name'] ) && !empty( $arr['structure'] ) && isset( $data ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) && isset( $data ) ) :
 
 			global $wpdb;
-			$table = $wpdb->prefix . $arr['name'];
-			$unique_value = ( $encrypted ) ? Database::encrypt( $unique_value ) : $unique_value;
+			$table_name = $wpdb->prefix . $table['name'];
+			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Database::encrypt( $unique_value ) : $unique_value;
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $arr['structure'][$col][1] ) ? Encryption::encrypt( $col_value ) : htmlentities( $col_value );
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value ) : htmlentities( $col_value );
 				$row[$col] = $value;
 			}
 
-			$wpdb->update( $table, $row, array( $unique_key => $unique_value ) );
+			$wpdb->update( $table_name, $row, array( $unique_key => $unique_value ) );
 			return true;
 
-		}
+		endif;
 
 		return false;
 
 	}
 
-	public static function delete_row( $arr, $unique_key, $unique_value, $encrypted = false ) {
+	public static function delete_row( $table, $unique_key, $unique_value ) {
 
-		global $wpdb;
-		$table = $wpdb->prefix . $arr['name'];
-		$unique_value = ( $encrypted ) ? Encryption::encrypt( $unique_value ) : $unique_value;
-		$has_row = $wpdb->get_var( "SELECT * FROM $table WHERE $unique_key = '$unique_value'" );
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) :
 
-		if( $has_row ) {
-			$wpdb->delete( $table, array( $unique_key => $unique_value ) );
-			return true;
-		}
+			global $wpdb;
+			$table_name = $wpdb->prefix . $table['name'];
+			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value ) : $unique_value;
+			$has_row = $wpdb->get_var( $wpdb->prepare( "SELECT * FROM %s WHERE %s = '%s'", $table_name, $unique_key, $unique_value ) );
+
+			if( $has_row ) :
+
+				$wpdb->delete( $table_name, array( $unique_key => $unique_value ) );
+				return true;
+
+			endif;
+
+		endif;
 
 		return false;
 
