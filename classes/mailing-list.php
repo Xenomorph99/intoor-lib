@@ -395,11 +395,11 @@ class Mailing_List {
 
 	protected static function remove_from_database( $email ) {
 
-		$data = Database::get_row( static::$table, 'email', $email, true );
+		$data = Database::get_row( static::$table, 'email', $email );
 
 		if( !empty( $data['email'] ) ) :
 
-			//Database::delete_row( static::$table, 'email', $email, true );
+			//Database::delete_row( static::$table, 'email', $email );
 			$data['email'] = 'deleted-' . rand( 9999, 999999999 );
 			$data['status'] = 'deleted';
 			$data['delete_date'] = date( 'Y-m-d', time() );
