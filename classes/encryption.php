@@ -1,8 +1,8 @@
 <?php
 /**
- * This model contains custom encryption methods used for encrypting and
- * decrypting sensitive data.  By default, encryption will run using the
- * SECURE_AUTH_SALT defined in the WP config file.
+ * This model contains methods used for encrypting and decrypting data.
+ * By default, encryption and decryption will run using the AUTH_KEY defined
+ * in the wp-config.php file.
  *
  * @package		Интоор Library (intoor)
  * @author		Colton James Wiscombe <colton@hazardmediagroup.com>
@@ -14,36 +14,30 @@
 
 class Encryption {
 
-	protected static $salt = SECURE_AUTH_SALT;
-
-	public static function encrypt( $data ) {
+	public static function encrypt( $data, $key = AUTH_KEY ) {
 
 		$encodedData = json_encode( $data );
-		$encryptedData = trim( base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( static::$salt ), $encodedData, MCRYPT_MODE_ECB, mcrypt_create_iv( mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB ), MCRYPT_RAND ) ) ) );
+		$encryptedData = trim( base64_encode( mcrypt_encrypt( MCRYPT_RIJNDAEL_256, md5( $key ), $encodedData, MCRYPT_MODE_ECB, mcrypt_create_iv( mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB ), MCRYPT_RAND ) ) ) );
 		return $encryptedData;
 
 	}
 
-	public static function decrypt( $data ) {
+	public static function decrypt( $data, $key = AUTH_KEY ) {
 
-		$decryptedArray = trim( mcrypt_decrypt( MCRYPT_RIJNDAEL_256, md5( static::$salt ), base64_decode( $data ), MCRYPT_MODE_ECB, mcrypt_create_iv( mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB ), MCRYPT_RAND ) ) );
+		$decryptedArray = trim( mcrypt_decrypt( MCRYPT_RIJNDAEL_256, md5( $key ), base64_decode( $data ), MCRYPT_MODE_ECB, mcrypt_create_iv( mcrypt_get_iv_size( MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB ), MCRYPT_RAND ) ) );
 		$decryptedData = json_decode( $decryptedArray, true );
 		return $decryptedData;
 
 	}
 
-	public static function generate_key( $name, $min = 10000000, $max = 999999999 ) {
+	public static function keygen( $min = 10000000, $max = 999999999 ) {
 
-		if( !get_option( $name ) ) {
-
-			$rand = rand($min, $max);
-			$val = static::encrypt( $rand );
-			$val = str_replace( '/', '_', $val );
-			$val = str_replace( '+', '_', $val );
-			$val = str_replace( '=', '_', $val );
-			add_option( $name, $val );
-
-		}
+		$rand = rand($min, $max);
+		$key = $this->encrypt( $rand );
+		$key = str_replace( '/', '_', $val );
+		$key = str_replace( '+', '_', $val );
+		$key = str_replace( '=', '_', $val );
+		return $key
 
 	}
 
