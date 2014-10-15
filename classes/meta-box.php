@@ -17,7 +17,7 @@
 
 class Meta_Box {
 
-	public $args = array(
+	public $args = [
 		'title' => '',					// Meta box title (will be converted and used as html ID attr)
 		'callback' => 'none',			// Callback function
 		'post_type' => array( 'post' ),	// Type of screen(s) on which to show the meta box
@@ -31,7 +31,7 @@ class Meta_Box {
 		'admin_view' => NULL,			// Path to the admin menu view (if set to null a default view will be created)
 		'array' => array(),				// Array of additional data to be passed to a view
 		'table' => array()				// Database table array
-	);
+	];
 
 	public function __construct( $arr ) {
 
@@ -99,6 +99,7 @@ class Meta_Box {
 		// Include the specified view or create a standard default meta box view
 		if( !empty( $this->args['view'] ) ) :
 
+			$array = $this->args['array'];
 			$prefix = $this->args['table']['prefix'] . '_';
 			include_once $this->args['view'];
 
@@ -207,14 +208,15 @@ class Meta_Box {
 		$label = isset( $col['label'] ) ? $col['label'] : ucwords( str_replace( '_', ' ', $column ) );
 		$id = !empty( $col['id'] ) ? $col['id'] : $this->args['meta_box_id'] . '-' . str_replace( '_', '-', $column );
 		$value = !empty( $value ) ? $value : '';
-		$field = '';
+		$placeholder = !empty( $col['placeholder'] ) ? $col['placeholder'] : '';
+		$field = "";
 
 		switch( $type ) {
 			case 'text' :
 
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
@@ -222,7 +224,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
@@ -230,7 +232,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
@@ -238,7 +240,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
@@ -246,7 +248,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
@@ -254,7 +256,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
@@ -283,7 +285,7 @@ class Meta_Box {
 
 			case 'checkbox' :
 
-				$checked = ( (boolean)$value ) ? " checked='checked'" : '';
+				$checked = ( (boolean)$value ) ? " checked='checked'" : "";
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<input type='hidden' id='hidden-$id' name='$name' value='$value'>";
 				$field .= "<input type='$type' class='$class' id='$id'$checked>";
@@ -296,7 +298,7 @@ class Meta_Box {
 				$field .= "<span class='field-type-$type'>";
 				foreach( $options as $radio_value => $radio_label ) {
 					$radio_id = $id . '-' . Functions::str_smash( $radio_value );
-					$checked = ( $radio_value == $value ) ? " checked='checked'" : '';
+					$checked = ( $radio_value == $value ) ? " checked='checked'" : "";
 					$field .= "<input type='$type' class='$class' id='$radio_id' name='$name' value='$radio_value'$checked>";
 					$field .= "<label for='$radio_id'>$radio_label</label>";
 				}
