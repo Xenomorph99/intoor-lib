@@ -66,4 +66,41 @@ class Functions {
 
 	}
 
+	/**
+	 * Returns a randomly generated number within the defined constraints.
+	 */
+	public static function numgen( $range = NULL, $min = 100, $max = 500 ) {
+
+		switch( $range ) {
+
+			case 'low' :
+				$num = rand( 0, 10 );
+				break;
+
+			case 'mid' :
+				$num = rand( 10, 50 );
+				break;
+
+			case 'high' :
+				$num = rand( 50, 100 );
+				break;
+
+			case 'ultra' :
+				$num = rand( 100, 500 );
+				break;
+
+			case 'custom' :
+				$num = rand( $min, $max );
+				break;
+
+			default :
+				$num = 1;
+				break;
+
+		}
+
+		return $num;
+
+	}
+
 }

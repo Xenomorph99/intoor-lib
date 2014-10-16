@@ -259,52 +259,18 @@ class Social {
 
 			if( !empty( $data['id'] ) ) :
 
-				$data['facebook_infl'] = !empty( $data['facebook_infl'] ) ? $data['facebook_infl'] : $this->inflate();
-				$data['twitter_infl'] = !empty( $data['twitter_infl'] ) ? $data['twitter_infl'] : $this->inflate();
-				$data['google_infl'] = !empty( $data['google_infl'] ) ? $data['google_infl'] : $this->inflate();
-				$data['pinterest_infl'] = !empty( $data['pinterest_infl'] ) ? $data['pinterest_infl'] : $this->inflate();
-				$data['linkedin_infl'] = !empty( $data['linkedin_infl'] ) ? $data['linkedin_infl'] : $this->inflate();
-				$data['reddit_infl'] = !empty( $data['reddit_infl'] ) ? $data['reddit_infl'] : $this->inflate();
+				$data['facebook_infl'] = !empty( $data['facebook_infl'] ) ? $data['facebook_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+				$data['twitter_infl'] = !empty( $data['twitter_infl'] ) ? $data['twitter_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+				$data['google_infl'] = !empty( $data['google_infl'] ) ? $data['google_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+				$data['pinterest_infl'] = !empty( $data['pinterest_infl'] ) ? $data['pinterest_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+				$data['linkedin_infl'] = !empty( $data['linkedin_infl'] ) ? $data['linkedin_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+				$data['reddit_infl'] = !empty( $data['reddit_infl'] ) ? $data['reddit_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
 
 				Database::save_data( static::$table, $data );
 
 			endif;
 
 		endif;
-
-	}
-
-	protected function inflate() {
-
-		switch( $this->args['infl_range'] ) {
-
-			case 'low' :
-				$num = rand( 0, 10 );
-				break;
-
-			case 'mid' :
-				$num = rand( 10, 50 );
-				break;
-
-			case 'high' :
-				$num = rand( 50, 100 );
-				break;
-
-			case 'ultra' :
-				$num = rand( 100, 500 );
-				break;
-
-			case 'custom' :
-				$num = rand( $this->args['infl_min'], $this->args['infl_max'] );
-				break;
-
-			default :
-				$num = 1;
-				break;
-
-		}
-
-		return $num;
 
 	}
 
