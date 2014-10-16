@@ -155,20 +155,18 @@ class Popular {
 
 	}
 
-	public static function run_api_action( $action, $post_id ) {
+	public static function run_api_action( $action, $arr = array() ) {
 
 		$resp = array();
 
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-action';
+		$resp['message'] = 'Defined API action cannot be performed';
+
 		switch( $action ) {
 
-			case 'like' :
-				$resp = static::add_page_like( $post_id );
-				break;
-
-			default :
-				$resp['status'] = 'error';
-				$resp['desc'] = 'invalid-action';
-				$resp['message'] = 'Defined API action cannot be performed.';
+			case 'like':
+				$resp = static::add_page_like( $arr['post_id'] );
 				break;
 
 		}
@@ -181,32 +179,29 @@ class Popular {
 
 		$resp = array();
 
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-format';
+		$resp['message'] = 'The submitted post ID does not match the required format';
+
 		// Scrub out invalid post_id's
 		if( preg_match( '/^[0-9]+$/', $post_id ) ) :
 
 			$data = Database::get_row( static::$table, 'post_id', $post_id );
 			$data['likes'] = (int)$data['likes'] + 1;
 
-			if( !empty( $data['post_id'] ) ) :
+			if( Database::save_data( static::$table, $data ) ) :
 
-				Database::save_data( static::$table, $data );
 				$resp['status'] = 'success';
-				$resp['desc'] = 'submitted';
-				$resp['message'] = 'Thanks for liking the page!';
-			
+				$resp['type'] = 'submitted';
+				$resp['message'] = 'Like was successfully recorded!';
+
 			else :
 
 				$resp['status'] = 'error';
-				$resp['desc'] = 'page-not-found';
-				$resp['message'] = 'The page you liked cannot be found.';
-			
+				$resp['type'] = 'database-error';
+				$resp['message'] = 'An error occured connecting to the database. Try again later.';
+
 			endif;
-
-		else :
-
-			$resp['status'] = 'error';
-			$resp['desc'] = 'invalid-format';
-			$resp['message'] = 'The submitted post ID does not match the required format.';
 
 		endif;
 

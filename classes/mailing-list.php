@@ -336,8 +336,8 @@ class Mailing_List {
 				case 'error':
 					$resp['status'] = 'error';
 					$resp['type'] = 'database-error';
-					$resp['message'] = 'An error occured connecting to the database.  Try again later.';
-					$resp['display'] = 'Sorry, something went wrong.  Please try again later.';
+					$resp['message'] = 'An error occured connecting to the database. Try again later.';
+					$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 					break;
 
 			}
@@ -398,7 +398,7 @@ class Mailing_List {
 					$resp['status'] = 'success';
 					$resp['type'] = 'removed';
 					$resp['message'] = 'The submitted email address has successfully been removed from the mailing list.';
-					$resp['display'] = 'Your email has been successfully removed from our mailing list.';
+					$resp['display'] = 'Your email address has been successfully removed from our mailing list.';
 					break;
 
 				case 'not-found':
@@ -410,9 +410,9 @@ class Mailing_List {
 
 				case 'error':
 					$resp['status'] = 'error';
-					$resp['type'] = 'database-connection-error';
-					$resp['message'] = 'An error occured connecting to the database.  Try again later.';
-					$resp['display'] = 'Sorry, something went wrong.  Please try again later.';
+					$resp['type'] = 'database-error';
+					$resp['message'] = 'An error occured connecting to the database. Try again later.';
+					$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 					break;
 
 			}
