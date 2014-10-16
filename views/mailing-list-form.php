@@ -26,9 +26,11 @@ $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] 
 ?>
 <form id="<?php echo $form['id']; ?>" class="mailing-list-form" method="GET" action="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
 	<?php echo ( !empty( $form['label'] ) ) ? $label_tag_open . $form['label'] . $label_tag_close : ''; ?>
-	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="save">
+	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="subscribe">
+	<input id="mailing-list-form-api-key" class="api-key" type="hidden" name="api-key" value="<?php API::key( 'mailing_list' ); ?>">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?php bloginfo( 'url' ); ?>">
 	<input id="mailing-list-form-email" class="email" type="text" name="email" value="" placeholder="<?php echo $form['placeholder']; ?>" required>
+	<input id="mailing-list-form-h" class="h" type="text" name="h" value="" placeholder="Leave this field blank" style="visibility:hidden; position:absolute; left:-9999px;">
 	<input id="mailing-list-form-submit" class="subscribe" type="submit" value="<?php echo $form['submit_btn']; ?>">
 	<?php echo ( !empty( $_GET['user'] ) ) ? '<p class="message">' . urldecode( $_GET['user'] ) . '</p>' : ''; ?>
 </form>
@@ -53,13 +55,13 @@ $(function() {
 			success: function(resp) {
 				if(resp.status === 'success') {
 					form.find('.email').val('');
-					form.append('<p class="message">' + resp.user + '</p>');
+					form.append('<p class="message">' + resp.display + '</p>');
 					ga('send', 'event', 'Mailing List', 'Subscribe', 'Success');
 				} else if(resp.status === 'duplicate') {
-					form.append('<p class="message">' + resp.user + '</p>');
+					form.append('<p class="message">' + resp.display + '</p>');
 					ga('send', 'event', 'Mailing List', 'Subscribe', 'Duplicate Email');
 				} else {
-					form.append('<p class="message">' + resp.user + '</p>');
+					form.append('<p class="message">' + resp.display + '</p>');
 					ga('send', 'event', 'Mailing List', 'Subscribe', 'Invalid Email');
 				}
 				ga('send', 'event', 'Mailing List', 'API Status', 'Success');
