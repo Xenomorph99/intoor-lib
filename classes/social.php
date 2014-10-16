@@ -225,7 +225,7 @@ class Social {
 
 	protected function setup_social_media() {
 
-		Database::install_table( static::$table );
+		Database::install_table( static::$table, true );
 		API::new_key( 'social_sharing' );
 
 	}

@@ -62,7 +62,7 @@ class Popular {
 
 	protected function setup_popular_tracking() {
 
-		Database::install_table( static::$table );
+		Database::install_table( static::$table, true );
 		API::new_key( 'popular' );
 
 	}

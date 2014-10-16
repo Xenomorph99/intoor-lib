@@ -20,7 +20,7 @@ class Database {
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
-			$has_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $table_name ) );
+			$has_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) );
 
 			if( !$has_table ) :
 
@@ -42,11 +42,12 @@ class Database {
 
 	}
 
-	protected static function create_table_sql( $table ) {
+	protected static function create_table_sql( $table, $post_id = false ) {
 
 		global $wpdb;
 		$sql = "CREATE TABLE " . $wpdb->prefix . $table['name'] . " (\n";
 		$sql .= "id BIGINT(20) NOT NULL AUTO_INCREMENT,\n";
+		$sql .= ( $post_id ) ? "post_id BIGINT(20) NOT NULL,\n" : "";
 
 		foreach( $table['structure'] as $col => $args ) {
 			$default = ( isset( $args['default'] ) && $args['sql'] !== 'LONGTEXT' ) ? " DEFAULT '" . $args['default'] . "'" : "";
@@ -116,7 +117,7 @@ class Database {
 
 	public static function get_results( $table, $col_arr = NULL, $match_arr = NULL ) {
 
-		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) :
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
@@ -179,22 +180,20 @@ class Database {
 
 			return $data;
 
-		}
-
-		return array();
+		endif;
 
 	}
 
 	public static function get_row( $table, $unique_key, $unique_value ) {
 
-		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) {
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) :
 
 			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
 			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
 			$data = array();
 			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value, $key ) : $unique_value;
-			$db = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %s WHERE %s = '%s'", $table_name, $unique_key, $unique_value ), ARRAY_A );
+			$db = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE $unique_key = '$unique_value'", array() ), ARRAY_A );
 
 			if( !empty( $db ) ) :
 
@@ -206,17 +205,15 @@ class Database {
 
 			else :
 
-				foreach( $table['structure'] as $col => $col_value ) {
-					$data[$col] = ( isset( $col_value['default'] ) ) ? $col_value['default'] : '';
+				foreach( $table['structure'] as $col => $args ) {
+					$data[$col] = isset( $args['default'] ) ? $args['default'] : '';
 				}
 
 			endif;
 
 			return $data;
 
-		}
-
-		return array();
+		endif;
 
 	}
 

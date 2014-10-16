@@ -15,13 +15,14 @@ class API {
 
 	public static $table = [
 		'name' => 'api_keys',
+		'prefix' => 'api',
 		'version' => '1.0',
 		'key' => INTOOR_API_KEY,
 		'structure' => [
 			'name' => [
 				'sql' => 'VARCHAR(255)'
 			],
-			'key' => [
+			'api_key' => [
 				'sql' => 'VARCHAR(255)',
 				'encrypt' => true
 			]
@@ -37,21 +38,22 @@ class API {
 	public static function new_key( $name ) {
 
 		$data = Database::get_row( static::$table, 'name', strtolower( str_replace( ' ', '_', $name ) ) );
-		return empty( $data['name'] ) ? Database::insert_row( static::$table, array( 'name' => $name, 'key' => Encryption::keygen() ) ) : false;
+		
+		return empty( $data['name'] ) ? Database::insert_row( static::$table, array( 'name' => $name, 'api_key' => Encryption::keygen() ) ) : false;
 
 	}
 
 	public static function key_auth( $name, $key ) {
 
 		$data = Database::get_row( static::$table, 'name', strtolower( str_replace( ' ', '_', $name ) ) );
-		return ( !empty( $data['key'] ) && $data['key'] == $key ) ? true : false;
+		return ( !empty( $data['api_key'] ) && $data['api_key'] == $key ) ? true : false;
 
 	}
 
 	public static function get_key( $name ) {
 
 		$data = Database::get_row( static::$table, 'name', strtolower( str_replace( ' ', '_', $name ) ) );
-		return !empty( $data['key'] ) ? $data['key'] : '';
+		return !empty( $data['api_key'] ) ? $data['api_key'] : '';
 
 	}
 
