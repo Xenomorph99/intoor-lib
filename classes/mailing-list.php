@@ -143,7 +143,7 @@ class Mailing_List {
 		]
 	];
 
-	public static $table [
+	public static $table = [
 		'name' => 'mailing_list',
 		'prefix' => 'ml',
 		'version' => '1.0',

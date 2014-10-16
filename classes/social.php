@@ -152,7 +152,7 @@ class Social {
 				'default' => '0'
 			],
 			'facebook_infl' => [
-				'sql' => 'TINYINT(3)'
+				'sql' => 'TINYINT(3)',
 				'default' => '0'
 			],
 			'twitter_shares' => [

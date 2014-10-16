@@ -16,7 +16,7 @@ class API {
 	public static $table = [
 		'name' => 'api_keys',
 		'version' => '1.0',
-		'key' = INTOOR_API_KEY,
+		'key' => INTOOR_API_KEY,
 		'structure' => [
 			'name' => [
 				'sql' => 'VARCHAR(255)'
@@ -28,7 +28,7 @@ class API {
 		]
 	];
 
-	public static setup() {
+	public static function setup() {
 
 		Database::install_table( static::$table );
 

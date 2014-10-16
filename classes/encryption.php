@@ -37,7 +37,7 @@ class Encryption {
 		$key = str_replace( '/', '_', $val );
 		$key = str_replace( '+', '_', $val );
 		$key = str_replace( '=', '_', $val );
-		return $key
+		return $key;
 
 	}
 
