@@ -192,8 +192,8 @@ class Popular {
 			if( Database::save_data( static::$table, $data ) ) :
 
 				$resp['status'] = 'success';
-				$resp['type'] = 'submitted';
-				$resp['message'] = 'Like was successfully recorded!';
+				$resp['type'] = 'success';
+				$resp['message'] = 'The like was successfully recorded';
 
 			else :
 

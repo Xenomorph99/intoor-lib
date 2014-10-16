@@ -402,20 +402,19 @@ class Social {
 
 	}
 
-	public static function run_api_action( $action, $post_id, $name ) {
+	public static function run_api_action( $action, $arr = array() ) {
 
 		$resp = array();
 
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-action';
+		$resp['message'] = 'Defined API action cannot be performed.';
+
 		switch( $action ) {
 
-			case 'share' :
-				$resp = static::add_share( $post_id, $name );
+			case 'share':
+				$resp = static::add_share( $arr['post_id'], $arr['name'] );
 				break;
-
-			default :
-				$resp['status'] = 'error';
-				$resp['desc'] = 'invalid-action';
-				$resp['message'] = 'Defined API action cannot be performed.';
 
 		}
 
@@ -425,50 +424,46 @@ class Social {
 
 	public static function add_share( $post_id, $name ) {
 
+		$name = strtolower( $name );
+		$networks = array();
 		$resp = array();
+
+		foreach( static::$share_url as $name => $value ) {
+			array_push( $networks, $name );
+		}
+
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-format';
+		$resp['message'] = 'The submitted post ID does not match the required format.';
 
 		// Scrub out invalid post_id's
 		if( preg_match( '/^[0-9]+$/', $post_id ) ) :
 
-			$networks = array();
-			foreach( static::$share_url as $name => $value ) {
-				array_push( $networks, $name );
-			}
+			$resp['status'] = 'error';
+			$resp['type'] = 'invalid-network';
+			$resp['message'] = 'The submitted network name is not supported';
 
-			// Scrub out invalid names
+			// Scrub out invalid network names
 			if( in_array( $name, $networks ) ) :
 
 				$data = Database::get_row( static::$table, 'post_id', $post_id );
 				$data[$name.'_shares'] = (int)$data[$name.'_shares'] + 1;
 
-				if( !empty( $data['post_id'] ) ) :
+				if( Database::save_data( static::$table, $data ) ) :
 
-					Database::save_data( static::$table, $data );
 					$resp['status'] = 'success';
-					$resp['desc'] = 'submitted';
-					$resp['message'] = 'Thanks for sharing the page!';
+					$resp['type'] = 'success';
+					$resp['message'] = 'The share was successfully recorded';
 
 				else:
 
 					$resp['status'] = 'error';
-					$resp['desc'] = 'page-not-found';
-					$resp['message'] = 'The page you shared cannot be found.';
+					$resp['type'] = 'database-error';
+					$resp['message'] = 'An error occured connecting to the database. Try again later.';
 
 				endif;
 
-			else :
-
-				$resp['status'] = 'error';
-				$resp['desc'] = 'not-supported';
-				$resp['message'] = 'The submitted key is not supported.';
-
 			endif;
-
-		else :
-
-			$resp['status'] = 'error';
-			$resp['desc'] = 'invalid-format';
-			$resp['message'] = 'The submitted post ID does not match the required format.';
 
 		endif;
 
