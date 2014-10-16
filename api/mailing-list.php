@@ -20,20 +20,44 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( __FILE__ ) ) . '/config.php';
 
 // Set the default API response
-$resp = array(
-	'status' => 'error',
-	'desc' => 'missing-parameters',
-	'message' => 'Warning: required parameters not found',
-	'user' => 'Please fill out all required fields.'
-);
+$resp = array();
+$resp['status'] = 'error';
+$resp['type'] = 'unauthorized-access';
+$resp['message'] = 'Unauthorized Access';
+$resp['display'] = 'Unauthorized Access';
 
-// Define parameters
 $params = $_GET;
 
-// Verify parameters
-if( !empty( $params['action'] ) && !empty( $params['email'] ) ) {
-	$resp = Mailing_List::run_api_action( $params['action'], $params['email'] );
-}
+// Validate API Key
+if( empty( $params['api-key'] ) || !API::key_auth( 'mailing_list', $params['api-key'] ) ) :
+
+	die( 'Unauthorized Access' );
+
+else :
+
+	$resp['status'] = 'error';
+	$resp['type'] = 'unauthorized-access';
+	$resp['message'] = 'Warning: unidentified robot detected';
+	$resp['display'] = 'Sorry, but robots are not allowed to subscribe to the mailing list.'
+
+	// Validate captcha (must be empty)
+	if( isset( $params['h'] ) && empty( $params['h'] ) ) :
+
+		$resp['status'] = 'error';
+		$resp['type'] = 'missing-parameters';
+		$resp['message'] = 'Warning: required parameters not found';
+		$resp['display'] = 'Please fill out all required fields.';
+
+		// Verify required parameters
+		if( !empty( $params['action'] ) && !empty( $params['email'] ) ) :
+
+			$resp = Mailing_List::run_api_action( $params['action'], $params );
+
+		endif;
+
+	endif;
+
+endif;
 
 // Redirect or return JSON response string
 if( !empty( $params['redirect'] ) ) {
