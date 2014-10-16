@@ -19,14 +19,14 @@ header( 'Content-type: application/json' );
 require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( __FILE__ ) ) . '/config.php';
 
-// Set the default API response
 $resp = array();
+$params = $_GET;
+
+// Set the default API response
 $resp['status'] = 'error';
 $resp['type'] = 'unauthorized-access';
 $resp['message'] = 'Unauthorized Access';
 $resp['display'] = 'Unauthorized Access';
-
-$params = $_GET;
 
 // Validate API Key
 if( empty( $params['api-key'] ) || !API::key_auth( 'mailing_list', $params['api-key'] ) ) :

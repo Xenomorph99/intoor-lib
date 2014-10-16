@@ -237,15 +237,15 @@ class Mailing_List {
 			foreach( $selected as $row_id ) {
 				switch( $action ) {
 
-					case 'active' :
+					case 'active':
 						Database::update_row( static::$table, 'id', $row_id, array( 'status' => 'active' ) );
 						break;
 
-					case 'trash' :
+					case 'trash':
 						Database::update_row( static::$table, 'id', $row_id, array( 'status' => 'trash' ) );
 						break;
 
-					case 'delete' :
+					case 'delete':
 						Database::update_row( static::$table, 'id', $row_id, array( 'status' => 'deleted' ) );
 						break;
 
@@ -260,15 +260,15 @@ class Mailing_List {
 
 		switch( $status ) {
 
-			case 'active' :
+			case 'active':
 				return Database::get_results( static::$table, NULL, array( 'status' => 'active' ) );
 				break;
 
-			case 'trash' :
+			case 'trash':
 				return Database::get_results( static::$table, NULL, array( 'status' => 'trash' ) );
 				break;
 
-			case 'deleted' :
+			case 'deleted':
 				return Database::get_results( static::$table, NULL, array( 'status' => 'deleted' ) );
 				break;
 
@@ -280,26 +280,23 @@ class Mailing_List {
 
 	}
 
-	public static function run_api_action( $action, $email ) {
+	public static function run_api_action( $action, $arr = array() ) {
 
 		$resp = array();
-		$email = strtolower( $email );
+
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-action';
+		$resp['message'] = 'Defined API action cannot be performed';
+		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 
 		switch( $action ) {
 
-			case 'subscribe' :
-				$resp = static::save_email( $email );
+			case 'subscribe':
+				$resp = static::save_email( $arr['$email'] );
 				break;
 
-			case 'unsubscribe' :
-				$resp = static::delete_email( $email );
-				break;
-
-			default :
-				$resp['status'] = 'error';
-				$resp['desc'] = 'invalid-action';
-				$resp['message'] = 'Defined API action cannot be performed';
-				$resp['user'] = 'Sorry, something went wrong.  Please try again later.';
+			case 'unsubscribe':
+				$resp = static::delete_email( $arr['email'] );
 				break;
 
 		}
@@ -312,42 +309,39 @@ class Mailing_List {
 
 		$resp = array();
 
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-format';
+		$resp['message'] = 'The submitted email address does not match the required format';
+		$resp['display'] = 'Your email address isn\'t valid. Please try again.';
+
 		// Scrub out invalid email addresses
 		if( preg_match( '/^[A-Za-z0-9._%\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,4}$/', $email ) ) :
 
-			// Save email to mailing list
-			$status = static::save_to_database( strtolower( $email ) );
+			switch( static::save_to_database( $email ) ) {
 
-			switch( $status ) {
-
-				case "success" :
+				case 'success':
 					$resp['status'] = 'success';
-					$resp['desc'] = 'submitted';
+					$resp['type'] = 'submitted';
 					$resp['message'] = 'The submitted email address has successfully been added to the mailing list.';
-					$resp['user'] = 'Thanks for subscribing!';
+					$resp['display'] = 'Thanks for subscribing!';
 					break;
 
-				case "duplicate" :
+				case 'duplicate':
 					$resp['status'] = 'duplicate';
-					$resp['desc'] = 'duplicate';
+					$resp['type'] = 'duplicate';
 					$resp['message'] = 'The submitted email address is already on the mailing list.';
-					$resp['user'] = 'Welcome back!  It looks like you already subscribed.';
+					$resp['display'] = 'Welcome back! It looks like you already subscribed.';
 					break;
 
-				case "error" :
+				case 'error':
 					$resp['status'] = 'error';
-					$resp['desc'] = 'database-connection-error';
+					$resp['type'] = 'database-error';
 					$resp['message'] = 'An error occured connecting to the database.  Try again later.';
-					$resp['user'] = 'Sorry, something went wrong.  Please try again later.';
+					$resp['display'] = 'Sorry, something went wrong.  Please try again later.';
 					break;
 
 			}
 
-		else :
-			$resp['status'] = 'error';
-			$resp['desc'] = 'invalid-format';
-			$resp['message'] = 'The submitted email address does not match the required format.';
-			$resp['user'] = 'Your email address isn\'t valid.  Please try again.';
 		endif;
 
 		return $resp;
@@ -356,43 +350,33 @@ class Mailing_List {
 
 	protected static function save_to_database( $email ) {
 
-		$data = array(
-			'email' => $email,
-			'create_date' => date( 'Y-m-d', time() ),
-			'create_time' => date( 'H:i:s', time() )
-		);
-		$match = false;
+		$email = strtolower( $email );
+		$data = Database::get_row( static::$table, 'email', $email );
+		$status = 'error';
 
-		// Check for duplicates
-		$list = Database::get_results( static::$table, array( 'email' ) );
-		foreach( $list as $item ) {
-			if( $item['email'] === $data['email'] ) {
-				$match = true;
-			}
-		}
+		if( !empty( $data['email'] ) ) :
 
-		// Take appropriate action
-		if( $match ) :
-
-			return $status = 'duplicate';
+			$status = 'duplicate';
 
 		else :
 
-			Database::insert_row( static::$table, $data );
+			$data['email'] = $email;
+			$data['create_date'] = date( 'Y-m-d', time() );
+			$data['create_time'] = date( 'H:i:s', time() );
 
-			$sender = ( get_option( 'mailing_list_settings_sender' ) && get_option( 'mailing_list_settings_sender' ) !== '' ) ? get_option( 'mailing_list_settings_sender' ) : get_bloginfo( 'admin_email' );
-			$subscribe_email = array(
-				'sender' => $sender,
-				'reply_to' => $sender,
+			$email = [
+				'sender' => !empty( get_option( 'mailing_list_settings_sender' ) ) ? get_option( 'mailing_list_settings_sender' ) : get_bloginfo( 'admin_email' ),
 				'recipient' => $email,
 				'subject' => 'Thanks for Subscribing!',
 				'template' => 'subscribe.php'
-			);
+			];
 
-			new Email( $subscribe_email );
-			return $status = 'success';
+			new Email( $email );
+			$status = ( Database::insert_row( static::$table, $data ) ) ? 'success' : 'error';
 
 		endif;
+
+		return $status;
 
 	}
 
@@ -400,42 +384,39 @@ class Mailing_List {
 
 		$resp = array();
 
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-format';
+		$resp['message'] = 'The submitted email address does not match the required format';
+		$resp['display'] = 'Your email address isn\'t valid. Please try again.';
+
 		// Scrub out invalid email addresses
 		if( preg_match( '/^[A-Za-z0-9._%\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,4}$/', $email ) ) :
 
-			// Remove email from mailing list
-			$status = static::remove_from_database( strtolower( $email ) );
+			switch( static::remove_from_database( $email ) ) {
 
-			switch( $status ) {
-
-				case "success" :
+				case 'success':
 					$resp['status'] = 'success';
-					$resp['desc'] = 'removed';
+					$resp['type'] = 'removed';
 					$resp['message'] = 'The submitted email address has successfully been removed from the mailing list.';
-					$resp['user'] = 'Your email has been successfully removed from our mailing list.';
+					$resp['display'] = 'Your email has been successfully removed from our mailing list.';
 					break;
 
-				case "not-found" :
+				case 'not-found':
 					$resp['status'] = 'error';
-					$resp['desc'] = 'not-found';
+					$resp['type'] = 'not-found';
 					$resp['message'] = 'The submitted email address is not on the mailing list.';
-					$resp['user'] = 'Your email address isn\'t on our mailing list.';
+					$resp['display'] = 'Your email address isn\'t on our mailing list.';
 					break;
 
-				case "error" :
+				case 'error':
 					$resp['status'] = 'error';
-					$resp['desc'] = 'database-connection-error';
+					$resp['type'] = 'database-connection-error';
 					$resp['message'] = 'An error occured connecting to the database.  Try again later.';
-					$resp['user'] = 'Sorry, something went wrong.  Please try again later.';
+					$resp['display'] = 'Sorry, something went wrong.  Please try again later.';
 					break;
 
 			}
 
-		else :
-			$resp['status'] = 'error';
-			$resp['desc'] = 'invalid-format';
-			$resp['message'] = 'The submitted email address does not match the required format.';
-			$resp['user'] = 'Your email address isn\'t valid.  Please try again.';
 		endif;
 
 		return $resp;
@@ -444,34 +425,34 @@ class Mailing_List {
 
 	protected static function remove_from_database( $email ) {
 
+		$email = strtolower( $email );
 		$data = Database::get_row( static::$table, 'email', $email );
+		$status = 'error';
 
-		if( !empty( $data['email'] ) ) :
+		if( empty( $data['email'] ) ) :
 
-			//Database::delete_row( static::$table, 'email', $email );
-			$data['email'] = 'deleted-' . rand( 9999, 999999999 );
-			$data['status'] = 'deleted';
-			$data['delete_date'] = date( 'Y-m-d', time() );
-			$data['delete_time'] = date( 'H:i:s', time() );
-			Database::update_row( static::$table, 'id', $data['id'], $data );
-
-			$sender = ( get_option( 'mailing_list_settings_sender' ) && get_option( 'mailing_list_settings_sender' ) !== '' ) ? get_option( 'mailing_list_settings_sender' ) : get_bloginfo( 'admin_email' );
-			$unsubscribe_email = array(
-				'sender' => $sender,
-				'reply_to' => $sender,
-				'recipient' => $email,
-				'subject' => 'Unsubscribe Confirmation',
-				'template' => 'unsubscribe.php'
-			);
-
-			new Email( $unsubscribe_email );
-			return $status = 'success';
+			$status = 'not-found';
 
 		else :
 
-			return $status = 'not-found';
+			$data['email'] = 'deleted-' . rand( 9999, 99999999 );
+			$data['status'] = 'deleted';
+			$data['delete_date'] = date( 'Y-m-d', time() );
+			$data['delete_time'] = date( 'H:i:s', time() );
+
+			$email = [
+				'sender' => !empty( get_option( 'mailing_list_settings_sender' ) ) ? get_option( 'mailing_list_settings_sender' ) : get_bloginfo( 'admin_email' ),
+				'recipient' => $email,
+				'subject' => 'Unsubscribe Confirmation',
+				'template' => 'unsubscribe.php'
+			];
+
+			new Email( $email );
+			$status = ( Database::update_row( static::$table, 'id', $data['id'], $data ) ) ? 'success' : 'error';
 
 		endif;
+
+		return $status;
 
 	}
 
