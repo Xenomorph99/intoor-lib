@@ -231,7 +231,7 @@ class Popular {
 
 	public static function get_popular( $custom_args = array() ) {
 
-		$args = array(
+		$args = [
 			'count' => 10,						// Number of posts to retrieve
 			'post_type' => array( 'post' ),		// This is where you would also include custom post types
 			'category' => 0,					// Filter by categories (only one post type allowed if filtering by categories)
@@ -241,7 +241,7 @@ class Popular {
 			'random' => false,					// Randomize the returned posts
 			'offset' => 0,						// Offset the posts returned - maybe you want top 10-20 not 1-10
 			'inflated' => false					// Include inflated numbers
-		);
+		];
 
 		$args = wp_parse_args( $custom_args, $args );
 		extract( $args );

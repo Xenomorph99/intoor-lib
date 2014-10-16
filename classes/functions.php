@@ -1,6 +1,6 @@
 <?php
 /**
- * This model contains custom functions that perform a variety of operations
+ * This model contains custom methods that perform a variety of operations
  * throughout the Intoor library.
  *
  * @package		Интоор Library (intoor)
@@ -22,7 +22,6 @@ class Functions {
 		$s = preg_replace("/[^a-z0-9_\s-]/", "", $s);
 		$s = preg_replace("/[\s-]+/", " ", $s);
 		$s = preg_replace("/[\s_]/", $symbol, $s);
-
 		return $s;
 
 	}
