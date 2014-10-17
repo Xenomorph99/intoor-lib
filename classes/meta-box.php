@@ -75,7 +75,7 @@ class Meta_Box {
 
 	public function setup_meta_box() {
 
-		extract( $this->settings );
+		extract( $this->args );
 
 		foreach( $post_type as $type ) {
 			add_meta_box( $meta_box_id, $title, array( &$this, 'setup_meta_box_view' ), $type, $context, $priority, $callback_args );
@@ -85,16 +85,7 @@ class Meta_Box {
 
 	public function setup_meta_box_view() {
 
-		$data = Database::get_results( $this->args['table'], null, array( 'post_id' => (string) get_the_ID() ) );
-		
-		// Use default values if a row does not yet exist for the post
-		if( empty( $data['id'] ) ) :
-
-			foreach( $this->args['table']['structure'] as $column => $value ) {
-				$data[$column] = isset( $value['default'] ) ? $value['default'] : '';
-			}
-
-		endif;
+		$data = Database::get_results( $this->args['table'], null, array( 'post_id' => (string)get_the_ID() ) );
 
 		// Include the specified view or create a standard default meta box view
 		if( !empty( $this->args['view'] ) ) :
@@ -134,7 +125,7 @@ class Meta_Box {
 	}
 
 	public function create_meta_box_structure( $data ) {
-
+		
 		$prefix = $this->args['table']['prefix'] . "_";
 		$s = "";
 

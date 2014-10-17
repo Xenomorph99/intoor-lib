@@ -147,6 +147,10 @@ class Social {
 		'prefix' => 'soc',
 		'version' => '1.0',
 		'structure' => [
+			'post_id' => [
+				'sql' => 'BIGINT(20)',
+				'type' => 'hidden'
+			],
 			'facebook_shares' => [
 				'sql' => 'BIGINT(20)',
 				'default' => '0'
@@ -225,7 +229,7 @@ class Social {
 
 	protected function setup_social_media() {
 
-		Database::install_table( static::$table, true );
+		Database::install_table( static::$table );
 		API::new_key( 'social_sharing' );
 
 	}

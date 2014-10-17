@@ -42,12 +42,11 @@ class Database {
 
 	}
 
-	protected static function create_table_sql( $table, $post_id = false ) {
+	protected static function create_table_sql( $table ) {
 
 		global $wpdb;
 		$sql = "CREATE TABLE " . $wpdb->prefix . $table['name'] . " (\n";
 		$sql .= "id BIGINT(20) NOT NULL AUTO_INCREMENT,\n";
-		$sql .= ( $post_id ) ? "post_id BIGINT(20) NOT NULL,\n" : "";
 
 		foreach( $table['structure'] as $col => $args ) {
 			$default = ( isset( $args['default'] ) && $args['sql'] !== 'LONGTEXT' ) ? " DEFAULT '" . $args['default'] . "'" : "";
@@ -85,16 +84,7 @@ class Database {
 
 		global $wpdb;
 		$table_name = $wpdb->prefix . $table_name;
-		$has_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE '%s'", $table_name ) );
-
-		if( $has_table ) :
-
-			$wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS %s", $table_name ) );
-			return true;
-
-		endif;
-
-		return false;
+		return $wpdb->query( $wpdb->prepare( "DROP TABLE IF EXISTS %s", $table_name ) );
 
 	}
 
@@ -106,8 +96,7 @@ class Database {
 
 		if( $has_column ) :
 
-			$wpdb->query( $wpdb->prepare( "ALTER TABLE %s DROP COLUMN %s", $table_name, $column_name ) );
-			return true;
+			return $wpdb->query( $wpdb->prepare( "ALTER TABLE %s DROP COLUMN %s", $table_name, $column_name ) );
 		
 		endif;
 
@@ -117,14 +106,15 @@ class Database {
 
 	public static function get_results( $table, $col_arr = NULL, $match_arr = NULL ) {
 
+		global $wpdb, $post;
+		$data = array();
+
 		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) :
 
-			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
 			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
 			$columns = '*';
 			$match = '';
-			$data = array();
 
 			if( isset( $col_arr ) ) {
 				$columns = '';
@@ -159,8 +149,8 @@ class Database {
 			}
 
 			$db = ( isset( $match_arr ) )
-				? $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM %s WHERE $match", $table_name ), ARRAY_A )
-				: $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM %s", $table_name ), ARRAY_A );
+				? $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM $table_name WHERE $match", array() ), ARRAY_A )
+				: $wpdb->get_results( $wpdb->prepare( "SELECT $columns FROM $table_name", array() ), ARRAY_A );
 
 			if( !empty( $db ) ) :
 
@@ -176,22 +166,35 @@ class Database {
 					$count++;
 				}
 
+			else :
+
+				$defaults = array();
+				foreach( $table['structure'] as $col => $args ) {
+					if( $col === 'post_id' ) {
+						$defaults[$col] = $post->ID;
+					} else {
+						$defaults[$col] = !empty( $args['default'] ) ? $args['default'] : '';
+					}
+				}
+				$data[0] = $defaults;
+
 			endif;
 
-			return $data;
-
 		endif;
+
+		return $data;
 
 	}
 
 	public static function get_row( $table, $unique_key, $unique_value ) {
 
+		global $wpdb;
+		$data = array();
+
 		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) :
 
-			global $wpdb;
 			$table_name = $wpdb->prefix . $table['name'];
 			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
-			$data = array();
 			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value, $key ) : $unique_value;
 			$db = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE $unique_key = '$unique_value'", array() ), ARRAY_A );
 
@@ -211,9 +214,9 @@ class Database {
 
 			endif;
 
-			return $data;
-
 		endif;
+
+		return $data;
 
 	}
 

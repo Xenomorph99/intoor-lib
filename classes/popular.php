@@ -32,6 +32,10 @@ class Popular {
 		'prefix' => 'pop',
 		'version' => '1.0',
 		'structure' => [
+			'post_id' => [
+				'sql' => 'BIGINT(20)',
+				'type' => 'hidden'
+			],
 			'views' => [
 				'sql' => 'BIGINT(20)',
 				'type' => 'hidden',
@@ -62,7 +66,7 @@ class Popular {
 
 	protected function setup_popular_tracking() {
 
-		Database::install_table( static::$table, true );
+		Database::install_table( static::$table );
 		API::new_key( 'popular' );
 
 	}
