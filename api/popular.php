@@ -2,8 +2,6 @@
 /**
  * Popular API
  *
- * Required parameters: action, post_id
- *
  * Required classes: Popular
  *
  * @package		Интоор Library (intoor)
@@ -19,37 +17,52 @@ header( 'Content-type: application/json' );
 require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( __FILE__ ) ) . '/config.php';
 
-$resp = array();
-$params = $_POST;
+extract( $_POST );
 
 // Set the default API response
+$resp = array();
 $resp['status'] = 'error';
 $resp['type'] = 'unauthorized-access';
 $resp['message'] = 'Unauthorized Access';
 
-// Validate API Key
-if( empty( $params['api-key'] ) || !API::key_auth( 'popular', $params['api-key'] ) ) :
+// Authenticate API Key
+if( empty( $api_key ) || !API::key_auth( 'popular', $api_key ) ) :
 
 	die( 'Unauthorized Access' );
 
 else :
 
-	$resp['status'] = 'error';
 	$resp['type'] = 'missing-parameters';
 	$resp['message'] = 'Warning: required parameters not found';
 
 	// Verify required parameters
-	if( !empty( $params['action'] ) && !empty( $params['post_id'] ) ) :
+	if( !empty( $action ) && !empty( $post_id ) ) :
 
-		$resp = Popular::run_api_action( $params['action'], $params );
+		switch( $action ) {
+
+			case 'like':
+				$resp = Popular::add_page_like( $post_id );
+				break;
+
+			default:
+				$resp['type'] = 'invalid-action';
+				$resp['message'] = 'Defined API action cannot be performed';
+				break;
+
+		}
+
+	endif;
+
+	// Redirect or return JSON response string
+	if( !empty( $redirect ) ) :
+
+		$resp['message'] = base64_encode( $resp['message'] );
+		header( 'Location: ' . $redirect . '?' . http_build_query( $resp ), TRUE, 303 );
+	
+	else :
+
+		echo json_encode( $resp );
 
 	endif;
 
 endif;
-
-// Redirect or return JSON response string
-if( !empty( $params['redirect'] ) ) {
-	header( 'Location: ' . $params['redirect'] . '?' . http_build_query( $resp ), TRUE, 303 );
-} else {
-	echo json_encode( $resp );
-}

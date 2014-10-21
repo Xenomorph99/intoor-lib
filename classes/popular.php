@@ -159,27 +159,7 @@ class Popular {
 
 	}
 
-	public static function run_api_action( $action, $arr = array() ) {
-
-		$resp = array();
-
-		$resp['status'] = 'error';
-		$resp['type'] = 'invalid-action';
-		$resp['message'] = 'Defined API action cannot be performed';
-
-		switch( $action ) {
-
-			case 'like':
-				$resp = static::add_page_like( $arr['post_id'] );
-				break;
-
-		}
-
-		return $resp;
-
-	}
-
-	protected static function add_page_like( $post_id ) {
+	public static function add_page_like( $post_id ) {
 
 		$resp = array();
 
@@ -201,7 +181,6 @@ class Popular {
 
 			else :
 
-				$resp['status'] = 'error';
 				$resp['type'] = 'database-error';
 				$resp['message'] = 'An error occured connecting to the database. Try again later.';
 

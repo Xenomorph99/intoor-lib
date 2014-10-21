@@ -35,11 +35,22 @@ class API {
 
 	}
 
+	public static function keygen( $min = 10000000, $max = 999999999 ) {
+
+		$key = rand($min, $max);
+		$key = Encryption::encrypt( $key );
+		$key = str_replace( '/', '_', $key );
+		$key = str_replace( '+', '_', $key );
+		$key = str_replace( '=', '_', $key );
+		return $key;
+
+	}
+
 	public static function new_key( $name ) {
 
 		$data = Database::get_row( static::$table, 'name', strtolower( str_replace( ' ', '_', $name ) ) );
 		
-		return empty( $data['name'] ) ? Database::insert_row( static::$table, array( 'name' => $name, 'api_key' => Encryption::keygen() ) ) : false;
+		return empty( $data['name'] ) ? Database::insert_row( static::$table, array( 'name' => $name, 'api_key' => static::keygen() ) ) : false;
 
 	}
 

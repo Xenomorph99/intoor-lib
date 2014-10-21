@@ -280,32 +280,7 @@ class Mailing_List {
 
 	}
 
-	public static function run_api_action( $action, $arr = array() ) {
-
-		$resp = array();
-
-		$resp['status'] = 'error';
-		$resp['type'] = 'invalid-action';
-		$resp['message'] = 'Defined API action cannot be performed';
-		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
-
-		switch( $action ) {
-
-			case 'subscribe':
-				$resp = static::save_email( $arr['$email'] );
-				break;
-
-			case 'unsubscribe':
-				$resp = static::delete_email( $arr['email'] );
-				break;
-
-		}
-		
-		return $resp;
-
-	}
-
-	protected static function save_email( $email ) {
+	public static function save_email( $email ) {
 
 		$resp = array();
 
@@ -380,10 +355,10 @@ class Mailing_List {
 
 	}
 
-	protected static function delete_email( $email ) {
+	public static function delete_email( $email ) {
 
+		$email = strtolower( $email );
 		$resp = array();
-
 		$resp['status'] = 'error';
 		$resp['type'] = 'invalid-format';
 		$resp['message'] = 'The submitted email address does not match the required format';

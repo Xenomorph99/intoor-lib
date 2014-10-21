@@ -30,15 +30,4 @@ class Encryption {
 
 	}
 
-	public static function keygen( $min = 10000000, $max = 999999999 ) {
-
-		$rand = rand($min, $max);
-		$key = static::encrypt( $rand );
-		$key = str_replace( '/', '_', $key );
-		$key = str_replace( '+', '_', $key );
-		$key = str_replace( '=', '_', $key );
-		return $key;
-
-	}
-
 }

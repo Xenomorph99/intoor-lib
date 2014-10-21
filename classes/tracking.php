@@ -82,7 +82,7 @@ class Tracking {
 		$ga = [
 			'title' => 'Google Analytics',
 			'menu_title' => 'Google Analytics',
-			'defaults' => $this->ga_options
+			'fields' => $this->ga_options
 		];
 
 		$tracking = [

@@ -290,145 +290,125 @@ class Social {
 
 	}
 
-	public static function get_social_media_icon( $name ) {
+	public static function get_social_media_icon( $network ) {
 
-		return file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $name . '.svg' );
-
-	}
-
-	public static function social_media_icon( $name ) {
-
-		echo static::get_social_media_icon( $name );
+		return file_get_contents( INTOOR_IMAGES_DIR . 'social/icon_' . $network . '.svg' );
 
 	}
 
-	public static function get_social_media_url( $name ) {
+	public static function social_media_icon( $network ) {
 
-		return get_option( 'social_media_settings_' . $name );
-
-	}
-
-	public static function social_media_url( $name ) {
-
-		echo static::get_social_media_url( $name );
+		echo static::get_social_media_icon( $network );
 
 	}
 
-	public static function get_social_media_button( $name, $class = '' ) {
+	public static function get_social_media_url( $network ) {
 
-		return '<a class="' . $class . '" href="' . static::get_social_media_url( $name ) . '" rel="nofollow">' . static::get_social_media_icon( $name ) . '</a>';
-
-	}
-
-	public static function social_media_button( $name, $class = '' ) {
-
-		echo static::get_social_media_button( $name, $class );
+		return get_option( 'social_media_settings_' . $network );
 
 	}
 
-	public static function get_social_media_share_url( $name, $post_id ) {
+	public static function social_media_url( $network ) {
+
+		echo static::get_social_media_url( $network );
+
+	}
+
+	public static function get_social_media_button( $network, $class = '' ) {
+
+		return '<a class="' . $class . '" href="' . static::get_social_media_url( $network ) . '" rel="nofollow">' . static::get_social_media_icon( $network ) . '</a>';
+
+	}
+
+	public static function social_media_button( $network, $class = '' ) {
+
+		echo static::get_social_media_button( $network, $class );
+
+	}
+
+	public static function get_social_media_share_url( $network, $post_id ) {
 
 		global $post;
 		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
-		$url = ( !empty( $data[$name.'_link'] ) ) ? static::$share_url[$name] . $data[$name.'_link'] : static::$share_url[$name] . get_permalink( $post_id );
+		$url = ( !empty( $data[$network.'_link'] ) ) ? static::$share_url[$network] . $data[$network.'_link'] : static::$share_url[$network] . get_permalink( $post_id );
 		return $url;
 
 	}
 
-	public static function social_media_share_url( $name, $post_id ) {
+	public static function social_media_share_url( $network, $post_id ) {
 
-		echo static::get_social_media_share_url( $name, $post_id );
+		echo static::get_social_media_share_url( $network, $post_id );
 
 	}
 
-	public static function get_social_media_share_count( $name, $post_id ) {
+	public static function get_social_media_share_count( $network, $post_id ) {
 
 		global $post;
 		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
-		$count = ( !empty( $data[$name.'_shares'] ) ) ? (int)$data[$name.'_shares'] + (int)$data[$name.'_infl'] : $data[$name.'_infl'];
+		$count = ( !empty( $data[$network.'_shares'] ) ) ? (int)$data[$network.'_shares'] + (int)$data[$network.'_infl'] : $data[$network.'_infl'];
 		return $count;
 
 	}
 
-	public static function social_media_share_count( $name, $post_id ) {
+	public static function social_media_share_count( $network, $post_id ) {
 
-		echo static::get_social_media_share_count( $name, $post_id );
+		echo static::get_social_media_share_count( $network, $post_id );
 
 	}
 
-	public static function get_social_media_share_button( $name, $post_id, $show_count = true, $icon_left = true ) {
+	public static function get_social_media_share_button( $network, $post_id = NULL, $show_count = true, $icon_left = true ) {
 
 		global $post;
 		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		if( $icon_left ) {
-			$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $name ) . '</span><span class="social-media-share-button-count">' . static::get_social_media_share_count( $name, $post_id ) . '</span>' : static::get_social_media_icon( $name );
+			$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span><span class="social-media-share-button-count">' . static::get_social_media_share_count( $network, $post_id ) . '</span>' : static::get_social_media_icon( $network );
 		} else {
-			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $name, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $name ) . '</span>' : static::get_social_media_icon( $name );
+			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $network, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span>' : static::get_social_media_icon( $network );
 		}
 		$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-		return '<a class="share-counter" href="' . static::get_social_media_share_url( $name ) . '" rel="nofollow" target="_blank" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $name . '">' . $cont . '</a>';
+		return "<a class='share-counter' href='" . static::get_social_media_share_url( $network ) . "' rel='nofollow' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a>";
 
 	}
 
-	public static function social_media_share_button( $name, $post_id, $show_count = true, $icon_left = true ) {
+	public static function social_media_share_button( $network, $post_id = NULL, $show_count = true, $icon_left = true ) {
 
-		echo static::get_social_media_share_button( $name, $post_id, $show_count, $icon_left );
+		echo static::get_social_media_share_button( $network, $post_id, $show_count, $icon_left );
 
 	}
 
-	public static function get_social_media_share_buttons( $name_arr, $post_id, $show_count = true, $icon_left = true ) {
+	public static function get_social_media_share_buttons( $network_arr, $post_id = NULL, $show_count = true, $icon_left = true ) {
 
 		global $post;
 		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$s = '<ul class="social-media-share-buttons">';
-		foreach( $name_arr as $name ) {
-			$url = ( !empty( $data[$name.'_link'] ) ) ? static::$share_url[$name] . $data[$name.'_link'] : static::$share_url[$name] . get_permalink( $post_id );
-			$count = ( !empty( $data[$name.'_shares'] ) ) ? (int)$data[$name.'_shares'] + (int)$data[$name.'_infl'] : $data[$name.'_infl'];
+		foreach( $network_arr as $network ) {
+			$url = ( !empty( $data[$network.'_link'] ) ) ? static::$share_url[$network] . $data[$network.'_link'] : static::$share_url[$network] . get_permalink( $post_id );
+			$count = ( !empty( $data[$network.'_shares'] ) ) ? (int)$data[$network.'_shares'] + (int)$data[$network.'_infl'] : $data[$network.'_infl'];
 			if( $icon_left ) {
-				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $name ) . '</span><span class="social-media-share-button-count">' . $count . '</span>' : static::get_social_media_icon( $name );
+				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span><span class="social-media-share-button-count">' . $count . '</span>' : static::get_social_media_icon( $network );
 			} else {
-				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $name ) . '</span>' : static::get_social_media_icon( $name );
+				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span>' : static::get_social_media_icon( $network );
 			}
 			$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-			$s .= '<li class="social-media-share-button"><a class="share-counter share-link-disabled" href="' . $url . '" rel="nofollow" target="_blank" data-api="' . $api . '" data-id="' . $post_id . '" data-key="' . $name . '">' . $cont . '</a></li>';
+			$s .= "<li class='social-media-share-button'><a class='share-counter share-link-disabled' href='$url' rel='nofollow' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a></li>";
 		}
 		$s .= '</ul>';
 		return $s;
 
 	}
 
-	public static function social_media_share_buttons( $name_arr, $post_id, $show_count = true, $icon_left = true ) {
+	public static function social_media_share_buttons( $network_arr, $post_id = NULL, $show_count = true, $icon_left = true ) {
 
-		echo static::get_social_media_share_buttons( $name_arr, $post_id, $show_count, $icon_left );
-
-	}
-
-	public static function run_api_action( $action, $arr = array() ) {
-
-		$resp = array();
-
-		$resp['status'] = 'error';
-		$resp['type'] = 'invalid-action';
-		$resp['message'] = 'Defined API action cannot be performed.';
-
-		switch( $action ) {
-
-			case 'share':
-				$resp = static::add_share( $arr['post_id'], $arr['name'] );
-				break;
-
-		}
-
-		return $resp;
+		echo static::get_social_media_share_buttons( $network_arr, $post_id, $show_count, $icon_left );
 
 	}
 
-	public static function add_share( $post_id, $name ) {
+	public static function add_share( $post_id, $network ) {
 
-		$name = strtolower( $name );
+		$network = strtolower( $network );
 		$networks = array();
 		$resp = array();
 
@@ -443,15 +423,14 @@ class Social {
 		// Scrub out invalid post_id's
 		if( preg_match( '/^[0-9]+$/', $post_id ) ) :
 
-			$resp['status'] = 'error';
 			$resp['type'] = 'invalid-network';
 			$resp['message'] = 'The submitted network name is not supported';
 
 			// Scrub out invalid network names
-			if( in_array( $name, $networks ) ) :
+			if( in_array( $network, $networks ) ) :
 
 				$data = Database::get_row( static::$table, 'post_id', $post_id );
-				$data[$name.'_shares'] = (int)$data[$name.'_shares'] + 1;
+				$data[$network.'_shares'] = (int)$data[$network.'_shares'] + 1;
 
 				if( Database::save_data( static::$table, $data ) ) :
 
@@ -461,7 +440,6 @@ class Social {
 
 				else:
 
-					$resp['status'] = 'error';
 					$resp['type'] = 'database-error';
 					$resp['message'] = 'An error occured connecting to the database. Try again later.';
 
