@@ -12,7 +12,7 @@
 
 class Taxonomy {
 
-	public $args = array(
+	public $args = [
 		'name_plural' => '',
 		'name_singular' => '',
 		'slug' => '',
@@ -27,7 +27,7 @@ class Taxonomy {
 		'update_count_callback' => '',
 		'capabilities' => array(),
 		'sort' => false
-	);
+	];
 
 	public function __construct( $args ) {
 
@@ -48,7 +48,7 @@ class Taxonomy {
 
 		extract( $this->args );
 
-		$labels = array(
+		$labels = [
 			'name' => _x( $name_plural, 'taxonomy general name' ),
 			'singular_name' => _x( $name_singular, 'taxonomy singular name' ),
 			'search_items' => __( "Search $name_plural" ),
@@ -66,9 +66,9 @@ class Taxonomy {
 			'choose_from_most_used' => __( "Choose from the most used $name_plural" ),
 			'not_found' => __( "No $name_plural found." ),
 			'menu_name' => __( $name_plural ),
-		);
+		];
 
-		$arr = array(
+		$arr = [
 			'labels' => $labels,
 			'rewrite' => array( 'slug' => $slug, 'hierarchical' => $hierarchical ),
 			'public' => $public,
@@ -81,7 +81,7 @@ class Taxonomy {
 			'update_count_callback' => $update_count_callback,
 			'capabilities' => $capabilities,
 			'sort' => $sort
-		);
+		];
 
 		register_taxonomy( $id, $post_type, $arr );
 

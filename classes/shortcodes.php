@@ -1,8 +1,8 @@
 <?php
 /**
- * This model creates and adds shortcodes to Wordpress.
+ * This model adds shortcodes to the Wordpress admin.
  *
- * Note: The shortcodes parameter of the __construct method must contain an
+ * NOTE: The shortcodes parameter of the __construct method must contain an
  * associative array of 'name' => 'callback'.  If callbacks are methods within
  * a class they must be in the format of array( Class, 'method_name' );
  *
@@ -14,15 +14,16 @@
  * @version		Release: 1.0
  */
 
-class Shortcode {
+class Shortcodes {
 
-	public $shortcode = array();
+	public $shortcodes = array();
 
 	public function __construct( $arr ) {
 
+		// See note above for setting up $arr parameter
 		if( !empty( $arr ) && is_array( $arr ) ) :
 
-			$this->shortcode = $arr;
+			$this->shortcodes = $arr;
 			$this->wp_hooks();
 		
 		endif;
@@ -31,8 +32,10 @@ class Shortcode {
 
 	protected function wp_hooks() {
 
-		foreach( $this->shortcode as $name => $callback ) {
+		foreach( $this->shortcodes as $name => $callback ) {
+
 			add_shortcode( $name, $callback );
+
 		}
 
 	}

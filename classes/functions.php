@@ -1,6 +1,6 @@
 <?php
 /**
- * This model contains custom functions that perform a variety of operations
+ * This model contains custom methods that perform a variety of operations
  * throughout the Intoor library.
  *
  * @package		Интоор Library (intoor)
@@ -22,7 +22,6 @@ class Functions {
 		$s = preg_replace("/[^a-z0-9_\s-]/", "", $s);
 		$s = preg_replace("/[\s-]+/", " ", $s);
 		$s = preg_replace("/[\s_]/", $symbol, $s);
-
 		return $s;
 
 	}
@@ -63,6 +62,43 @@ class Functions {
 		$name = count( $img_array ) - 1;
 		$img_name = $img_array[$name];
 		return get_template_directory_uri() . "/images/$dir_name/$img_name";
+
+	}
+
+	/**
+	 * Returns a randomly generated number within the defined constraints.
+	 */
+	public static function numgen( $range = NULL, $min = 100, $max = 500 ) {
+
+		switch( $range ) {
+
+			case 'low' :
+				$num = rand( 0, 10 );
+				break;
+
+			case 'mid' :
+				$num = rand( 10, 50 );
+				break;
+
+			case 'high' :
+				$num = rand( 50, 100 );
+				break;
+
+			case 'ultra' :
+				$num = rand( 100, 500 );
+				break;
+
+			case 'custom' :
+				$num = rand( $min, $max );
+				break;
+
+			default :
+				$num = 1;
+				break;
+
+		}
+
+		return $num;
 
 	}
 

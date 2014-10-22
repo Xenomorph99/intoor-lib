@@ -12,7 +12,7 @@
 
 class Post_Type {
 
-	public $settings = array(
+	public $args = [
 		'post_type' => '',							// Name of the custom post type (no spaces, lowercase)
 		'name_singular' => '',						// Singular display name of the post type
 		'name_plural' => '',						// Plural display name of the post type
@@ -33,16 +33,13 @@ class Post_Type {
 		'can_export' => true,						// Custom post type can be exported
 		'rewrite' => true,							// Custom post type posts can be rewritten
 		'capability_type' => 'post'					// Set the functionality of the custom post type similar to: post, page
-	);
+	];
 
-	public function __construct( $arr = null ) {
+	public function __construct( $args ) {
 
-		if( !empty( $arr ) ) {
-			foreach( $arr as $name => $value ) {
-				$this->settings[$name] = $value;
-			}
-			$this->wp_hooks();
-		}
+		$this->args = wp_parse_args( $args, $this->args );
+
+		$this->wp_hooks();
 
 	}
 
@@ -52,15 +49,15 @@ class Post_Type {
 		add_action( 'init', array( &$this, 'register_custom_post_type' ) );
 
 		// Add the custom post type's archive page to WP nav menus
-		add_action('admin_head-nav-menus.php', array( &$this, 'wpclean_add_metabox_menu_posttype_archive' ) );
+		add_action('admin_head-nav-menus.php', array( &$this, 'add_post_type_archive_to_menus' ) );
 
 	}
 
 	public function register_custom_post_type() {
 
-		extract( $this->settings );
+		extract( $this->args );
 
-		$labels = array(
+		$labels = [
 			'name' => _x( $name_plural, $namespace ),
 			'singular_name' => _x( $name_singular, $namespace ),
 			'add_new' => _x( "Add New", $namespace ),
@@ -73,9 +70,9 @@ class Post_Type {
 			'not_found_in_trash' => _x( "No $name_plural found in Trash", $namespace ),
 			'parent_item_colon' => _x( "Parent $name_singular:", $namespace ),
 			'menu_name' => _x( $name_plural, $namespace )
-		);
+		];
 
-		$args = array(
+		$args = [
 			'labels' => $labels,
 			'heirarchial' => $heirarchial,
 			'supports' => $supports,
@@ -93,22 +90,22 @@ class Post_Type {
 			'can_export' => $can_export,
 			'rewrite' => $rewrite,
 			'capability_type' => $capability_type
-		);
+		];
 
 		register_post_type( $post_type, $args );
 		flush_rewrite_rules( false );
 
 	}
 
-	public function wpclean_add_metabox_menu_posttype_archive() {
+	public function add_post_type_archive_to_menus() {
 
-		add_meta_box( 'wpclean-metabox-nav-menu-posttype', 'Custom Post Type Archives', array( &$this, 'wpclean_metabox_menu_posttype_archive' ), 'nav-menus', 'side', 'default' );
+		add_meta_box( 'post-type-archive-pages', 'Custom Post Type Archives', array( &$this, 'post_type_archive_meta_box' ), 'nav-menus', 'side', 'default' );
 
 	}
 
-	public function wpclean_metabox_menu_posttype_archive() {
+	public function post_type_archive_meta_box() {
 		
-		$post_types = get_post_types(array('show_in_nav_menus' => true, 'has_archive' => true), 'object');
+		$post_types = get_post_types( array('show_in_nav_menus' => true, 'has_archive' => true), 'object' );
 
 		if( $post_types ) :
 
@@ -134,20 +131,22 @@ class Post_Type {
 
 			$walker = new Walker_Nav_Menu_Checklist( array() );
 
-			echo '<div id="posttype-archive" class="posttypediv">';
-			echo '<div id="tabs-panel-posttype-archive" class="tabs-panel tabs-panel-active">';
-			echo '<ul id="posttype-archive-checklist" class="categorychecklist form-no-clear">';
-			echo walk_nav_menu_tree( array_map( 'wp_setup_nav_menu_item', $items ), 0, ( object ) array( 'walker' => $walker ) );
-			echo '</ul>';
-			echo '</div>';
-			echo '</div>';
+			$s = '<div id="posttype-archive" class="posttypediv">';
+			$s .= '<div id="tabs-panel-posttype-archive" class="tabs-panel tabs-panel-active">';
+			$s .= '<ul id="posttype-archive-checklist" class="categorychecklist form-no-clear">';
+			$s .= walk_nav_menu_tree( array_map( 'wp_setup_nav_menu_item', $items ), 0, ( object ) array( 'walker' => $walker ) );
+			$s .= '</ul>';
+			$s .= '</div>';
+			$s .= '</div>';
 
-			echo '<p class="button-controls">';
-			echo '<span class="add-to-menu">';
-			echo '<input type="submit"' . disabled( 1, 0 ) . ' class="button-secondary submit-add-to-menu right" value="' . __( 'Add to Menu', 'andromedamedia' ) . '" name="add-posttype-archive-menu-item" id="submit-posttype-archive" />';
-			echo '<span class="spinner"></span>';
-			echo '</span>';
-			echo '</p>';
+			$s .= '<p class="button-controls">';
+			$s .= '<span class="add-to-menu">';
+			$s .= '<input type="submit"' . disabled( 1, 0 ) . ' class="button-secondary submit-add-to-menu right" value="' . __( 'Add to Menu', $this->args['namespace'] ) . '" name="add-posttype-archive-menu-item" id="submit-posttype-archive" />';
+			$s .= '<span class="spinner"></span>';
+			$s .= '</span>';
+			$s .= '</p>';
+
+			echo $s;
 
 		endif;
 	}

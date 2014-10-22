@@ -36,10 +36,21 @@ Installation
 	define( 'INTOOR_DIR_NAME', 'lib' );
 	```
 
+6. Add encryption keys to your `wp-config.php` file.
+
+	```php
+	define( 'INTOOR_API_KEY', 'put your unique phrase here' );
+	define( 'INTOOR_MAIL_KEY', 'put your unique phrase here' );
+	```
+
 
 Change Log
 ----------
-### v1.0 - Current Version
+### v1.1 - Current Version
+* PHP v5.5 progressive refactor (dropped support for PHP v5.3)
+* Mailing List, Popular, & Social API refactor
+
+### v1.0
 * Initial file structure (config, paths, etc)
 * Database, encryption, and general function classes that manage interaction with $wpdb
 * Admin Menu class to create WP admin menu pages

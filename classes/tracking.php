@@ -14,27 +14,47 @@
 
 class Tracking {
 
-	public $args = array(
+	public $args = [
 		'ga' => true,					// Include Google Analytics tracking
-		'query_params' => true			// Include query parameter tracking
-	);
+		'query_params' => true			// Include query parameter session tracking
+	];
 
-	public $ga_options = array(
-		'live_url' => array( '', 'text', 'Live Site URL', NULL, 'example.com' ),
-		'account_id' => array( '', 'text', 'Account ID', NULL, 'AA-00000000-0' ),
-		'display_features' => array( '0', 'checkbox', 'Include Display Features' ),
-		'enhanced_link_attribution' => array( '0', 'checkbox', 'Include Enhanced Link Attribution' )
-	);
+	public $ga_options = [
+		'live_url' => [
+			'type' => 'text',
+			'label' => 'Live Site URL',
+			'placeholder' => 'example.com'
+		],
+		'account_id' => [
+			'type' => 'text',
+			'label' => 'Account ID',
+			'placeholder' => 'AA-00000000-0'
+		],
+		'display_features' => [
+			'type' => 'checkbox',
+			'label' => 'Include Display Features',
+			'default' => '0'
+		],
+		'enhanced_link_attribution' => [
+			'type' => 'checkbox',
+			'label' => 'Include Enhanced Link Attribution',
+			'default' => '0'
+		]
+	];
 
-	public static $table = array(
+	public static $table = [
 		'name' => 'tracking',
 		'prefix' => 'trk',
 		'version' => '1.0',
-		'structure' => array(
-			'param' => array( 'VARCHAR(255)', false, NULL ),
-			'value' => array( 'VARCHAR(255)', false, NULL )
-		)
-	);
+		'structure' => [
+			'param' => [
+				'sql' => 'VARCHAR(255)'
+			],
+			'value' => [
+				'sql' => 'VARCHAR(255)'
+			]
+		]
+	];
 
 	public function __construct( $args = array() ) {
 
@@ -59,18 +79,18 @@ class Tracking {
 
 	protected function setup_admin_menus() {
 
-		$ga = array(
+		$ga = [
 			'title' => 'Google Analytics',
 			'menu_title' => 'Google Analytics',
-			'defaults' => $this->ga_options
-		);
+			'fields' => $this->ga_options
+		];
 
-		$tracking = array(
+		$tracking = [
 			'title' => 'Tracking',
 			'menu_title' => 'Tracking',
 			'view' => INTOOR_VIEWS_DIR . 'admin/tracking.php',
 			'table' => static::$table
-		);
+		];
 
 		if( $this->args['ga'] ) {
 			new Admin_Menu( $ga );
@@ -129,8 +149,8 @@ class Tracking {
 
 		$params = static::get_params();
 
-		foreach( $params as $key => $default ) {
-			$_SESSION[$key] = ( isset( $_GET[$key] ) ) ? $_GET[$key] : $default;
+		foreach( $params as $name => $value ) {
+			$_SESSION[$name] = ( isset( $_GET[$name] ) ) ? $_GET[$name] : $value;
 		}
 
 	}
@@ -151,8 +171,8 @@ class Tracking {
 		$s = '';
 		$count = 0;
 
-		foreach( $_SESSION as $key => $value ) {
-			$s .= ( $count == 0 ) ? "?$key=$value" : "&$key=$value";
+		foreach( $_SESSION as $name => $value ) {
+			$s .= ( $count == 0 ) ? "?$name=$value" : "&$name=$value";
 			$count++;
 		}
 
@@ -185,8 +205,8 @@ class Tracking {
 				}
 				$params = $arr + $params;
 				$count = 0;
-				foreach( $params as $key => $value ) {
-					$s .= ( $count == 0 ) ? "?$key=$value" : "&$key=$value";
+				foreach( $params as $name => $value ) {
+					$s .= ( $count == 0 ) ? "?$name=$value" : "&$name=$value";
 					$count++;
 				}
 				$new_url = $url_arr[0] . $s;

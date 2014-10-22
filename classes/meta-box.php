@@ -17,9 +17,7 @@
 
 class Meta_Box {
 
-	public $data = array();
-	public $defaults = array();
-	public $settings = array(
+	public $args = [
 		'title' => '',					// Meta box title (will be converted and used as html ID attr)
 		'callback' => 'none',			// Callback function
 		'post_type' => array( 'post' ),	// Type of screen(s) on which to show the meta box
@@ -33,53 +31,32 @@ class Meta_Box {
 		'admin_view' => NULL,			// Path to the admin menu view (if set to null a default view will be created)
 		'array' => array(),				// Array of additional data to be passed to a view
 		'table' => array()				// Database table array
-	);
+	];
 
 	public function __construct( $arr ) {
 
-		$this->settings = wp_parse_args( $arr, $this->settings );
-		$this->settings['meta_box_id'] = Functions::str_smash( $this->settings['title'] );
-		$this->settings['table']['structure'] = ( $this->settings['ref_post_id'] ) ? array_merge( array( 'post_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ) ), $this->settings['table']['structure'] ) : $this->settings['table']['structure'];
+		$this->args = wp_parse_args( $arr, $this->args );
+		$this->args['meta_box_id'] = Functions::str_smash( $this->args['title'] );
+		$this->args['table']['structure'] = ( $this->args['ref_post_id'] ) ? array_merge( array( 'post_id' => [ 'sql' => 'BIGINT(20)', 'type' => 'hidden' ] ), $this->args['table']['structure'] ) : $this->args['table']['structure'];
 
-		foreach( $this->settings['table']['structure'] as $name => $value ) {
-			if( $name !== 'post_id' ) {
-				if( get_option( $this->settings['meta_box_id'] . '_' . $name ) ) {
-					$this->defaults[$name] = get_option( $this->settings['meta_box_id'] . '_' . $name );
-				} else {
-					$default_value = ( isset( $value[2] ) ) ? $value[2] : '';
-					add_option( $this->settings['meta_box_id'] . '_' . $name, $default_value );
-					$this->defaults[$name] = $default_value;
-				}
-			}
-		}
-
-		if( $this->settings['admin_menu'] ) {
+		if( $this->args['admin_menu'] ) {
 			$this->setup_admin_menu();
 		}
 
-		$this->install_tables();
+		$this->install_table();
 		$this->wp_hooks();
 
 	}
 
 	protected function setup_admin_menu() {
 
-		extract( $this->settings );
-
-		$admin_menu = array(
-			'title' => $title,
-			'view' => $admin_view,
-			'defaults' => $this->defaults,
-			'table' => $table
-		);
-
-		new Admin_Menu( $admin_menu );
+		new Admin_Menu( array( 'title' => $this->args['title'], 'view' => $this->args['admin_view'], 'table' => $this->args['table'] ) );
 
 	}
 
-	protected function install_tables() {
+	protected function install_table() {
 
-		Database::install_table( $this->settings['table'] );
+		Database::install_table( $this->args['table'] );
 
 	}
 
@@ -98,7 +75,7 @@ class Meta_Box {
 
 	public function setup_meta_box() {
 
-		extract( $this->settings );
+		extract( $this->args );
 
 		foreach( $post_type as $type ) {
 			add_meta_box( $meta_box_id, $title, array( &$this, 'setup_meta_box_view' ), $type, $context, $priority, $callback_args );
@@ -108,233 +85,212 @@ class Meta_Box {
 
 	public function setup_meta_box_view() {
 
-		$this->defaults['post_id'] = (string) get_the_ID();
-		$data = Database::get_results( $this->settings['table'], null, array( 'post_id' => (string) get_the_ID() ) );
-		$this->data = ( !empty( $data ) ) ? $data : array( $this->defaults );
+		$data = Database::get_results( $this->args['table'], null, array( 'post_id' => (string)get_the_ID() ) );
 
-		if( !empty( $this->settings['view'] ) ) {
-			extract( $this->settings );
-			$prefix = $table['prefix'] . '_';
-			include_once $this->settings['view'];
+		// Include the specified view or create a standard default meta box view
+		if( !empty( $this->args['view'] ) ) :
+
+			$array = $this->args['array'];
+			$prefix = $this->args['table']['prefix'] . '_';
+			include_once $this->args['view'];
+
+		else :
+
+			$this->default_meta_box_view( $data );
+
+		endif;
+
+	}
+
+	public function default_meta_box_view( $data ) {
+
+		if( $this->args['recursive'] ) {
+
+			echo $this->create_hidden_defaults();
+			echo $this->create_meta_box_structure( $data );
+			echo $this->create_recursive_buttons();
+
+		} elseif( $this->args['admin_menu'] ) {
+
+			echo $this->create_hidden_defaults();
+			echo $this->create_meta_box_structure( $data );
+			echo $this->create_reset_button();
+
 		} else {
-			$this->default_meta_box_view();
+
+			echo $this->create_meta_box_structure( $data );
+
 		}
 
 	}
 
-	public function default_meta_box_view() {
+	public function create_meta_box_structure( $data ) {
+		
+		$prefix = $this->args['table']['prefix'] . "_";
+		$s = "";
 
-		extract( $this->settings );
-		$prefix = $table['prefix'] . '_';
+		for( $i = 0; $i < count( $data ); $i++ ) {
 
-		if( $recursive ) {
+			extract( $data[$i] );
 
-			echo $this->hidden_defaults();
-			echo $this->meta_box_structure();
-			echo $this->recursive_buttons();
+			$row_id = ( !empty( $id ) ) ? $id : "";
+			$s .= "<div class='meta-box-form-section'>";
+			$s .= "<input type='hidden' class='meta-box-section-id' name='{$prefix}id[]' value='$row_id'>";
 
-		} elseif( $admin_menu ) {
-
-			echo $this->hidden_defaults();
-			echo $this->meta_box_structure();
-			echo $this->reset_button();
-
-		} else {
-
-			echo $this->meta_box_structure();
-
-		}
-
-	}
-
-	public function meta_box_structure() {
-
-		extract( $this->settings );
-		$prefix = $table['prefix'] . '_';
-		$s = '';
-
-		for( $i = 0; $i < count( $this->data ); $i++ ) {
-			extract( $this->data[$i] );
-			$row_id = ( !empty( $id ) ) ? $id : '';
-			$s .= '<div class="meta-box-form-section">';
-			$s .= '<input type="hidden" class="meta-box-section-id" name="' . $prefix . 'id[]" value="' . $row_id . '">';
-			foreach( $this->data[$i] as $data_name => $data_value ) {
-				if( $data_name !== 'id' ) {
-					$s .= $this->field( $i, $data_name );
+			foreach( $data[$i] as $column => $value ) {
+				if( $column !== 'id' ) {
+					$s .= $this->field( $i, $prefix, $column, $value );
 				}
 			}
-			$s .= '</div>';
+
+			$s .= "</div>";
+
 		}
 
 		return $s;
 
 	}
 
-	public function hidden_defaults() {
+	public function create_hidden_defaults() {
 
-		extract( $this->settings );
-		$prefix = $table['prefix'] . '_';
+		$prefix = $this->args['table']['prefix'] . '_';
+		$s = "<div class='meta-box-form-defaults' style='display:none; visibility:hidden;'>";
+		$s .= "<input type='hidden' class='meta-box-section-id' name='{$prefix}id[]' value='0'>";
 
-		$s = '<div class="meta-box-form-defaults" style="display:none; visibility:hidden;">';
-		$s .= '<input type="hidden" class="meta-box-section-id" name="' . $prefix . 'id[]" value="0">';
-		foreach( $this->defaults as $default_name => $default_value ) {
-			if( $default_name !== 'id' ) {
-				$s .= $this->field( NULL, $default_name, NULL, NULL, NULL, true );
+		foreach( $this->args['table']['structure'] as $column => $value ) {
+			if( $column !== 'id' ) {
+				$s .= $this->field( NULL, $prefix, $column, $value['default'] );
 			}
 		}
-		$s .= '</div>';
+
+		$s .= "</div>";
+
 		return $s;
 
 	}
 
-	public function reset_button() {
+	public function create_reset_button() {
 
-		$s = '<div class="meta-box-buttons">';
-		$s .= '<button class="button meta-box-restore-defaults">Reset</button>';
-		$s .= '</div>';
+		$s = "<div class='meta-box-buttons'>";
+		$s .= "<button class='button meta-box-restore-defaults'>Reset</button>";
+		$s .= "</div>";
 		return $s;
 
 	}
 
-	public function recursive_buttons() {
+	public function create_recursive_buttons() {
 
-		$s = '<div class="meta-box-buttons">';
-		$s .= '<button class="button meta-box-add-form-section">+</button>';
-		$s .= '<button class="button meta-box-remove-form-section">-</button>';
-		$s .= ( $this->settings['admin_menu'] ) ? '<button class="button meta-box-restore-defaults">Reset</button>' : '';
-		$s .= '</div>';
+		$s = "<div class='meta-box-buttons'>";
+		$s .= "<button class='button meta-box-add-form-section'>+</button>";
+		$s .= "<button class='button meta-box-remove-form-section'>-</button>";
+		$s .= ( $this->args['admin_menu'] ) ? "<button class='button meta-box-restore-defaults'>Reset</button>" : "";
+		$s .= "</div>";
 		return $s;
 
 	}
 
-	public function field( $i, $key, $label = NULL, $id = NULL, $value = NULL, $is_hidden = false ) {
+	public function field( $i, $prefix, $column, $value ) {
 
-		// Define variables
-		$arr = $this->settings['table']['structure'][$key];
-		$prefix = ( isset( $this->settings['table']['prefix'] ) ) ? $this->settings['table']['prefix'] . '_' : '';
-
-		$field_type = ( !empty( $arr[3] ) ) ? $arr[3] : '';
-		$name = $prefix . $key . "[]";
-		$options = ( !empty( $arr[4] ) ) ? $arr[4] : array();
+		$col = $this->args['table']['structure'][$column];
+		$type = !empty( $col['type'] ) ? $col['type'] : '';
+		$name = $prefix . $column . "[]";
+		$options = !empty( $col['options'] ) ? $col['options'] : array();
 		$class = 'meta-box-form-field';
+		$label = isset( $col['label'] ) ? $col['label'] : ucwords( str_replace( '_', ' ', $column ) );
+		$id = !empty( $col['id'] ) ? $col['id'] : $this->args['meta_box_id'] . '-' . str_replace( '_', '-', $column );
+		$value = !empty( $value ) ? $value : '';
+		$placeholder = !empty( $col['placeholder'] ) ? $col['placeholder'] : '';
+		$field = "";
 
-		if( isset( $value ) ) {
-			$value = $value;
-		} else {
-			$data_value = ( isset( $this->data[$i][$key] ) ) ? $this->data[$i][$key] : $this->defaults[$key];
-			$value = get_option( $this->settings['id'] . '_' . $key, $data_value );
-		}
-
-		if( isset( $label ) ) {
-			$label = $label;
-		} else {
-			if( isset( $arr[5] ) ) {
-				$label = $arr[5];
-			} else {
-				$label = str_replace( '_', ' ', $key );
-				$label = ucwords( $label );
-			}
-		}
-
-		if( isset( $id ) ) {
-			$id = $id;
-		} else {
-			$id = ( isset( $arr[6] ) ) ? $arr[6] : $this->settings['meta_box_id'] . '-' . $key;
-		}
-
-		$id = ( !$is_hidden ) ? $id : '';
-
-		// Build & return string
-		$field = '';
-		switch( $field_type ) {
+		switch( $type ) {
 			case 'text' :
 
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
 			case 'number' :
 				
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
 			case 'password' :
 				
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
 			case 'email' :
 				
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
 			case 'url' :
 				
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
 			case 'tel' :
 				
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
 				$field .= "</span><br>";
 
 				break;
 			case 'textarea' :
 
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= '<textarea class="' . $class . '" id="' . $id . '" name="' . $name . '">' . $value . '</textarea>';
+				$field .= "<textarea class='$class' id='$id' name='$name'>$value</textarea>";
 				$field .= "</span><br>";
 
 				break;
 			case 'select' :
 
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:&nbsp;&nbsp;</label>";
-				$field .= '<select class="' . $class . '" id="' . $id . '" name="' . $name . '">';
-				$field .= '<option value="">Select:</option>';
-				foreach( $options as $option_value => $option_label ) {
-					$selected = ( $option_value == $value ) ? " selected='selected'" : "";
-					$field .= '<option value="' . $option_value . '"' . $selected . '>' . $option_label . '</option>';
+				$field .= "<select class='$class' id='$id' name='$name'>";
+				$field .= "<option value=''>Select:</option>";
+				foreach( $options as $opt_value => $opt_label ) {
+					$selected = ( $opt_value == $value ) ? " selected='selected'" : "";
+					$field .= "<option value='$opt_value'$selected>$opt_label</option>";
 				}
-				$field .= '</select>';
-				$field .= '</span><br>';
+				$field .= "</select>";
+				$field .= "</span><br>";
 
 				break;
 
 			case 'checkbox' :
 
-				$checked = ( $value ) ? " checked='checked'" : '';
-				$field .= "<span class='field-type-$field_type'>";
-				$field .= '<input type="hidden" id="hidden-' . $id . '" name="' . $name . '" value="' . $value . '">';
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $id . '"' . $checked . '>';
+				$checked = ( (boolean)$value ) ? " checked='checked'" : "";
+				$field .= "<span class='field-type-$type'>";
+				$field .= "<input type='hidden' id='hidden-$id' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id'$checked>";
 				$field .= "<label for='$id'>$label</label>";
 				$field .= "</span><br>";
 
 				break;
 			case 'radio' :
 
-				$field .= "<span class='field-type-$field_type'>";
+				$field .= "<span class='field-type-$type'>";
 				foreach( $options as $radio_value => $radio_label ) {
 					$radio_id = $id . '-' . Functions::str_smash( $radio_value );
-					$checked = ( $radio_value == $value ) ? " checked='checked'" : '';
-					$field .= '<input type="' . $field_type . '" class="' . $class . '" id="' . $radio_id . '" name="' . $name . '" value="' . $radio_value . '"' . $checked . '>';
+					$checked = ( $radio_value == $value ) ? " checked='checked'" : "";
+					$field .= "<input type='$type' class='$class' id='$radio_id' name='$name' value='$radio_value'$checked>";
 					$field .= "<label for='$radio_id'>$radio_label</label>";
 				}
 				$field .= "</span><br>";
@@ -342,20 +298,20 @@ class Meta_Box {
 				break;
 			case 'hidden' :
 
-				$field .= '<input type="' . $field_type . '" class="' . $class . '" name="' . $name . '" value="' . $value . '">';
+				$field .= "<input type='$type' class='$class' name='$name' value='$value'>";
 
 				break;
 			case 'checkbox-list' :
 
 				$field .= "<div class='categorydiv meta-box-checkbox-container hide-if-no-js'>";
-				$field .= "<ul class='category-tabs'><li class='tabs'>" . $label . "</li></ul>";
-				$field .= '<input type="hidden" class="checkbox-container-controller" name="' . $name . '" value="' . $value . '">';
+				$field .= "<ul class='category-tabs'><li class='tabs'>$label</li></ul>";
+				$field .= "<input type='hidden' class='checkbox-container-controller' name='$name' value='$value'>";
 				$field .= "<div class='tabs-panel'>";
 				$field .= "<ul class='categorychecklist form-no-clear'>";
-				$values = ( !empty( $value ) ) ? explode( ',', $value ) : array();
-				foreach( $options as $option_value => $option_label ) {
-					$checked = ( in_array( $option_value, $values ) ) ? " checked='checked'" : '';
-					$field .= '<li><label class="selectit"><input type="checkbox" class="contained-checkbox" value="' . $option_value . '"' . $checked . '>' . $option_label . '</label></li>';
+				$values = !empty( $value ) ? explode( ',', $value ) : array();
+				foreach( $options as $opt_value => $opt_label ) {
+					$checked = ( in_array( $opt_value, $values ) ) ? " checked='checked'" : '';
+					$field .= "<li><label class='selectit'><input type='checkbox' class='contained-checkbox' value='$opt_value'$checked>$opt_label</label></li>";
 				}
 				$field .= "</ul>";
 				$field .= "</div>";
@@ -375,15 +331,14 @@ class Meta_Box {
 		// Run this method only once
 		if( $this->save_count < 1 ) :
 
-			// Define variables
-			$prefix = $this->settings['table']['prefix'] . '_';
+			$prefix = $this->args['table']['prefix'] . '_';
+			$total = isset( $_POST[$prefix.'id'] ) ? count( $_POST[$prefix.'id'] ) : 1;
 			$num = 0;
-			$total = ( isset( $_POST[$prefix.'id'] ) ) ? count( $_POST[$prefix.'id'] ) : 1;
 
-			if( $this->settings['recursive'] ) {
+			if( $this->args['recursive'] ) {
 				$num = 1;
 			}
-			if( $this->settings['admin_menu'] ) {
+			if( $this->args['admin_menu'] ) {
 				$num = 1;
 			}
 
@@ -394,22 +349,22 @@ class Meta_Box {
 				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
 
 					$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
-					Database::delete_row( $this->settings['table'], 'id', $row_id );
+					Database::delete_row( $this->args['table'], 'id', $row_id );
 
 				// Save data
 				else :
 
 					$data = array();
-					foreach( $this->settings['table']['structure'] as $name => $value ) {
-						$data[$name] = ( isset( $_POST[$prefix.$name][$i] ) ) ? $_POST[$prefix.$name][$i] : '';
+					foreach( $this->args['table']['structure'] as $column => $value ) {
+						$data[$column] = isset( $_POST[$prefix.$column][$i] ) ? $_POST[$prefix.$column][$i] : '';
 					}
 
 					if( isset( $_POST[$prefix.'id'] ) ) {
 						$row_id = $_POST[$prefix.'id'][$i];
 						if( !empty( $row_id ) ) {
-							Database::update_row( $this->settings['table'], 'id', $row_id, $data );
+							Database::update_row( $this->args['table'], 'id', $row_id, $data );
 						} else {
-							Database::insert_row( $this->settings['table'], $data );
+							Database::insert_row( $this->args['table'], $data );
 						}
 					}
 				
@@ -427,9 +382,11 @@ class Meta_Box {
 
 		global $post;
 
-		if( in_array( $post->post_type, $this->settings['post_type'] ) ) {
-			Database::delete_row( $this->settings['table'], 'post_id', $post->ID );
-		}
+		if( in_array( $post->post_type, $this->args['post_type'] ) ) :
+
+			Database::delete_row( $this->args['table'], 'post_id', $post->ID );
+		
+		endif;
 
 	}
 
