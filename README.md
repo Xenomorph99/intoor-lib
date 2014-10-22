@@ -48,6 +48,7 @@ Change Log
 ----------
 ### v1.1 - Current Version
 * PHP v5.5 progressive refactor (dropped support for PHP v5.3)
+* Mailing List, Popular, & Social API refactor
 
 ### v1.0
 * Initial file structure (config, paths, etc)

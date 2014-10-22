@@ -50,6 +50,7 @@ $(function() {
 			error = validate_mailing_list_form_email(form.find('.email'));
 			if(error !== '') {
 				form.find('.message').empty().append(error).fadeIn();
+				ga('send', 'event', 'Mailing List', 'Subscribe', 'Invalid Email');
 			} else {
 				form.find('.redirect').remove();
 				$.ajax({
