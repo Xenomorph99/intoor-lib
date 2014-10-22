@@ -18,27 +18,41 @@
 
 class Popular {
 
-	public $args = array(
+	public $args = [
 		'post_type' => array( 'post' ),		// Type of screen(s) on which to track views & likes (post, page, custom_post_type)
 		'track_views' => true,				// Track page views
 		'inflate' => false,					// Artificailly inflate initial 'like' count
 		'infl_range' => 'mid',				// Range of inflated numbers to be generated 'low' = 0-10, 'mid' = 10-50, 'high' = 50-100, 'ultra' = 100-500, 'custom'
 		'infl_min' => 10,					// Custom inflation range min number
 		'infl_max' => 50					// Custom inflation range max number
-	);
+	];
 
-	public static $table = array(
+	public static $table = [
 		'name' => 'popular',
 		'prefix' => 'pop',
 		'version' => '1.0',
-		'structure' => array(
-			// key => array( db_column_type, encrypted, default_val, form_field_type, options_array( val => display_name ), form_field_label )
-			'post_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ),
-			'views' => array( 'BIGINT(20)', false, '0', 'hidden' ),
-			'likes' => array( 'BIGINT(20)', false, '0', 'hidden' ),
-			'infl' => array( 'TINYINT(3)', false, '0', 'hidden' )
-		)
-	);
+		'structure' => [
+			'post_id' => [
+				'sql' => 'BIGINT(20)',
+				'type' => 'hidden'
+			],
+			'views' => [
+				'sql' => 'BIGINT(20)',
+				'type' => 'hidden',
+				'default' => '0'
+			],
+			'likes' => [
+				'sql' => 'BIGINT(20)',
+				'type' => 'hidden',
+				'default' => '0'
+			],
+			'infl' => [
+				'sql' => 'TINYINT(3)',
+				'type' => 'hidden',
+				'default' => '0'
+			]
+		]
+	];
 
 	public function __construct( $args ) {
 
@@ -53,12 +67,13 @@ class Popular {
 	protected function setup_popular_tracking() {
 
 		Database::install_table( static::$table );
+		API::new_key( 'popular' );
 
 	}
 
 	public function register_meta_boxes() {
 
-		$popular = array(
+		$popular = [
 			'title' => 'Popularity',
 			'post_type' => $this->args['post_type'],
 			'context' => 'side',
@@ -66,7 +81,7 @@ class Popular {
 			'view' => INTOOR_VIEWS_DIR . 'meta-box/popular.php',
 			'array' => array( 'inflate' => $this->args['inflate'] ),
 			'table' => static::$table
-		);
+		];
 
 		new Meta_Box( $popular );
 
@@ -95,45 +110,11 @@ class Popular {
 			$data = Database::get_row( static::$table, 'post_id', $post->ID );
 			if( empty( $data['post_id'] ) ) {
 				$data['post_id'] = $post->ID;
-				$data['infl'] = $this->generate_infl_num();
+				$data['infl'] = Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
 				Database::save_data( static::$table, $data );
 			}
 
 		endif;
-
-	}
-
-	protected function generate_infl_num() {
-
-		switch( $this->args['infl_range'] ) {
-
-			case 'low' :
-				$num = rand( 0, 10 );
-				break;
-
-			case 'mid' :
-				$num = rand( 10, 50 );
-				break;
-
-			case 'high' :
-				$num = rand( 50, 100 );
-				break;
-
-			case 'ultra' :
-				$num = rand( 100, 500 );
-				break;
-
-			case 'custom' :
-				$num = rand( $this->args['infl_min'], $this->args['infl_max'] );
-				break;
-
-			default :
-				$num = 1;
-				break;
-
-		}
-
-		return $num;
 
 	}
 
@@ -178,31 +159,13 @@ class Popular {
 
 	}
 
-	public static function run_api_action( $action, $post_id ) {
+	public static function add_page_like( $post_id ) {
 
 		$resp = array();
 
-		switch( $action ) {
-
-			case 'like' :
-				$resp = static::add_page_like( $post_id );
-				break;
-
-			default :
-				$resp['status'] = 'error';
-				$resp['desc'] = 'invalid-action';
-				$resp['message'] = 'Defined API action cannot be performed.';
-				break;
-
-		}
-
-		return $resp;
-
-	}
-
-	protected static function add_page_like( $post_id ) {
-
-		$resp = array();
+		$resp['status'] = 'error';
+		$resp['type'] = 'invalid-format';
+		$resp['message'] = 'The submitted post ID does not match the required format';
 
 		// Scrub out invalid post_id's
 		if( preg_match( '/^[0-9]+$/', $post_id ) ) :
@@ -210,26 +173,18 @@ class Popular {
 			$data = Database::get_row( static::$table, 'post_id', $post_id );
 			$data['likes'] = (int)$data['likes'] + 1;
 
-			if( !empty( $data['post_id'] ) ) :
+			if( Database::save_data( static::$table, $data ) ) :
 
-				Database::save_data( static::$table, $data );
 				$resp['status'] = 'success';
-				$resp['desc'] = 'submitted';
-				$resp['message'] = 'Thanks for liking the page!';
-			
+				$resp['type'] = 'success';
+				$resp['message'] = 'The like was successfully recorded';
+
 			else :
 
-				$resp['status'] = 'error';
-				$resp['desc'] = 'page-not-found';
-				$resp['message'] = 'The page you liked cannot be found.';
-			
+				$resp['type'] = 'database-error';
+				$resp['message'] = 'An error occured connecting to the database. Try again later.';
+
 			endif;
-
-		else :
-
-			$resp['status'] = 'error';
-			$resp['desc'] = 'invalid-format';
-			$resp['message'] = 'The submitted post ID does not match the required format.';
 
 		endif;
 
@@ -254,7 +209,7 @@ class Popular {
 
 	public static function get_popular( $custom_args = array() ) {
 
-		$args = array(
+		$args = [
 			'count' => 10,						// Number of posts to retrieve
 			'post_type' => array( 'post' ),		// This is where you would also include custom post types
 			'category' => 0,					// Filter by categories (only one post type allowed if filtering by categories)
@@ -264,7 +219,7 @@ class Popular {
 			'random' => false,					// Randomize the returned posts
 			'offset' => 0,						// Offset the posts returned - maybe you want top 10-20 not 1-10
 			'inflated' => false					// Include inflated numbers
-		);
+		];
 
 		$args = wp_parse_args( $custom_args, $args );
 		extract( $args );

@@ -12,7 +12,7 @@
 
 class Email {
 
-	public $settings = array(
+	public $args = [
 		'sender' => '',			// Email address of sender (default to admin email)
 		'reply_to' => '',		// Email address recipients may reply to (default to admin email)
 		'recipient' => '',		// Email address to which the email will be sent
@@ -20,22 +20,22 @@ class Email {
 		'message' => '',		// HTML email string to be sent to recipient
 		'template' => '',		// File name of the HTML email template (templates must be located in lib/views/email)
 		'data' => array()		// Array of data to be used by the HTML email template
-	);
+	];
 
 	public function __construct( $args ) {
 
-		$this->settings = wp_parse_args( $args, $this->settings );
+		$this->args = wp_parse_args( $args, $this->args );
 		$this->send_mail();
 
 	}
 
 	protected function send_mail() {
 
-		extract( $this->settings );
+		extract( $this->args );
 
 		$rn = "\r\n";
 		$headers = "From: " . $sender . $rn;
-		//$headers .= "Reply-To: " . $reply_to . $rn;
+		$headers .= !empty( $reply_to ) ? "Reply-To: " . $reply_to . $rn : "";
 		$headers .= "Mime-Version: 1.0" . $rn;
 		$headers .= "Content-type: text/html; charset=UTF-8" . $rn;
 		$headers .= "X-Mailer: PHP/" . phpversion();

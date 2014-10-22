@@ -14,36 +14,36 @@ $data = Database::get_results( $table, array( 'id', 'email', 'status', 'create_d
 $default_view = 'active';
 $current_view = ( empty( $_GET['view'] ) ) ? $default_view : $_GET['view'];
 
-$views = array(
-	'active' => array(
+$views = [
+	'active' => [
 		'url' => admin_url() . 'admin.php?page=' . $id,
 		'item_count' => 0,
 		'empty_message' => 'No Active Emails to Display',
-		'actions' => array(
+		'actions' => [
 			'trash' => 'Move to Trash'
-		)
-	),
-	'trash' => array(
+		]
+	],
+	'trash' => [
 		'url' => admin_url() . 'admin.php?page=' . $id . '&view=trash',
 		'item_count' => 0,
 		'empty_message' => 'No Emails in the Trash',
-		'actions' => array(
+		'actions' => [
 			'active' => 'Restore',
 			'delete' => 'Delete Permanently'
-		)
-	)
-);
+		]
+	]
+];
 
 // Update item_count for each view
 foreach( $data as $row => $val ) {
 	$views[$val['status']]['item_count'] = $views[$val['status']]['item_count'] + 1;
 }
 
-$table_cols = array(
+$table_cols = [
 	'num' => '#',
 	'email' => 'Email Address',
 	'date' => 'Date'
-);
+];
 
 $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-list.php?action=export&file=mailing-list.csv&key=' . get_option( 'mailing_list_key' );
 

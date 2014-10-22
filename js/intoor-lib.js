@@ -11,7 +11,14 @@ var Intoor = {
 
 	init: function() {
 
+		this.setPopularLikeButton();
 		this.setSocialMediaShareCount();
+
+	},
+
+	setPopularLikeButton: function() {
+
+		// Do nothing
 
 	},
 
@@ -23,11 +30,12 @@ var Intoor = {
 			var data = {
 				action: 'share',
 				post_id: el.data('id'),
-				key: el.data('key')
+				network: el.data('network'),
+				api_key: el.data('key')
 			};
 			ga('send', 'event', 'Social', 'Share', data.key);
 			$.ajax({
-				url: $(this).data('api'),
+				url: el.data('api'),
 				type: 'POST',
 				async: false,
 				data: data,
@@ -35,8 +43,11 @@ var Intoor = {
 				error: function() {
 					ga('send', 'event', 'Social', 'API Status', 'Error');
 				},
-				success: function() {
+				success: function(resp) {
 					ga('send', 'event', 'Social', 'API Status', 'Success');
+					counter = el.find('.social-media-share-button-count');
+					newCount = parseInt( counter.html(), 10 ) + 1;
+					counter.empty().append(newCount);
 				},
 				complete: function() {
 					window.open(el.attr('href'));
