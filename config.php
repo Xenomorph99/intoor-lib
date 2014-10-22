@@ -17,4 +17,3 @@ define( 'INTOOR_DIR_NAME', 'lib' );
 // Define file and directory paths
 require_once dirname( __FILE__ ) . '/paths.php';
 require_once dirname( __FILE__ ) . '/load.php';
-require_once dirname( __FILE__ ) . '/enqueue.php';
