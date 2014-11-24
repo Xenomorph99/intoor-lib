@@ -10,6 +10,8 @@
  * @version     Release: 1.2
  */
 
+if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
+
 $form = array(
 	'id' => 'mailing-list-form',
 	'label' => '',
@@ -25,7 +27,7 @@ $label_tag_open = ( !empty( $form['label_tag'] ) ) ? '<' . $form['label_tag'] . 
 $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] . '>' : '</label>';
 
 ?>
-<form id="<?= $form['id']; ?>" class="mailing-list-form" method="GET" action="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
+<form id="<?= $form['id']; ?>" class="mailing-list-form" method="POST" action="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
 	<?= ( !empty( $form['label'] ) ) ? $label_tag_open . $form['label'] . $label_tag_close : ''; ?>
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="subscribe">
 	<input id="mailing-list-form-api-key" class="api-key" type="hidden" name="api_key" value="<?= API::get_key( 'mailing_list' ); ?>">
@@ -55,7 +57,7 @@ $(function() {
 				form.find('.redirect').remove();
 				$.ajax({
 					url: $(this).attr('action'),
-					type: 'GET',
+					type: 'POST',
 					dataType: 'json',
 					data: $(this).serialize(),
 					error: function() {

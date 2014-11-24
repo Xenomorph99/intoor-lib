@@ -10,6 +10,8 @@
  * @version     Release: 1.2
  */
 
+if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
+
 $id = 'google_analytics_';
 $data = array();
 foreach( $this->ga_options as $name => $value ) {

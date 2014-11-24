@@ -23,6 +23,8 @@
  * @version     Release: 1.2
  */
 
+if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
+
 class Mailing_List {
 
 	public static $settings = [

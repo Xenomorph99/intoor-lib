@@ -10,6 +10,8 @@
  * @version     Release: 1.2
  */
 
+if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
+
 // Include required classes
 require_once INTOOR_ADMIN_MENU_CLASS;
 require_once INTOOR_API_CLASS;
