@@ -1,5 +1,7 @@
-.DS_Store
-.sass-cache
 codekit-config.json
 config.codekit
+.DS_Store/
+.codekit-cache/
+.sass-cache/
 README.html
+config.php
