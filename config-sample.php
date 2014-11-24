@@ -14,10 +14,13 @@
 define( 'INTOOR_LIB_VERSION', '1.2' );
 define( 'INTOOR_DIR_NAME', 'lib' );
 
-// Encryption Keys
+// Encryption keys
 define( 'INTOOR_API_KEY', 'put your unique phrase here' );
 define( 'INTOOR_MAIL_KEY', 'put your unique phrase here' );
 
-// Define file and directory paths
+// Restrict direct access to specific lib files
+define( 'INTOOR_RESTRICT_ACCESS', true );
+
+// Include path definitions and run loading scripts
 require_once dirname( __FILE__ ) . '/paths.php';
 require_once dirname( __FILE__ ) . '/load.php';

@@ -14,6 +14,8 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( dirname( __FILE__ ) ) ) . '/config.php';
 
+if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
+
 $prefix = 'mailing_list_settings_';
 $reset = 'margin:0; padding:0;';
 $helvetica = "'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif";
