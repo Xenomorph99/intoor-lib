@@ -17,7 +17,7 @@ header( 'Content-type: application/json' );
 require_once $_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';
 require_once dirname( dirname( __FILE__ ) ) . '/config.php';
 
-extract( $_GET );
+extract( $_POST );
 
 // Set the default API response
 $resp = array();
@@ -46,33 +46,43 @@ else :
 		// Verify required parameters
 		if( !empty( $action ) && !empty( $email ) ) :
 
-			switch( $action ) {
+			$resp['type'] = 'invalid-format';
+			$resp['message'] = 'The submitted email address doesn\'t match the required format';
+			$resp['display'] = 'The submitted email address isn\'t valid. Please try again.';
 
-				case 'subscribe':
-					$resp = Mailing_List::save_email( $email );
-					break;
+			// Scrub out invalid email addresses
+			if( preg_match( '/^[A-Za-z0-9._%\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,4}$/', $email ) ) :
 
-				case 'unsubscribe':
-					$resp = Mailing_List::delete_email( $email );
-					break;
+				switch( $action ) {
 
-				default:
-					$resp['type'] = 'invalid-action';
-					$resp['message'] = 'Defined API action cannot be performed';
-					$resp['display'] = 'Sorry, something went wrong. Please try again later.';
-					break;
+					case 'subscribe':
+						$resp = Mailing_List::save_email( $email );
+						break;
 
-			}
+					case 'unsubscribe':
+						$resp = Mailing_List::delete_email( $email );
+						break;
+
+					default:
+						$resp['type'] = 'invalid-action';
+						$resp['message'] = 'Defined API action cannot be performed';
+						$resp['display'] = 'Sorry, something went wrong. Please try again later.';
+						break;
+
+				}
+
+			endif;
 
 		endif;
 
 	endif;
 
-	// Redirect or return JSON response string
+	// Return JSON response string or redirect
 	if( !empty( $redirect ) ) :
 
 		$resp['message'] = base64_encode( $resp['message'] );
 		$resp['display'] = base64_encode( $resp['display'] );
+
 		header( 'Location: ' . $redirect . '?' . http_build_query( $resp ), TRUE, 303 );
 
 	else :
