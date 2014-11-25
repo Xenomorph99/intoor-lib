@@ -285,41 +285,28 @@ class Mailing_List {
 	public static function save_email( $email ) {
 
 		$resp = array();
-
 		$resp['status'] = 'error';
-		$resp['type'] = 'invalid-format';
-		$resp['message'] = 'The submitted email address does not match the required format';
-		$resp['display'] = 'Your email address isn\'t valid. Please try again.';
+		$resp['type'] = 'database-error';
+		$resp['message'] = 'An error occured connecting to the database. Try again later.';
+		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 
-		// Scrub out invalid email addresses
-		if( preg_match( '/^[A-Za-z0-9._%\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,4}$/', $email ) ) :
+		switch( static::save_to_database( $email ) ) {
 
-			switch( static::save_to_database( $email ) ) {
+			case 'success':
+				$resp['status'] = 'success';
+				$resp['type'] = 'submitted';
+				$resp['message'] = 'The submitted email address has successfully been added to the mailing list.';
+				$resp['display'] = 'Thanks for subscribing!';
+				break;
 
-				case 'success':
-					$resp['status'] = 'success';
-					$resp['type'] = 'submitted';
-					$resp['message'] = 'The submitted email address has successfully been added to the mailing list.';
-					$resp['display'] = 'Thanks for subscribing!';
-					break;
+			case 'duplicate':
+				$resp['status'] = 'duplicate';
+				$resp['type'] = 'duplicate';
+				$resp['message'] = 'The submitted email address is already on the mailing list.';
+				$resp['display'] = 'Welcome back! It looks like you already subscribed.';
+				break;
 
-				case 'duplicate':
-					$resp['status'] = 'duplicate';
-					$resp['type'] = 'duplicate';
-					$resp['message'] = 'The submitted email address is already on the mailing list.';
-					$resp['display'] = 'Welcome back! It looks like you already subscribed.';
-					break;
-
-				case 'error':
-					$resp['status'] = 'error';
-					$resp['type'] = 'database-error';
-					$resp['message'] = 'An error occured connecting to the database. Try again later.';
-					$resp['display'] = 'Sorry, something went wrong. Please try again later.';
-					break;
-
-			}
-
-		endif;
+		}
 
 		return $resp;
 
@@ -362,39 +349,27 @@ class Mailing_List {
 		$email = strtolower( $email );
 		$resp = array();
 		$resp['status'] = 'error';
-		$resp['type'] = 'invalid-format';
-		$resp['message'] = 'The submitted email address does not match the required format';
-		$resp['display'] = 'Your email address isn\'t valid. Please try again.';
+		$resp['type'] = 'database-error';
+		$resp['message'] = 'An error occured connecting to the database. Try again later.';
+		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 
-		// Scrub out invalid email addresses
-		if( preg_match( '/^[A-Za-z0-9._%\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,4}$/', $email ) ) :
+		switch( static::remove_from_database( $email ) ) {
 
-			switch( static::remove_from_database( $email ) ) {
+			case 'success':
+				$resp['status'] = 'success';
+				$resp['type'] = 'removed';
+				$resp['message'] = 'The submitted email address has successfully been removed from the mailing list.';
+				$resp['display'] = 'Your email address has been successfully removed from our mailing list.';
+				break;
 
-				case 'success':
-					$resp['status'] = 'success';
-					$resp['type'] = 'removed';
-					$resp['message'] = 'The submitted email address has successfully been removed from the mailing list.';
-					$resp['display'] = 'Your email address has been successfully removed from our mailing list.';
-					break;
+			case 'not-found':
+				$resp['status'] = 'error';
+				$resp['type'] = 'not-found';
+				$resp['message'] = 'The submitted email address is not on the mailing list.';
+				$resp['display'] = 'Your email address isn\'t on our mailing list.';
+				break;
 
-				case 'not-found':
-					$resp['status'] = 'error';
-					$resp['type'] = 'not-found';
-					$resp['message'] = 'The submitted email address is not on the mailing list.';
-					$resp['display'] = 'Your email address isn\'t on our mailing list.';
-					break;
-
-				case 'error':
-					$resp['status'] = 'error';
-					$resp['type'] = 'database-error';
-					$resp['message'] = 'An error occured connecting to the database. Try again later.';
-					$resp['display'] = 'Sorry, something went wrong. Please try again later.';
-					break;
-
-			}
-
-		endif;
+		}
 
 		return $resp;
 
