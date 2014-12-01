@@ -111,37 +111,44 @@ class Mailing_List {
 		'color_body' => [
 			'type' => 'text',
 			'label' => 'Body Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'f0f0f0'
 		],
 		'color_container' => [
 			'type' => 'text',
 			'label' => 'Container Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'ffffff'
 		],
 		'color_banner' => [
 			'type' => 'text',
 			'label' => 'Banner Background Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'bdbdbd'
 		],
 		'color_text_heading' => [
 			'type' => 'text',
 			'label' => 'Primary Text Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => '58595b'
 		],
 		'color_text_primary' => [
 			'type' => 'text',
 			'label' => 'Primary Text Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => '58595b'
 		],
 		'color_text_secondary' => [
 			'type' => 'text',
 			'label' => 'Secondary Text Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'bcbec0'
 		],
 		'color_text_link' => [
 			'type' => 'text',
 			'label' => 'Text Link Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'ff3c00'
 		]
 	];
 

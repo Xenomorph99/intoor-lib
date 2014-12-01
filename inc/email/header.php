@@ -31,13 +31,13 @@ extract( $args );
 $prefix = 'mailing_list_settings_';
 
 $color = [
-	'body' => get_option( $prefix . 'color_body', '' ),
-	'container' => get_option( $prefix . 'color_container', '' ),
-	'banner' => get_option( $prefix . 'color_banner', '' ),
-	'text_heading' => get_option( $prefix . 'color_text_heading', '' ),
-	'text_primary' => get_option( $prefix . 'color_text_primary', '' ),
-	'text_secondary' => get_option( $prefix . 'color_text_secondary', '' ),
-	'text_link' => get_option( $prefix . 'color_text_link', '' ),
+	'body' => get_option( $prefix . 'color_body', 'f0f0f0' ),
+	'container' => get_option( $prefix . 'color_container', 'ffffff' ),
+	'banner' => get_option( $prefix . 'color_banner', 'bdbdbd' ),
+	'text_heading' => get_option( $prefix . 'color_text_heading', '58595b' ),
+	'text_primary' => get_option( $prefix . 'color_text_primary', '58595b' ),
+	'text_secondary' => get_option( $prefix . 'color_text_secondary', 'bcbec0' ),
+	'text_link' => get_option( $prefix . 'color_text_link', 'ff3c00' ),
 ];
 
 $social = [
@@ -56,16 +56,6 @@ foreach( $social as $network => $url ) {
 		unset( $social[$network] );
 	}
 }
-
-// $color = array(
-// 	'body' => 'f0f0f0',
-// 	'container' => 'ffffff',
-// 	'banner' => 'bdbdbd',
-// 	'text_heading' => '58595b',
-// 	'text_primary' => '58595b',
-// 	'text_secondary' => 'bcbec0',
-// 	'text_link' => 'f48c7f'
-// );
 
 $web_url = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/views/email/' . $template_name . '.php?' . http_build_query( $args );
 $unsubscribe_url = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/views/mailing-list-unsubscribe.php?' . http_build_query( $args );

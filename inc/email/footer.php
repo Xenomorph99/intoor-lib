@@ -48,7 +48,7 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 
 			<tr style="<?php echo $reset; ?>">
 				<td style="width:600px; <?php echo $reset; ?>">
-					<p style="line-height: 19px; text-align:center; margin:10px 0 16px 0; padding:0;">Copyright &copy; <?php echo date("Y"); ?>,&nbsp;<a href="<?php echo home_url(); ?>" style="color:#<?php echo $color['text_secondary']; ?>; text-decoration:none; <?php echo $reset; ?>"><?php bloginfo( 'blogname' ); ?></a>. All Rights Reserved.</p>
+					<p style="line-height: 19px; text-align:center; margin:10px 0 16px 0; padding:0;">Copyright &copy; <?php echo date('Y'); ?>,&nbsp;<a href="<?php echo home_url(); ?>" style="color:#<?php echo $color['text_secondary']; ?>; text-decoration:none; <?php echo $reset; ?>"><?php bloginfo( 'blogname' ); ?></a>. All Rights Reserved.</p>
 					<?php if( $template_name == 'unsubscribe' ) : ?>
 					<p style="line-height:19px; text-align:center; margin:0 0 30px 0; padding:0;">View in <a href="<?php echo $web_url; ?>" style="color:#<?php echo $color['text_secondary']; ?>; <?php echo $reset; ?>">Web Browser</a></p>
 					<?php else : ?>
