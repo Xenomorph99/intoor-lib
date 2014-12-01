@@ -310,7 +310,7 @@ class Database {
 			$table_name = $wpdb->prefix . $table['name'];
 			$key = !empty( $table['key'] ) ? $table['key'] : NULL;
 			$unique_value = ( $table['structure'][$unique_key]['encrypt'] ) ? Encryption::encrypt( $unique_value, $key ) : $unique_value;
-			$has_row = $wpdb->get_var( $wpdb->prepare( "SELECT * FROM %s WHERE %s = '%s'", $table_name, $unique_key, $unique_value ) );
+			$has_row = $wpdb->get_var( $wpdb->prepare( "SELECT * FROM $table_name WHERE $unique_key = '%s'", $unique_value ) );
 
 			if( $has_row ) :
 
