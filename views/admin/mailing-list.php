@@ -12,6 +12,7 @@
 
 if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
 
+extract( $this->args );
 $data = Database::get_results( $table, array( 'id', 'email', 'status', 'create_date', 'create_time' ) );
 $default_view = 'active';
 $current_view = ( empty( $_GET['view'] ) ) ? $default_view : $_GET['view'];
