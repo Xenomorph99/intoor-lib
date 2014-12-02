@@ -28,17 +28,19 @@ $day_count = Database::date_count( $table, 'create_date', 'day' );
 $day_unsub_count = Database::date_count( $table, 'delete_date', 'day' );
 
 foreach( $data as $row => $val ) {
-	$total_count++;
-	switch( $val['status'] ) {
-		case 'active':
-			$active_count++;
-			break;
-		case 'trash':
-			$inactive_count++;
-			break;
-		case 'deleted':
-			$deleted_count++;
-			break;
+	if( !empty( $val['id'] ) ) {
+		$total_count++;
+		switch( $val['status'] ) {
+			case 'active':
+				$active_count++;
+				break;
+			case 'trash':
+				$inactive_count++;
+				break;
+			case 'deleted':
+				$deleted_count++;
+				break;
+		}
 	}
 }
 
