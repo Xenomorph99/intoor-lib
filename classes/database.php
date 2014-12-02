@@ -325,4 +325,33 @@ class Database {
 
 	}
 
+	public static function date_count( $table, $date_column, $interval = NULL ) {
+
+		if( !empty( $table['name'] ) && !empty( $table['structure'] ) ) :
+
+			global $wpdb;
+			$table_name = $wpdb->prefix . $table['name'];
+
+			switch( $interval ) {
+				case 'day':
+					$interval = 'DAY';
+					break;
+				case 'week':
+					$interval = 'WEEK';
+					break;
+				case 'month':
+					$interval = 'MONTH';
+					break;
+			}
+
+			return !empty( $interval )
+				? $wpdb->query( $wpdb->prepare( "SELECT * FROM $table_name WHERE $date_column > DATE_SUB(NOW(), INTERVAL 1 $interval);", array() ) )
+				: $wpdb->query( $wpdb->prepare( "SELECT COUNT(*) FROM $table_name", array() ) );
+
+		endif;
+
+		return false;
+
+	}
+
 }

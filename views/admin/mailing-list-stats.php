@@ -20,15 +20,12 @@ $active_count = 0;
 $inactive_count = 0;
 $deleted_count = 0;
 $total_count = 0;
-$month_average = 0;
-$month_count = 0;
-$month_unsub_count = 0;
-$week_average = 0;
-$week_count = 0;
-$week_unsub_count = 0;
-$day_average = 0;
-$day_count = 0;
-$day_unsub_count = 0;
+$month_count = Database::date_count( $table, 'create_date', 'month' );
+$month_unsub_count = Database::date_count( $table, 'delete_date', 'month' );
+$week_count = Database::date_count( $table, 'create_date', 'week' );
+$week_unsub_count = Database::date_count( $table, 'delete_date', 'week' );
+$day_count = Database::date_count( $table, 'create_date', 'day' );
+$day_unsub_count = Database::date_count( $table, 'delete_date', 'day' );
 
 foreach( $data as $row => $val ) {
 	$total_count++;
@@ -70,17 +67,13 @@ foreach( $data as $row => $val ) {
 			</tr>
 		</tbody>
 	</table>
-<?php /*
+
 	<br>
 	<hr>
 
 	<h3><em>This Month</em></h3>
 	<table class="form-table">
 		<tbody>
-			<tr>
-				<th scope="row">Average Monthly Subscribers</th>
-				<td style="font-size:1.2em;"><?= $month_average; ?></td>
-			</tr>
 			<tr>
 				<th scope="row">New Subscribers</th>
 				<td style="font-size:1.2em;"><?= $month_count; ?></td>
@@ -99,10 +92,6 @@ foreach( $data as $row => $val ) {
 	<table class="form-table">
 		<tbody>
 			<tr>
-				<th scope="row">Average Weekly Subscribers</th>
-				<td style="font-size:1.2em;"><?= $week_average; ?></td>
-			</tr>
-			<tr>
 				<th scope="row">New Subscribers</th>
 				<td style="font-size:1.2em;"><?= $week_count; ?></td>
 			</tr>
@@ -120,10 +109,6 @@ foreach( $data as $row => $val ) {
 	<table class="form-table">
 		<tbody>
 			<tr>
-				<th scope="row">Average Daily Subscribers</th>
-				<td style="font-size:1.2em;"><?= $day_average; ?></td>
-			</tr>
-			<tr>
 				<th scope="row">New Subscribers</th>
 				<td style="font-size:1.2em;"><?= $day_count; ?></td>
 			</tr>
@@ -132,6 +117,6 @@ foreach( $data as $row => $val ) {
 				<td style="font-size:1.2em;"><?= $day_unsub_count; ?></td>
 			</tr>
 		</tbody>
-	</table> */ ?>
+	</table>
 
 </div><!--.wrap-->
