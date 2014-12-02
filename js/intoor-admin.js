@@ -14,7 +14,6 @@ var IntoorAdmin = {
 		this.setMetaBoxToggles();
 		this.setMetaBoxCheckboxContainers();
 		this.setMetaBoxButtons();
-		this.exportCSV();
 		this.setPopularMetaBox();
 		this.setTrackingAdminMenu();
 
@@ -87,16 +86,6 @@ var IntoorAdmin = {
 		});
 
 	},
-
-	// exportCSV: function() {
-
-	// 	$('#mailing-list-export-btn').on('click', function(e) {
-	// 		e.preventDefault();
-	// 		var url = $(this).data('api');
-	// 		window.open(url, 'csv');
-	// 	});
-
-	// },
 
 	setPopularMetaBox: function() {
 
