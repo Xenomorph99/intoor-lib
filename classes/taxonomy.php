@@ -15,20 +15,20 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Taxonomy {
 
 	public $args = [
-		'name_plural' => '',
-		'name_singular' => '',
-		'slug' => '',
-		'post_type' => array( 'post' ),
-		'public' => true,
-		'show_ui' => true,
-		'show_in_nav_menus' => true,
-		'show_tagcloud' => true,
-		'meta_box_cb' => null,
-		'show_admin_column' => false,
-		'hierarchical' => false,
-		'update_count_callback' => '',
-		'capabilities' => array(),
-		'sort' => false
+		'name_plural' => '',               //
+		'name_singular' => '',             //
+		'slug' => '',                      //
+		'post_type' => array( 'post' ),    //
+		'public' => true,                  //
+		'show_ui' => true,                 //
+		'show_in_nav_menus' => true,       //
+		'show_tagcloud' => true,           //
+		'meta_box_cb' => null,             //
+		'show_admin_column' => false,      //
+		'hierarchical' => false,           //
+		'update_count_callback' => '',     //
+		'capabilities' => array(),         //
+		'sort' => false,                   //
 	];
 
 	public function __construct( $args ) {

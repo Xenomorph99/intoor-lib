@@ -15,10 +15,10 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class CSV {
 
 	public $args = [
-		'column_names' => true,		// Include column names at the top of each column
-		'delimiter' => ',',			// Delimitation character to appear between columns
-		'filename' => '',			// Name of the CSV file to be created
-		'data' => '',				// Data from which the CSV will be generated
+		'column_names' => true,     // Include column names at the top of each column
+		'delimiter' => ',',         // Delimitation character to appear between columns
+		'filename' => '',           // Name of the CSV file to be created
+		'data' => '',               // Data from which the CSV will be generated
 	];
 
 	public function __construct( $args ) {

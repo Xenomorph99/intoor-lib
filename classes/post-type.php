@@ -15,26 +15,26 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Post_Type {
 
 	public $args = [
-		'post_type' => '',							// Name of the custom post type (no spaces, lowercase)
-		'name_singular' => '',						// Singular display name of the post type
-		'name_plural' => '',						// Plural display name of the post type
-		'namespace' => 'wp',						// Namespace declaration
-		'heirarchial' => false,						// Create a hierarchy allowing parent and child posts
-		'supports' => array( 'title', 'editor' ),	// Allowed options: title, editor, author, thumbnail, excerpt, trackbacks, custom-fields, comments, revisions, page-attributes, post-formats
-		'taxonomies' => array(),					// Registered taxonomies
-		'public' => true,							// Outwardly displayed for users or only for the WP admin
-		'show_ui' => true,							// Display a user interface for this post type
-		'show_in_menu' => true,						// Display the post type in the WP admin menu
-		'menu_icon' => null,						// Icon font icon - defaults to the post icon
-		'menu_position' => null,					// Location in the WP admin menu (5 - below Posts, 10 - below Media, 15 - below Links, 20 - below Pages, 25 - below comments, 60 - below first separator, 65 - below Plugins, 70 - below Users, 75 - below Tools, 80 - below Settings, 100 - below second separator)
-		'show_in_nav_menus' => true,				// Allow the post type to be shown in nav menus
-		'publicly_queryable' => true,				// Front end can query this post type
-		'exclude_from_search' => false,				// Should the custom post type show up in front end searches
-		'has_archive' => true,						// Enables archive for the custom post type
-		'query_var' => true,						// Sets the query variable for the custom post type (true - uses post type, false, custom string)
-		'can_export' => true,						// Custom post type can be exported
-		'rewrite' => true,							// Custom post type posts can be rewritten
-		'capability_type' => 'post'					// Set the functionality of the custom post type similar to: post, page
+		'post_type' => '',                          // Name of the custom post type (no spaces, lowercase)
+		'name_singular' => '',                      // Singular display name of the post type
+		'name_plural' => '',                        // Plural display name of the post type
+		'namespace' => 'wp',                        // Namespace declaration
+		'heirarchial' => false,                     // Create a hierarchy allowing parent and child posts
+		'supports' => array( 'title', 'editor' ),   // Allowed options: title, editor, author, thumbnail, excerpt, trackbacks, custom-fields, comments, revisions, page-attributes, post-formats
+		'taxonomies' => array(),                    // Registered taxonomies
+		'public' => true,                           // Outwardly displayed for users or only for the WP admin
+		'show_ui' => true,                          // Display a user interface for this post type
+		'show_in_menu' => true,                     // Display the post type in the WP admin menu
+		'menu_icon' => null,                        // Icon font icon - defaults to the post icon
+		'menu_position' => null,                    // Location in the WP admin menu (5 - below Posts, 10 - below Media, 15 - below Links, 20 - below Pages, 25 - below comments, 60 - below first separator, 65 - below Plugins, 70 - below Users, 75 - below Tools, 80 - below Settings, 100 - below second separator)
+		'show_in_nav_menus' => true,                // Allow the post type to be shown in nav menus
+		'publicly_queryable' => true,               // Front end can query this post type
+		'exclude_from_search' => false,             // Should the custom post type show up in front end searches
+		'has_archive' => true,                      // Enables archive for the custom post type
+		'query_var' => true,                        // Sets the query variable for the custom post type (true - uses post type, false, custom string)
+		'can_export' => true,                       // Custom post type can be exported
+		'rewrite' => true,                          // Custom post type posts can be rewritten
+		'capability_type' => 'post',                // Set the functionality of the custom post type similar to: post, page
 	];
 
 	public function __construct( $args ) {

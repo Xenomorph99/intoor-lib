@@ -20,19 +20,19 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Meta_Box {
 
 	public $args = [
-		'title' => '',					// Meta box title (will be converted and used as html ID attr)
-		'callback' => 'none',			// Callback function
-		'post_type' => array( 'post' ),	// Type of screen(s) on which to show the meta box
-		'ref_post_id' => true,			// Reference the custom meta box database table by post_id and include post_id column
-		'context' => 'advanced',		// Where on the screen the meta box should be shown (normal, advanced, side)
-		'priority' => 'default',		// Priority within the context where the meta box will be shown (high, core, default, low)
-		'callback_args' => NULL,		// Arguments to pass into the callback function
-		'view' => NULL,					// Path to the meta box view
-		'recursive' => false,			// Defines whether a meta box can have multiple database rows for a single table
-		'admin_menu' => false,			// Include an admin menu page to control default values, etc. (true, false)
-		'admin_view' => NULL,			// Path to the admin menu view (if set to null a default view will be created)
-		'array' => array(),				// Array of additional data to be passed to a view
-		'table' => array()				// Database table array
+		'title' => '',                  // Meta box title (will be converted and used as html ID attr)
+		'callback' => 'none',           // Callback function
+		'post_type' => array( 'post' ), // Type of screen(s) on which to show the meta box
+		'ref_post_id' => true,          // Reference the custom meta box database table by post_id and include post_id column
+		'context' => 'advanced',        // Where on the screen the meta box should be shown (normal, advanced, side)
+		'priority' => 'default',        // Priority within the context where the meta box will be shown (high, core, default, low)
+		'callback_args' => NULL,        // Arguments to pass into the callback function
+		'view' => NULL,                 // Path to the meta box view
+		'recursive' => false,           // Defines whether a meta box can have multiple database rows for a single table
+		'admin_menu' => false,          // Include an admin menu page to control default values, etc. (true, false)
+		'admin_view' => NULL,           // Path to the admin menu view (if set to null a default view will be created)
+		'array' => array(),             // Array of additional data to be passed to a view
+		'table' => array(),             // Database table array
 	];
 
 	public function __construct( $arr ) {

@@ -21,12 +21,12 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Popular {
 
 	public $args = [
-		'post_type' => array( 'post' ),		// Type of screen(s) on which to track views & likes (post, page, custom_post_type)
-		'track_views' => true,				// Track page views
-		'inflate' => false,					// Artificailly inflate initial 'like' count
-		'infl_range' => 'mid',				// Range of inflated numbers to be generated 'low' = 0-10, 'mid' = 10-50, 'high' = 50-100, 'ultra' = 100-500, 'custom'
-		'infl_min' => 10,					// Custom inflation range min number
-		'infl_max' => 50					// Custom inflation range max number
+		'post_type' => array( 'post' ),     // Type of screen(s) on which to track views & likes (post, page, custom_post_type)
+		'track_views' => true,              // Track page views
+		'inflate' => false,                 // Artificailly inflate initial 'like' count
+		'infl_range' => 'mid',              // Range of inflated numbers to be generated 'low' = 0-10, 'mid' = 10-50, 'high' = 50-100, 'ultra' = 100-500, 'custom'
+		'infl_min' => 10,                   // Custom inflation range min number
+		'infl_max' => 50,                   // Custom inflation range max number
 	];
 
 	public static $table = [
