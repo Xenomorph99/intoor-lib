@@ -48,8 +48,6 @@ $table_cols = [
 	'date' => 'Date'
 ];
 
-$csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-list.php?action=export&file=mailing-list.csv&key=' . get_option( 'mailing_list_key' );
-
 ?>
 <div class="wrap">
 
@@ -79,7 +77,7 @@ $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-
 		<input type="hidden" name="v" value="<?php echo $current_view; ?>">
 
 		<p class="search-box">
-			<button type="submit" name="exp" id="mailing-list-export-btn" class="button" value="true" data-api="<?php echo $csv_api; ?>">Export CSV</button>
+			<button type="submit" name="export" id="mailing-list-export-btn" class="button" value="1">Export CSV</button>
 		</p><!--.search-box-->
 
 		<div class="tablenav top">

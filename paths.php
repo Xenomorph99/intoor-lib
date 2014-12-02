@@ -29,6 +29,7 @@ define( 'INTOOR_ADMIN_MENU_CLASS', INTOOR_CLASSES_DIR . 'admin-menu.php' );
 define( 'INTOOR_API_CLASS', INTOOR_CLASSES_DIR . 'api.php' );
 define( 'INTOOR_CATEGORY_FORM_CLASS', INTOOR_CLASSES_DIR . 'category-form.php' );
 define( 'INTOOR_COOKIE_CLASS', INTOOR_CLASSES_DIR . 'cookie.php' );
+define( 'INTOOR_CSV_CLASS', INTOOR_CLASSES_DIR . 'csv.php' );
 define( 'INTOOR_DATABASE_CLASS', INTOOR_CLASSES_DIR . 'database.php' );
 define( 'INTOOR_DOCS_CLASS', INTOOR_CLASSES_DIR . 'docs.php' );
 define( 'INTOOR_EMAIL_CLASS', INTOOR_CLASSES_DIR . 'email.php' );

@@ -235,6 +235,9 @@ class Mailing_List {
 		// Update the mailing list
 		add_action( 'admin_init', array( &$this, 'update_mailing_list' ) );
 
+		// Export the mailing list
+		add_action( 'admin_init', array( &$this, 'export_mailing_list' ) );
+
 	}
 
 	public function update_mailing_list() {
@@ -263,6 +266,21 @@ class Mailing_List {
 				}
 			}
 		
+		endif;
+
+	}
+
+	public function export_mailing_list() {
+
+		if( !empty( $_GET['export'] ) && $_GET['page'] == 'mailing_list' ) :
+
+			$args = [
+				'filename' => 'Mailing-List',
+				'data' => $this->get_mailing_list()
+			];
+
+			new CSV( $args );
+
 		endif;
 
 	}
