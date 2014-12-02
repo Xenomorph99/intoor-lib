@@ -226,7 +226,7 @@ class Database {
 
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'posts';
-		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %s WHERE post_type = '%s'", $table_name, $post_type ), ARRAY_A );
+		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE post_type = '$post_type'", array() ), ARRAY_A );
 		$posts = array();
 		
 		foreach( $data as $row ) {
