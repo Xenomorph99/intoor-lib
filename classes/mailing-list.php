@@ -314,6 +314,7 @@ class Mailing_List {
 		$resp['type'] = 'database-error';
 		$resp['message'] = 'An error occured connecting to the database. Try again later.';
 		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
+<<<<<<< HEAD
 
 		switch( static::save_to_database( $email ) ) {
 
@@ -331,6 +332,25 @@ class Mailing_List {
 				$resp['display'] = 'Welcome back! It looks like you already subscribed.';
 				break;
 
+=======
+
+		switch( static::save_to_database( $email ) ) {
+
+			case 'success':
+				$resp['status'] = 'success';
+				$resp['type'] = 'submitted';
+				$resp['message'] = 'The submitted email address has successfully been added to the mailing list.';
+				$resp['display'] = 'Thanks for subscribing!';
+				break;
+
+			case 'duplicate':
+				$resp['status'] = 'duplicate';
+				$resp['type'] = 'duplicate';
+				$resp['message'] = 'The submitted email address is already on the mailing list.';
+				$resp['display'] = 'Welcome back! It looks like you already subscribed.';
+				break;
+
+>>>>>>> dev
 		}
 
 		return $resp;
@@ -378,6 +398,26 @@ class Mailing_List {
 		$resp['message'] = 'An error occured connecting to the database. Try again later.';
 		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 
+<<<<<<< HEAD
+		switch( static::remove_from_database( $email ) ) {
+
+			case 'success':
+				$resp['status'] = 'success';
+				$resp['type'] = 'removed';
+				$resp['message'] = 'The submitted email address has successfully been removed from the mailing list.';
+				$resp['display'] = 'Your email address has been successfully removed from our mailing list.';
+				break;
+
+			case 'not-found':
+				$resp['status'] = 'error';
+				$resp['type'] = 'not-found';
+				$resp['message'] = 'The submitted email address is not on the mailing list.';
+				$resp['display'] = 'Your email address isn\'t on our mailing list.';
+				break;
+
+		}
+
+=======
 			switch( static::remove_from_database( $email ) ) {
 
 				case 'success':
@@ -396,6 +436,7 @@ class Mailing_List {
 
 			}
 
+>>>>>>> dev
 		return $resp;
 
 	}
