@@ -17,8 +17,8 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Tracking {
 
 	public $args = [
-		'ga' => true,					// Include Google Analytics tracking
-		'query_params' => true			// Include query parameter session tracking
+		'ga' => true,               // Include Google Analytics tracking
+		'query_params' => true,     // Include query parameter session tracking
 	];
 
 	public $ga_options = [

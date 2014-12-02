@@ -17,7 +17,7 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Docs {
 
 	public $args = array(
-		'docs_dir' => 'docs'		// Location within the theme directory that contains the documentation files
+		'docs_dir' => 'docs',     // Location within the theme directory that contains the documentation files
 	);
 
 	public function __construct( $args ) {

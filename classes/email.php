@@ -15,13 +15,13 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Email {
 
 	public $args = [
-		'sender' => '',			// Email address of sender (default to admin email)
-		'reply_to' => '',		// Email address recipients may reply to (default to admin email)
-		'recipient' => '',		// Email address to which the email will be sent
-		'subject' => '',		// Subject line of the email
-		'message' => '',		// HTML email string to be sent to recipient
-		'template' => '',		// File name of the HTML email template (templates must be located in lib/views/email)
-		'data' => array()		// Array of data to be used by the HTML email template
+		'sender' => '',         // Email address of sender (default to admin email)
+		'reply_to' => '',       // Email address recipients may reply to (default to admin email)
+		'recipient' => '',      // Email address to which the email will be sent
+		'subject' => '',        // Subject line of the email
+		'message' => '',        // HTML email string to be sent to recipient
+		'template' => '',       // File name of the HTML email template (templates must be located in lib/views/email)
+		'data' => array(),      // Array of data to be used by the HTML email template
 	];
 
 	public function __construct( $args ) {

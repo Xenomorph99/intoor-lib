@@ -16,10 +16,10 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Category_Form {
 
 	public $args = [
-		'add_category_form_view' => NULL,	// Path to the add category custom form view
-		'edit_category_form_view' => NULL,	// Path to the edit category custom form view
-		'view_data' => array(),				// Array of data to be passed to the view
-		'table' => array()					// Database table array
+		'add_category_form_view' => NULL,   // Path to the add category custom form view
+		'edit_category_form_view' => NULL,  // Path to the edit category custom form view
+		'view_data' => array(),             // Array of data to be passed to the view
+		'table' => array(),                 // Database table array
 	];
 
 	public function __construct( $args ) {
