@@ -12,6 +12,7 @@
 
 if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Unauthorized Access' ); }
 
+extract( $this->args );
 $data = Database::get_results( $table, array( 'id', 'email', 'status', 'create_date', 'create_time' ) );
 $default_view = 'active';
 $current_view = ( empty( $_GET['view'] ) ) ? $default_view : $_GET['view'];
@@ -38,7 +39,9 @@ $views = [
 
 // Update item_count for each view
 foreach( $data as $row => $val ) {
-	$views[$val['status']]['item_count'] = $views[$val['status']]['item_count'] + 1;
+	if( !empty( $val['id'] ) ) {
+		$views[$val['status']]['item_count'] = $views[$val['status']]['item_count'] + 1;
+	}
 }
 
 $table_cols = [
@@ -46,8 +49,6 @@ $table_cols = [
 	'email' => 'Email Address',
 	'date' => 'Date'
 ];
-
-$csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-list.php?action=export&file=mailing-list.csv&key=' . get_option( 'mailing_list_key' );
 
 ?>
 <div class="wrap">
@@ -78,7 +79,7 @@ $csv_api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/csv/mailing-
 		<input type="hidden" name="v" value="<?php echo $current_view; ?>">
 
 		<p class="search-box">
-			<button type="submit" name="exp" id="mailing-list-export-btn" class="button" value="true" data-api="<?php echo $csv_api; ?>">Export CSV</button>
+			<button type="submit" name="export" id="mailing-list-export-btn" class="button" value="1">Export CSV</button>
 		</p><!--.search-box-->
 
 		<div class="tablenav top">

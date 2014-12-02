@@ -8,12 +8,10 @@
  * Future:
  * - Add support for more social media links
  * - Setup cron job to manage monthly/weekly newsletter distribution of latest posts
- * - Add subscribe, unsubscribe, and message default HTML email templates
  * - Add MailChimp & other 3rd party integrations
  * - Add ability to send out email to members of the subscription list
  * - Shortcode and function capability to pull a subscribe form into any view
  * - Extract into Wordpress plugin format
- * - Create ability to add custom HTML email templates
  *
  * @package     Интоор Library (intoor)
  * @author      Colton James Wiscombe <colton@hazardmediagroup.com>
@@ -28,6 +26,11 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Mailing_List {
 
 	public static $settings = [
+		'ajax' => [
+			'type' => 'checkbox',
+			'label' => 'Enabel AJAX Form Submit',
+			'default' => '1'
+		],
 		'sender' => [
 			'type' => 'text',
 			'label' => 'Send Mail From',
@@ -63,85 +66,87 @@ class Mailing_List {
 			'label' => 'Unsubscribe Banner Height <small style="font-weight:normal;"><em>(px)</em></small>',
 			'default' => '200'
 		],
-		'facebook' => [
-			'type' => 'checkbox',
-			'label' => 'Include Facebook Link',
-			'default' => '0'
-		],
-		'twitter' => [
-			'type' => 'checkbox',
-			'label' => 'Include Twitter Link',
-			'default' => '0'
-		],
-		'pinterest' => [
-			'type' => 'checkbox',
-			'label' => 'Include Pinterest Link',
-			'default' => '0'
-		],
-		'instagram' => [
-			'type' => 'checkbox',
-			'label' => 'Include Instagram Link',
-			'default' => '0'
-		],
-		'linkedin' => [
-			'type' => 'checkbox',
-			'label' => 'Include LinkedIn Link',
-			'default' => '0'
-		],
-		'google' => [
-			'type' => 'checkbox',
-			'label' => 'Include Google Link',
-			'default' => '0'
-		],
-		'youtube' => [
-			'type' => 'checkbox',
-			'label' => 'Include YouTube Link',
-			'default' => '0'
-		],
-		'tumblr' => [
-			'type' => 'checkbox',
-			'label' => 'Include Tumblr Link',
-			'default' => '0'
-		],
-		'ajax' => [
-			'type' => 'checkbox',
-			'label' => 'Enabel AJAX Form Submit',
-			'default' => '1'
-		],
 		'color_body' => [
 			'type' => 'text',
 			'label' => 'Body Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'f0f0f0'
 		],
 		'color_container' => [
 			'type' => 'text',
 			'label' => 'Container Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'ffffff'
 		],
 		'color_banner' => [
 			'type' => 'text',
 			'label' => 'Banner Background Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'bdbdbd'
 		],
 		'color_text_heading' => [
 			'type' => 'text',
 			'label' => 'Primary Text Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => '58595b'
 		],
 		'color_text_primary' => [
 			'type' => 'text',
 			'label' => 'Primary Text Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => '58595b'
 		],
 		'color_text_secondary' => [
 			'type' => 'text',
 			'label' => 'Secondary Text Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'bcbec0'
 		],
 		'color_text_link' => [
 			'type' => 'text',
 			'label' => 'Text Link Color #',
-			'placeholder' => '000000'
+			'placeholder' => '000000',
+			'default' => 'ff3c00'
+		],
+		'facebook' => [
+			'type' => 'checkbox',
+			'label' => 'Facebook Link',
+			'default' => '0'
+		],
+		'twitter' => [
+			'type' => 'checkbox',
+			'label' => 'Twitter Link',
+			'default' => '0'
+		],
+		'pinterest' => [
+			'type' => 'checkbox',
+			'label' => 'Pinterest Link',
+			'default' => '0'
+		],
+		'instagram' => [
+			'type' => 'checkbox',
+			'label' => 'Instagram Link',
+			'default' => '0'
+		],
+		'linkedin' => [
+			'type' => 'checkbox',
+			'label' => 'LinkedIn Link',
+			'default' => '0'
+		],
+		'google' => [
+			'type' => 'checkbox',
+			'label' => 'Google+ Link',
+			'default' => '0'
+		],
+		'youtube' => [
+			'type' => 'checkbox',
+			'label' => 'YouTube Link',
+			'default' => '0'
+		],
+		'tumblr' => [
+			'type' => 'checkbox',
+			'label' => 'Tumblr Link',
+			'default' => '0'
 		]
 	];
 
@@ -205,7 +210,8 @@ class Mailing_List {
 			'title' => 'Mailing List Stats',
 			'menu_title' => 'Stats',
 			'parent' => 'mailing_list',
-			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list-stats.php'
+			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list-stats.php',
+			'table' => static::$table
 		];
 
 		$mailing_list_settings = [
@@ -227,13 +233,17 @@ class Mailing_List {
 		// Update the mailing list
 		add_action( 'admin_init', array( &$this, 'update_mailing_list' ) );
 
+		// Export the mailing list
+		add_action( 'admin_init', array( &$this, 'export_mailing_list' ) );
+
 	}
 
 	public function update_mailing_list() {
 
-		$action = !empty( $_GET['action1'] ) ? $_GET['action1'] : !empty( $_GET['action2'] ) ? $_GET['action2'] : '';
+		$action = !empty( $_GET['action2'] ) ? $_GET['action2'] : '';
+		$action = !empty( $_GET['action1'] ) ? $_GET['action1'] : $action;
 
-		if( !empty( $action ) ) :
+		if( !empty( $action ) && $_GET['page'] == 'mailing_list' ) :
 
 			$selected = ( !empty( $_GET['ckd'] ) ) ? $_GET['ckd'] : array();
 			foreach( $selected as $row_id ) {
@@ -248,12 +258,27 @@ class Mailing_List {
 						break;
 
 					case 'delete':
-						Database::update_row( static::$table, 'id', $row_id, array( 'status' => 'deleted' ) );
+						Database::update_row( static::$table, 'id', $row_id, array( 'email' => 'deleted-' . rand( 9999, 99999999 ), 'status' => 'deleted', 'delete_date' => date( 'Y-m-d', time() ), 'delete_time' => date( 'H:i:s', time() ) ) );
 						break;
 
 				}
 			}
 		
+		endif;
+
+	}
+
+	public function export_mailing_list() {
+
+		if( !empty( $_GET['export'] ) && $_GET['page'] == 'mailing_list' ) :
+
+			$args = [
+				'filename' => 'Mailing-List',
+				'data' => $this->get_mailing_list()
+			];
+
+			new CSV( $args );
+
 		endif;
 
 	}
@@ -289,6 +314,7 @@ class Mailing_List {
 		$resp['type'] = 'database-error';
 		$resp['message'] = 'An error occured connecting to the database. Try again later.';
 		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
+<<<<<<< HEAD
 
 		switch( static::save_to_database( $email ) ) {
 
@@ -306,6 +332,25 @@ class Mailing_List {
 				$resp['display'] = 'Welcome back! It looks like you already subscribed.';
 				break;
 
+=======
+
+		switch( static::save_to_database( $email ) ) {
+
+			case 'success':
+				$resp['status'] = 'success';
+				$resp['type'] = 'submitted';
+				$resp['message'] = 'The submitted email address has successfully been added to the mailing list.';
+				$resp['display'] = 'Thanks for subscribing!';
+				break;
+
+			case 'duplicate':
+				$resp['status'] = 'duplicate';
+				$resp['type'] = 'duplicate';
+				$resp['message'] = 'The submitted email address is already on the mailing list.';
+				$resp['display'] = 'Welcome back! It looks like you already subscribed.';
+				break;
+
+>>>>>>> dev
 		}
 
 		return $resp;
@@ -353,6 +398,7 @@ class Mailing_List {
 		$resp['message'] = 'An error occured connecting to the database. Try again later.';
 		$resp['display'] = 'Sorry, something went wrong. Please try again later.';
 
+<<<<<<< HEAD
 		switch( static::remove_from_database( $email ) ) {
 
 			case 'success':
@@ -371,6 +417,26 @@ class Mailing_List {
 
 		}
 
+=======
+			switch( static::remove_from_database( $email ) ) {
+
+				case 'success':
+					$resp['status'] = 'success';
+					$resp['type'] = 'removed';
+					$resp['message'] = 'The submitted email address has successfully been removed from the mailing list.';
+					$resp['display'] = 'Your email address has been successfully removed from our mailing list.';
+					break;
+
+				case 'not-found':
+					$resp['status'] = 'error';
+					$resp['type'] = 'not-found';
+					$resp['message'] = 'The submitted email address is not on the mailing list.';
+					$resp['display'] = 'Your email address isn\'t on our mailing list.';
+					break;
+
+			}
+
+>>>>>>> dev
 		return $resp;
 
 	}

@@ -61,7 +61,7 @@ $(function() {
 					dataType: 'json',
 					data: $(this).serialize(),
 					error: function() {
-						form.find('.message').empty().append('Sorry, something went wrong.  Please try again later.').fadeIn();
+						form.find('.message').empty().append('Sorry, something went wrong. Please try again later.').fadeIn();
 						ga('send', 'event', 'Mailing List', 'API Status', 'Error');
 					},
 					success: function(resp) {

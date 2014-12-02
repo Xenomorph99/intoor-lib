@@ -15,33 +15,18 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 
 class Category_Form {
 
-	public $defaults = array();
-	public $args = array(
+	public $args = [
 		'add_category_form_view' => NULL,	// Path to the add category custom form view
 		'edit_category_form_view' => NULL,	// Path to the edit category custom form view
 		'view_data' => array(),				// Array of data to be passed to the view
 		'table' => array()					// Database table array
-	);
+	];
 
 	public function __construct( $args ) {
 
 		$this->args = wp_parse_args( $args, $this->args );
 		$this->args['id'] = $this->args['table']['name'];
-		$this->args['table']['structure'] = array_merge( array( 'cat_id' => array( 'BIGINT(20)', false, NULL, 'hidden' ) ), $this->args['table']['structure'] );
-
-		extract( $this->args );
-
-		foreach( $table['structure'] as $name => $value ) {
-			if( $name !== 'post_id' ) {
-				if( get_option( $id . '_' . $name ) ) {
-					$this->defaults[$name] = get_option( $id . '_' . $name );
-				} else {
-					$default_value = ( isset( $value[2] ) ) ? $value[2] : '';
-					add_option( $id . '_' . $name, $default_value );
-					$this->defaults[$name] = $default_value;
-				}
-			}
-		}
+		$this->args['table']['structure'] = array_merge( array( 'cat_id' => [ 'sql' => 'BIGINT(20)', 'type' => 'hidden' ] ), $this->args['table']['structure'] );
 
 		$this->setup_category_form();
 		$this->wp_hooks();
@@ -85,58 +70,60 @@ class Category_Form {
 
 	public function default_add_category_form_view() {
 
-		extract( $this->args );
-
-		foreach( $table['structure'] as $key => $value ) {
-			echo ( $key !== 'cat_id' ) ? $this->add_category_form_field( $key, $value ) : '';
+		foreach( $this->args['table']['structure'] as $name => $args ) {
+			echo ( $name !== 'cat_id' ) ? $this->add_category_form_field( $name, $args ) : '';
 		}
 
 	}
 
-	public function add_category_form_field( $key, $arr ) {
+	public function add_category_form_field( $name, $args ) {
 
-		$f = '';
-		$name = $this->args['table']['prefix'] . '_' . $key;
-		$field_type = !empty( $arr[3] ) ? $arr[3] : '';
-		$options = !empty( $arr[4] ) ? $arr[4] : array();
-		$label = !empty( $arr[5] ) ? $arr[5] : $key;
-		$id = !empty( $arr[6] ) ? $arr[6] : $this->args['id'] . '_' . $key;
-		$desc = !empty( $arr[7] ) ? '<p class="description">' . $arr[7] . '</p>' : '';
+		extract( $args );
 
-		switch( $field_type ) {
+		$type = !empty( $type ) ? $type : '';
+		$options = !empty( $options ) ? $options : array();
+		$label = !empty( $label ) ? $label : ucwords( str_replace( '_', ' ', $name ) );
+		$id = !empty( $id ) ? $id : $this->args['id'] . '_' . $name;
+		$value = !empty( $default ) ? $default : '';
+		$placeholder = !empty( $placeholder ) ? $placeholder : '';
+		$desc = !empty( $desc ) ? '<p class="description">' . $desc . '</p>' : '';
+		$s = '';
+
+		switch( $type ) {
 
 			case 'text' :
 
-				$f .= "<label for='$id'>$label</label>";
-				$f .= "<input type='$field_type' id='$id' name='$name'>";
+				$s .= '<label for="' . $id . '">' . $label . '</label>';
+				$s .= '<input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 
 				break;
 			case 'number' :
 
-				$f .= "<label for='$id'>$label</label>";
-				$f .= "<input type='$field_type' id='$id' name='$name'>";
+				$s .= '<label for="' . $id . '">' . $label . '</label>';
+				$s .= '<input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 
 				break;
 			case 'textarea' :
 
-				$f .= "<label for='$id'>$label</label>";
-				$f .= "<textarea id='$id' name='$name'></textarea>";
+				$s .= '<label for="' . $id . '">' . $label . '</label>';
+				$s .= '<textarea id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '"></textarea>';
 
 				break;
 			case 'select' :
 
-				$f .= "<label for='$id'>$label</label>";
-				$f .= "<select id='$id' name='$name'>";
-				foreach( $options as $option_name => $option_value ) {
-					$f .= "<option value='$option_name'>$option_value</option>";
+				$s .= '<label for="' . $id . '">' . $label . '</label>';
+				$s .= '<select id="' . $id . '" name="' . $name . '">';
+				foreach( $options as $opt_name => $opt_value ) {
+					$selected = ( $opt_name == $value ) ? ' selected="selected"' : '';
+					$s .= '<option value="' . $opt_name . '"' . $selected . '>' . $opt_value . '</option>';
 				}
-				$f .= "</select>";
+				$s .= '</select>';
 
 				break;
 
 		}
 
-		return "<div class='form-field'>$f$desc</div>";
+		return '<div class="form-field">' . $s . $desc . '</div>';
 
 	}
 
@@ -152,65 +139,62 @@ class Category_Form {
 
 	public function default_edit_category_form_view( $tag ) {
 
-		extract( $this->args );
-
-		foreach( $table['structure'] as $key => $value ) {
-			echo ( $key !== 'cat_id' ) ? $this->edit_category_form_field( $key, $value ) : '';
+		foreach( $this->args['table']['structure'] as $name => $args ) {
+			echo ( $name !== 'cat_id' ) ? $this->edit_category_form_field( $name, $args ) : '';
 		}
 
 	}
 
-	public function edit_category_form_field( $key, $arr ) {
+	public function edit_category_form_field( $name, $args ) {
 
 		global $tag;
+		extract( $args );
 
-		$f = '';
-		$name = $this->args['table']['prefix'] . '_' . $key;
-		$field_type = !empty( $arr[3] ) ? $arr[3] : '';
-		$options = !empty( $arr[4] ) ? $arr[4] : array();
-		$label = !empty( $arr[5] ) ? $arr[5] : $key;
-		$id = !empty( $arr[6] ) ? $arr[6] : $this->args['id'] . '_' . $key;
-		$desc = !empty( $arr[7] ) ? '<p class="description">' . $arr[7] . '</p>' : '';
-
-		// Retrieve data
+		$type = !empty( $type ) ? $type : '';
+		$options = !empty( $options ) ? $options : array();
+		$label = !empty( $label ) ? $label : ucwords( str_replace( '_', ' ', $name ) );
+		$id = !empty( $id ) ? $id : $this->args['id'] . '_' . $name;
+		$placeholder = !empty( $placeholder ) ? $placeholder : '';
+		$desc = !empty( $desc ) ? '<p class="description">' . $desc . '</p>' : '';
 		$data = Database::get_row( $this->args['table'], 'cat_id', $tag->term_id );
-		$value = !empty( $data[$key] ) ? $data[$key] : '';
+		$value = !empty( $data[$name] ) ? html_entity_decode( $data[$name] ) : '';
+		$s = '';
 
-		switch( $field_type ) {
+		switch( $type ) {
 
 			case 'text' :
 
-				$f .= "<th scope='row' valign='top'><label for='$id'>$label</label></th>";
-				$f .= "<td><input type='$field_type' id='$id' name='$name' value='$value'>$desc</td>";
+				$s .= '<th scope="row" valign="top"><label for="' . $id . '">' . $label . '</label></th>';
+				$s .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">' . $desc . '</td>';
 
 				break;
 			case 'number' :
 
-				$f .= "<th scope='row' valign='top'><label for='$id'>$label</label></th>";
-				$f .= "<td><input type='$field_type' id='$id' name='$name' value='$value'>$desc</td>";
+				$s .= '<th scope="row" valign="top"><label for="' . $id . '>' . $label . '</label></th>';
+				$s .= '<td><input type="' . $type . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">' . $desc . '</td>';
 
 				break;
 			case 'textarea' :
 
-				$f .= "<th scope='row' valign='top'><label for='$id'>$label</label></th>";
-				$f .= "<td><textarea id='$id' name='$name'>$value</textarea>$desc</td>";
+				$s .= '<th scope="row" valign="top"><label for="' . $id . '">' . $label . '</label></th>';
+				$s .= '<td><textarea id="' . $id . '" name="' . $name . '" placeholder="' . $placeholder . '">' . $value . '</textarea>' . $desc . '</td>';
 
 				break;
 			case 'select' :
 
-				$f .= "<th scope='row' valign='top'><label for='$id'>$label</label></th>";
-				$f .= "<td><select id='$id' name='$name'>";
-				foreach( $options as $option_name => $option_value ) {
-					$checked = ( $value == $option_name ) ? " selected='selected'" : "";
-					$f .= "<option value='$option_name'$checked>$option_value</option>";
+				$s .= '<th scope="row" valign="top"><label for="' . $id . '">' . $label . '</label></th>';
+				$s .= '<td><select id="' . $id . '" name="' . $name . '">';
+				foreach( $options as $opt_name => $opt_value ) {
+					$selected = ( $opt_name == $value ) ? ' selected="selected"' : '';
+					$s .= '<option value="' . $opt_name . '"' . $selected . '>' . $opt_value . '</option>';
 				}
-				$f .= "</select>$desc</td>";
+				$s .= '</select>' . $desc . '</td>';
 
 				break;
 
 		}
 
-		return "<tr class='form-field'>$f</tr>";
+		return '<tr class="form-field">' . $s . '</tr>';
 
 	}
 
@@ -220,24 +204,23 @@ class Category_Form {
 		// Run this method only once
 		if( $this->save_count < 1 ) :
 
-			$prefix = $this->args['table']['prefix'] . '_';
+			$id = $this->args['id'];
 			$data = Database::get_row( $this->args['table'], 'cat_id', $term_id );
-			$new_row = ( !empty( $data['id'] ) ) ? false : true;
 
-			foreach( $this->defaults as $name => $value ) {
-				$data[$name] = isset( $_POST[$prefix.$name] ) ? $_POST[$prefix.$name] : $data[$name];
+			foreach( $this->args['table']['structure'] as $name => $args ) {
+				$data[$name] = isset( $_POST[$name] ) ? $_POST[$name] : $data[$name];
 			}
 
-			if( $new_row ) {
+			if( empty( $data['cat_id'] ) ) {
 				$data['cat_id'] = $term_id;
 				Database::insert_row( $this->args['table'], $data );
 			} else {
 				Database::update_row( $this->args['table'], 'cat_id', $term_id, $data );
 			}
 
-		endif;
+			$this->save_count++;
 
-		$this->save_count++;
+		endif;
 
 	}
 

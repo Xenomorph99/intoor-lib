@@ -88,15 +88,15 @@ var IntoorAdmin = {
 
 	},
 
-	exportCSV: function() {
+	// exportCSV: function() {
 
-		$('#mailing-list-export-btn').on('click', function(e) {
-			e.preventDefault();
-			var url = $(this).data('api');
-			window.open(url, 'csv');
-		});
+	// 	$('#mailing-list-export-btn').on('click', function(e) {
+	// 		e.preventDefault();
+	// 		var url = $(this).data('api');
+	// 		window.open(url, 'csv');
+	// 	});
 
-	},
+	// },
 
 	setPopularMetaBox: function() {
 
