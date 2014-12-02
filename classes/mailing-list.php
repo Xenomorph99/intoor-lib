@@ -8,12 +8,10 @@
  * Future:
  * - Add support for more social media links
  * - Setup cron job to manage monthly/weekly newsletter distribution of latest posts
- * - Add subscribe, unsubscribe, and message default HTML email templates
  * - Add MailChimp & other 3rd party integrations
  * - Add ability to send out email to members of the subscription list
  * - Shortcode and function capability to pull a subscribe form into any view
  * - Extract into Wordpress plugin format
- * - Create ability to add custom HTML email templates
  *
  * @package     Интоор Library (intoor)
  * @author      Colton James Wiscombe <colton@hazardmediagroup.com>

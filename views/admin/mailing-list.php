@@ -39,7 +39,9 @@ $views = [
 
 // Update item_count for each view
 foreach( $data as $row => $val ) {
-	$views[$val['status']]['item_count'] = $views[$val['status']]['item_count'] + 1;
+	if( !empty( $val['id'] ) ) {
+		$views[$val['status']]['item_count'] = $views[$val['status']]['item_count'] + 1;
+	}
 }
 
 $table_cols = [

@@ -46,6 +46,7 @@ foreach( $data as $row => $val ) {
 <div class="wrap">
 
 	<h2>Mailing List Stats</h2>
+	<p>Server: <?= date( 'l, F j, Y | G:i a (T)' ) ?></p>
 
 	<table class="form-table">
 		<tbody>
