@@ -318,7 +318,7 @@ class Social {
 
 	public static function get_social_media_button( $network, $class = '' ) {
 
-		return '<a class="' . $class . '" href="' . static::get_social_media_url( $network ) . '" rel="nofollow">' . static::get_social_media_icon( $network ) . '</a>';
+		return '<a class="' . $class . '" href="' . static::get_social_media_url( $network ) . '">' . static::get_social_media_icon( $network ) . '</a>';
 
 	}
 
@@ -370,7 +370,7 @@ class Social {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $network, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span>' : static::get_social_media_icon( $network );
 		}
 		$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-		return "<a class='share-counter' href='" . static::get_social_media_share_url( $network ) . "' rel='nofollow' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a>";
+		return "<a class='share-counter' href='" . static::get_social_media_share_url( $network ) . "' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a>";
 
 	}
 
@@ -395,7 +395,7 @@ class Social {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span>' : static::get_social_media_icon( $network );
 			}
 			$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-			$s .= "<li class='social-media-share-button'><a class='share-counter share-link-disabled' href='$url' rel='nofollow' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a></li>";
+			$s .= "<li class='social-media-share-button'><a class='share-counter share-link-disabled' href='$url' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a></li>";
 		}
 		$s .= '</ul>';
 		return $s;
