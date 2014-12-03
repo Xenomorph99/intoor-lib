@@ -1,6 +1,6 @@
 Интоор Library
 ==============
-"If a Wordpress theme was a cherry then the Интоор Library is the pit."
+_"If a Wordpress theme was a cherry then the Интоор Library is the pit."_
 
 This library can and should be used as the backbone of your Wordpress theme development.  It provides additional levels of functionality not currently built into the core Wordpress CMS and allows you as a theme developer to quickly extend the Wordpress Admin.
 
@@ -11,7 +11,7 @@ __NOTE__: _This project is still in its infancy so changes and updates will come
 
 Key Features
 ------------
-* Quickly and easily create admin menus, custom post types, custom meta boxes, database tables, and much more with associative arrays
+* Create admin menus, custom post types, custom meta boxes, database tables, and much more simply with arrays
 * Email mailing list creation and management
 * Popularity tracking including page views, likes, and shares
 * Google Analytics integration
