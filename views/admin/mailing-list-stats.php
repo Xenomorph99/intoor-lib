@@ -28,7 +28,7 @@ $day_count = Database::date_count( $table, 'create_date', 'day' );
 $day_unsub_count = Database::date_count( $table, 'delete_date', 'day' );
 
 foreach( $data as $row => $val ) {
-	if( !empty( $val['id'] ) ) {
+	if( !isset( $val['email'] ) ) {
 		$total_count++;
 		switch( $val['status'] ) {
 			case 'active':

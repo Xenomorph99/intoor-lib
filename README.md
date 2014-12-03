@@ -1,10 +1,28 @@
 Интоор Library
 ==============
-A Cherry Flavored Wordpress Theme Library.
+"If a Wordpress theme was a cherry then the Интоор Library is the pit."
 
-This library can and should be used as the backbone of your Wordpress theme development.  It provides additional levels of functionality not currently built into the core Wordpress CMS as well as allows you as a theme developer to quickly extend the Wordpress Admin.
+This library can and should be used as the backbone of your Wordpress theme development.  It provides additional levels of functionality not currently built into the core Wordpress CMS and allows you as a theme developer to quickly extend the Wordpress Admin.
 
-_This project is still in its infancy so changes and updates will come often so stay tuned._
+It may be helpful to know that _Интоор_ [ɪn.ˈtɔːr], pronounced _in-tor_, is the Mongolian word for 'Cherry' and is commonly Romanized as _Intoor_.
+
+__NOTE__: _This project is still in its infancy so changes and updates will come fast and often so stay tuned._
+
+
+Key Features
+------------
+* Quickly and easily create admin menus, custom post types, custom meta boxes, database tables, and much more with associative arrays
+* Email mailing list creation and management
+* Popularity tracking including page views, likes, and shares
+* Google Analytics integration
+* Secure data encryption
+
+
+Requirements
+------------
+* [PHP v5.5](http://php.net/downloads.php) or later
+* [Mcrypt](http://php.net/manual/en/book.mcrypt.php)
+* [Wordpress 4.0](https://wordpress.org/download/) or later
 
 
 Installation
