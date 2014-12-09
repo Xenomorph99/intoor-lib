@@ -42,22 +42,31 @@ class Cookie {
 
 		if( !isset( $_COOKIE[$name] ) ) :
 		
-			$data = ( $encrypt ) ? Encryption::encrypt( json_encode( $data ), $key ) : json_encode( $data );
+			$data = ( $encrypt ) ? Encryption::encrypt( htmlentities( json_encode( $data ) ), $key ) : htmlentities( json_encode( $data ) );
 			setcookie( $name, $data, $expire, $path, $domain, $secure, $httponly );
 
 		endif;
 
 	}
 
-	public function get_cookie() {
+	public function get_data() {
 
 		extract( $this->args );
 
 		if( isset( $_COOKIE[$name] ) ) :
 
-			return ( $encrypt ) ? json_decode( Encryption::decrypt( $_COOKIE[$name], $key ) ) : json_decode( $_COOKIE[$name] );
+			return ( $encrypt ) ? json_decode( html_entity_decode( Encryption::decrypt( $_COOKIE[$name], $key ) ) ) : json_decode( html_entity_decode( $_COOKIE[$name] ) );
 
 		endif;
+
+	}
+
+	public function update( $new_data ) {
+
+		extract( $this->args );
+
+		$data = ( $encrypt ) ? Encryption::encrypt( htmlentities( json_encode( $new_data ) ), $key ) : htmlentities( json_encode( $new_data ) );
+		setcookie( $name, $data, $expire, $path, $domain, $secure, $httponly );
 
 	}
 
