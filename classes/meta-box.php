@@ -35,9 +35,9 @@ class Meta_Box {
 		'table' => array(),             // Database table array
 	];
 
-	public function __construct( $arr ) {
+	public function __construct( $args) {
 
-		$this->args = wp_parse_args( $arr, $this->args );
+		$this->args = wp_parse_args( $args, $this->args );
 		$this->args['meta_box_id'] = Functions::str_smash( $this->args['title'] );
 		$this->args['table']['structure'] = ( $this->args['ref_post_id'] ) ? array_merge( array( 'post_id' => [ 'sql' => 'BIGINT(20)', 'type' => 'hidden' ] ), $this->args['table']['structure'] ) : $this->args['table']['structure'];
 
