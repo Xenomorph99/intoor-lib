@@ -15,20 +15,23 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 class Cookie {
 
 	public $args = [
-		'name' => 'intoor',                 // Name of the cookie
-		'domain' => get_bloginfo( 'url' ),  // Domain name of the site
-		'path' => '/',                      // The path inside which the cookie is available
-		'expire' => time() + 315360000,     // Set the cookie's expiration (defaults to 10 years = 10 * 365 * 24 * 60 * 60)
-		'encrypt' => false,                 // Encrypt the data stored in the cookie or not
-		'key' => '',                        // Encryption key used to encrypt and decrypt cookied data
-		'secure' => false,                  // Specifies whether the cookie can only be used across HTTPS connections
-		'httponly' => false,                // The cookie can only be accessed through HTTP connections (Restricts JavaScript's access)
-		'data' => array(),                  // Array of data to be saved in the cookie
+		'name' => 'intoor',    // Name of the cookie
+		'domain' => '',        // Domain name of the site
+		'path' => '/',         // The path inside which the cookie is available
+		'expire' => '',        // Set the cookie's expiration (defaults to 10 years = 10 * 365 * 24 * 60 * 60)
+		'encrypt' => false,    // Encrypt the data stored in the cookie or not
+		'key' => '',           // Encryption key used to encrypt and decrypt cookied data
+		'secure' => false,     // Specifies whether the cookie can only be used across HTTPS connections
+		'httponly' => false,   // The cookie can only be accessed through HTTP connections (Restricts JavaScript's access)
+		'data' => array(),     // Array of data to be saved in the cookie
 	];
 
 	public function __construct( $args ) {
 
 		$this->args = wp_parse_args( $args, $this->args );
+		$this->args['domain'] = empty( $this->args['domain'] ) ? get_bloginfo( 'url' ) : $this->args['domain'];
+		$this->args['expire'] = empty( $this->args['expire'] ) ? time() + 315360000 : $this->args['expire'];
+
 		$this->setup_cookie();
 
 	}
