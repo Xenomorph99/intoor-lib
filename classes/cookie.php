@@ -19,7 +19,7 @@ class Cookie {
 		'domain' => '',        // Domain name of the site
 		'path' => '/',         // The path inside which the cookie is available
 		'expire' => '',        // Set the cookie's expiration (defaults to 10 years = 10 * 365 * 24 * 60 * 60)
-		'encrypt' => false,    // Encrypt the data stored in the cookie or not
+		'encrypt' => false,    // Encrypt the data stored in the cookie or not (If encrypted JS will have no way to decript it)
 		'key' => '',           // Encryption key used to encrypt and decrypt cookied data
 		'secure' => false,     // Specifies whether the cookie can only be used across HTTPS connections
 		'httponly' => false,   // The cookie can only be accessed through HTTP connections (Restricts JavaScript's access)
@@ -56,6 +56,10 @@ class Cookie {
 		if( isset( $_COOKIE[$name] ) ) :
 
 			return ( $encrypt ) ? json_decode( html_entity_decode( Encryption::decrypt( $_COOKIE[$name], $key ) ) ) : json_decode( html_entity_decode( $_COOKIE[$name] ) );
+
+		else :
+
+			return (object)$data;
 
 		endif;
 
