@@ -128,7 +128,8 @@ class Meta_Box {
 
 	public function create_meta_box_structure( $data ) {
 		
-		$prefix = $this->args['table']['prefix'] . "_";
+		global $post;
+		$prefix = $this->args['table']['prefix'] . '_';
 		$s = "";
 
 		for( $i = 0; $i < count( $data ); $i++ ) {
@@ -141,7 +142,11 @@ class Meta_Box {
 
 			foreach( $data[$i] as $column => $value ) {
 				if( $column !== 'id' ) {
-					$s .= $this->field( $i, $prefix, $column, $value );
+					if( $column == 'post_id' ) {
+						$s .= $this->field( $column, $post->ID );
+					} else {
+						$s .= $this->field( $column, $value );
+					}
 				}
 			}
 
@@ -155,13 +160,18 @@ class Meta_Box {
 
 	public function create_hidden_defaults() {
 
+		global $post;
 		$prefix = $this->args['table']['prefix'] . '_';
 		$s = "<div class='meta-box-form-defaults' style='display:none; visibility:hidden;'>";
 		$s .= "<input type='hidden' class='meta-box-section-id' name='{$prefix}id[]' value='0'>";
 
 		foreach( $this->args['table']['structure'] as $column => $value ) {
 			if( $column !== 'id' ) {
-				$s .= $this->field( NULL, $prefix, $column, $value['default'] );
+				if( $column == 'post_id' ) {
+					$s .= $this->field( $column, $post->ID );
+				} else {
+					$s .= $this->field( $column, $value['default'] );
+				}
 			}
 		}
 
@@ -191,10 +201,11 @@ class Meta_Box {
 
 	}
 
-	public function field( $i, $prefix, $column, $value ) {
+	public function field( $column, $value ) {
 
 		$col = $this->args['table']['structure'][$column];
 		$type = !empty( $col['type'] ) ? $col['type'] : '';
+		$prefix = $this->args['table']['prefix'] . '_';
 		$name = $prefix . $column . "[]";
 		$options = !empty( $col['options'] ) ? $col['options'] : array();
 		$class = 'meta-box-form-field';
