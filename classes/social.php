@@ -204,7 +204,7 @@ class Social {
 		]
 	];
 
-	public static $share_url = [
+	public static $networks = [
 		'facebook' => 'https://www.facebook.com/sharer/sharer.php?u=',
 		'twitter' => 'https://twitter.com/intent/tweet?url=',
 		'google' => 'https://plus.google.com/share?url=',
@@ -258,23 +258,19 @@ class Social {
 	public function setup_inflation() {
 
 		global $post;
+		$data = Database::get_row( static::$table, 'post_id', $post->ID );
 
-		if( $this->args['inflate'] ) :
+		if( empty( $data['id'] ) ) :
 
-			$data = Database::get_row( static::$table, 'post_id', $post->ID );
+			$data['post_id'] = $post->ID;
+			$data['facebook_infl'] = !empty( $data['facebook_infl'] ) ? $data['facebook_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+			$data['twitter_infl'] = !empty( $data['twitter_infl'] ) ? $data['twitter_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+			$data['google_infl'] = !empty( $data['google_infl'] ) ? $data['google_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+			$data['pinterest_infl'] = !empty( $data['pinterest_infl'] ) ? $data['pinterest_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+			$data['linkedin_infl'] = !empty( $data['linkedin_infl'] ) ? $data['linkedin_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
+			$data['reddit_infl'] = !empty( $data['reddit_infl'] ) ? $data['reddit_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
 
-			if( !empty( $data['id'] ) ) :
-
-				$data['facebook_infl'] = !empty( $data['facebook_infl'] ) ? $data['facebook_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
-				$data['twitter_infl'] = !empty( $data['twitter_infl'] ) ? $data['twitter_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
-				$data['google_infl'] = !empty( $data['google_infl'] ) ? $data['google_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
-				$data['pinterest_infl'] = !empty( $data['pinterest_infl'] ) ? $data['pinterest_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
-				$data['linkedin_infl'] = !empty( $data['linkedin_infl'] ) ? $data['linkedin_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
-				$data['reddit_infl'] = !empty( $data['reddit_infl'] ) ? $data['reddit_infl'] : Functions::numgen( $this->args['infl_range'], $this->args['infl_min'], $this->args['infl_max'] );
-
-				Database::save_data( static::$table, $data );
-
-			endif;
+			Database::save_data( static::$table, $data );
 
 		endif;
 
@@ -333,7 +329,7 @@ class Social {
 		global $post;
 		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
-		$url = ( !empty( $data[$network.'_link'] ) ) ? static::$share_url[$network] . $data[$network.'_link'] : static::$share_url[$network] . get_permalink( $post_id );
+		$url = ( !empty( $data[$network.'_link'] ) ) ? static::$networks[$network] . $data[$network.'_link'] : static::$networks[$network] . get_permalink( $post_id );
 		return $url;
 
 	}
@@ -387,7 +383,7 @@ class Social {
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
 		$s = '<ul class="social-media-share-buttons">';
 		foreach( $network_arr as $network ) {
-			$url = ( !empty( $data[$network.'_link'] ) ) ? static::$share_url[$network] . $data[$network.'_link'] : static::$share_url[$network] . get_permalink( $post_id );
+			$url = ( !empty( $data[$network.'_link'] ) ) ? static::$networks[$network] . $data[$network.'_link'] : static::$networks[$network] . get_permalink( $post_id );
 			$count = ( !empty( $data[$network.'_shares'] ) ) ? (int)$data[$network.'_shares'] + (int)$data[$network.'_infl'] : $data[$network.'_infl'];
 			if( $icon_left ) {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-icon">' . static::get_social_media_icon( $network ) . '</span><span class="social-media-share-button-count">' . $count . '</span>' : static::get_social_media_icon( $network );
@@ -414,7 +410,7 @@ class Social {
 		$networks = array();
 		$resp = array();
 
-		foreach( static::$share_url as $name => $value ) {
+		foreach( static::$networks as $name => $value ) {
 			array_push( $networks, $name );
 		}
 
