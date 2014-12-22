@@ -212,7 +212,7 @@ class Popular {
 	public static function get_popular( $custom_args = array() ) {
 
 		$args = [
-			'count' => 10,                     // Number of posts to retrieve
+			'count' => 0,                     // Number of posts to retrieve
 			'post_type' => array( 'post' ),    // This is where you would also include custom post types
 			'category' => 0,                   // Filter by categories (only one post type allowed if filtering by categories)
 			'include_views' => true,           // Include views when assessing popularity
@@ -328,7 +328,7 @@ class Popular {
 			array_push( $popular, $row['post_id'] );
 		}
 		$popular = ( $random ) ? shuffle( $popular ) : $popular;
-		return array_slice( $popular, $offset, ( $count + $offset ) );
+		return ( $count > 0 ) ? array_slice( $popular, $offset, ( $count + $offset ) ) : $popular;
 
 	}
 

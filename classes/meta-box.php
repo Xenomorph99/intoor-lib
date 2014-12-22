@@ -300,7 +300,7 @@ class Meta_Box {
 				break;
 			case 'hidden' :
 
-				$field .= "<input type='$type' class='$class' name='$name' value='$value'>";
+				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
 
 				break;
 			case 'checkbox-list' :
@@ -333,46 +333,50 @@ class Meta_Box {
 		// Run this method only once
 		if( $this->save_count < 1 ) :
 
-			$prefix = $this->args['table']['prefix'] . '_';
-			$total = isset( $_POST[$prefix.'id'] ) ? count( $_POST[$prefix.'id'] ) : 1;
-			$num = 0;
+			if( in_array( get_post_type(), $this->args['post_type'] ) ) :
 
-			if( $this->args['recursive'] ) {
-				$num = 1;
-			}
-			if( $this->args['admin_menu'] ) {
-				$num = 1;
-			}
+				$prefix = $this->args['table']['prefix'] . '_';
+				$total = isset( $_POST[$prefix.'id'] ) ? count( $_POST[$prefix.'id'] ) : 1;
+				$num = 0;
 
-			// Loop through the posted data
-			for( $i = $num; $i < $total; $i++ ) {
+				if( $this->args['recursive'] ) {
+					$num = 1;
+				}
+				if( $this->args['admin_menu'] ) {
+					$num = 1;
+				}
 
-				// Delete data
-				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
+				// Loop through the posted data
+				for( $i = $num; $i < $total; $i++ ) {
 
-					$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
-					Database::delete_row( $this->args['table'], 'id', $row_id );
+					// Delete data
+					if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
 
-				// Save data
-				else :
+						$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
+						Database::delete_row( $this->args['table'], 'id', $row_id );
 
-					$data = array();
-					foreach( $this->args['table']['structure'] as $column => $value ) {
-						$data[$column] = isset( $_POST[$prefix.$column][$i] ) ? $_POST[$prefix.$column][$i] : '';
-					}
+					// Save data
+					else :
 
-					if( isset( $_POST[$prefix.'id'] ) ) {
-						$row_id = $_POST[$prefix.'id'][$i];
-						if( !empty( $row_id ) ) {
-							Database::update_row( $this->args['table'], 'id', $row_id, $data );
-						} else {
-							Database::insert_row( $this->args['table'], $data );
+						$data = array();
+						foreach( $this->args['table']['structure'] as $column => $value ) {
+							$data[$column] = isset( $_POST[$prefix.$column][$i] ) ? $_POST[$prefix.$column][$i] : '';
 						}
-					}
-				
-				endif;
 
-			}
+						if( isset( $_POST[$prefix.'id'] ) ) {
+							$row_id = $_POST[$prefix.'id'][$i];
+							if( !empty( $row_id ) ) {
+								Database::update_row( $this->args['table'], 'id', $row_id, $data );
+							} else {
+								Database::insert_row( $this->args['table'], $data );
+							}
+						}
+					
+					endif;
+
+				}
+
+			endif;
 
 		endif;
 
