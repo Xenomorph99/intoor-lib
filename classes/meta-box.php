@@ -220,7 +220,7 @@ class Meta_Box {
 
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -228,7 +228,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -236,7 +236,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -244,7 +244,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -252,7 +252,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -260,7 +260,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -268,7 +268,7 @@ class Meta_Box {
 
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<textarea class='$class' id='$id' name='$name'>$value</textarea>";
+				$field .= '<textarea class="' . $class . '" id="' . $id . '" name="' . $name . '">' . $value . '</textarea>';
 				$field .= "</span><br>";
 
 				break;
@@ -311,7 +311,7 @@ class Meta_Box {
 				break;
 			case 'hidden' :
 
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
 
 				break;
 			case 'checkbox-list' :

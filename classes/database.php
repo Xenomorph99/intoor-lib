@@ -160,8 +160,8 @@ class Database {
 				foreach( $db as $row ) {
 					$value_array = array();
 					foreach( $row as $col => $col_value) {
-						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : html_entity_decode( $col_value );
-						$value = stripslashes( $value );
+						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : $col_value;
+						$value = stripslashes( html_entity_decode( $value ) );
 						$value_array[$col] = $value;
 					}
 					$data[$count] = $value_array;
@@ -203,8 +203,8 @@ class Database {
 			if( !empty( $db ) ) :
 
 				foreach( $db as $col => $col_value ) {
-					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : html_entity_decode( $col_value );
-					$value = stripslashes( $value );
+					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : $col_value;
+					$value = stripslashes( html_entity_decode( $value ) );
 					$data[$col] = $value;
 				}
 
@@ -265,8 +265,8 @@ class Database {
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : htmlentities( $col_value );
-				$row[$col] = $value;
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : $col_value;
+				$row[$col] = htmlentities( $value );
 			}
 
 			$wpdb->insert( $table_name, $row );
@@ -289,8 +289,8 @@ class Database {
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : htmlentities( $col_value );
-				$row[$col] = $value;
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : $col_value;
+				$row[$col] = htmlentities( $value );
 			}
 
 			$wpdb->update( $table_name, $row, array( $unique_key => $unique_value ) );
