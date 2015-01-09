@@ -172,10 +172,12 @@ class Database {
 
 				$defaults = array();
 				foreach( $table['structure'] as $col => $args ) {
-					if( $col === 'post_id' ) {
-						$defaults[$col] = $post->ID;
-					} else {
-						$defaults[$col] = !empty( $args['default'] ) ? $args['default'] : '';
+					if( in_array( $col, $col_arr ) || empty( $col_arr ) ) {
+						if( $col === 'post_id' ) {
+							$defaults[$col] = $post->ID;
+						} else {
+							$defaults[$col] = !empty( $args['default'] ) ? $args['default'] : '';
+						}
 					}
 				}
 				$data[0] = $defaults;
