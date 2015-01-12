@@ -332,7 +332,7 @@ class Social {
 
 	public static function get_social_media_button( $network, $class = '', $alt_icon = false ) {
 
-		return '<a class="' . $class . '" href="' . static::get_social_media_url( $network ) . '">' . static::get_social_media_icon( $network, $alt_icon ) . '</a>';
+		return '<a class="' . $class . '" href="' . static::get_social_media_url( $network ) . '" role="button">' . static::get_social_media_icon( $network, $alt_icon ) . '</a>';
 
 	}
 
@@ -384,7 +384,7 @@ class Social {
 			$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . static::get_social_media_share_count( $network, $post_id ) . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $network, $alt_icon ) . '</span>' : static::get_social_media_icon( $network, $alt_icon );
 		}
 		$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-		return "<a class='share-counter' href='" . static::get_social_media_share_url( $network ) . "' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a>";
+		return "<a class='share-counter' href='" . static::get_social_media_share_url( $network ) . "' target='_blank' role='button' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a>";
 
 	}
 
@@ -399,7 +399,7 @@ class Social {
 		global $post;
 		$post_id = ( !empty( $post_id ) ) ? $post_id : $post->ID;
 		$data = Database::get_row( static::$table, 'post_id', $post_id );
-		$s = '<ul class="social-media-share-buttons">';
+		$s = '<ul class="social-media-share-buttons" class="list">';
 		foreach( $network_arr as $network ) {
 			$url = ( !empty( $data[$network.'_link'] ) ) ? static::$networks[$network] . $data[$network.'_link'] : static::$networks[$network] . get_permalink( $post_id );
 			$count = ( !empty( $data[$network.'_shares'] ) ) ? (int)$data[$network.'_shares'] + (int)$data[$network.'_infl'] : $data[$network.'_infl'];
@@ -409,7 +409,7 @@ class Social {
 				$cont = ( $show_count ) ? '<span class="social-media-share-button-count">' . $count . '</span><span class="social-media-share-button-icon">' . static::get_social_media_icon( $network, $alt_icon ) . '</span>' : static::get_social_media_icon( $network, $alt_icon );
 			}
 			$api = get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/social.php';
-			$s .= "<li class='social-media-share-button'><a class='share-counter share-link-disabled' href='$url' target='_blank' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a></li>";
+			$s .= "<li class='social-media-share-button' role='listitem'><a class='share-counter share-link-disabled' href='$url' target='_blank' role='button' data-api='$api' data-id='$post_id' data-network='$network' data-key='" . API::get_key( 'social_sharing' ) . "'>$cont</a></li>";
 		}
 		$s .= '</ul>';
 		return $s;

@@ -47,7 +47,7 @@ foreach( $data as $row => $val ) {
 ?>
 <div class="wrap">
 
-	<h2>Mailing List Stats</h2>
+	<h2 role="heading" aria-level="1">Mailing List Stats</h2>
 	<p>Server: <?= date( 'l, F j, Y | G:i a (T)' ) ?></p>
 
 	<table class="form-table">
@@ -74,7 +74,7 @@ foreach( $data as $row => $val ) {
 	<br>
 	<hr>
 
-	<h3><em>This Month</em></h3>
+	<h3 role="heading" aria-level="1"><em>This Month</em></h3>
 	<table class="form-table">
 		<tbody>
 			<tr>
@@ -91,7 +91,7 @@ foreach( $data as $row => $val ) {
 	<br>
 	<hr>
 
-	<h3><em>This Week</em></h3>
+	<h3 role="heading" aria-level="2"><em>This Week</em></h3>
 	<table class="form-table">
 		<tbody>
 			<tr>
@@ -108,7 +108,7 @@ foreach( $data as $row => $val ) {
 	<br>
 	<hr>
 
-	<h3><em>Today</em></h3>
+	<h3 role="heading" aria-level="3"><em>Today</em></h3>
 	<table class="form-table">
 		<tbody>
 			<tr>

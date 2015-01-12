@@ -16,7 +16,7 @@ $docs = $this->settings['array'];
 ?>
 <div class="wrap">
 
-	<h2>Documentation</h2>
+	<h2 role="heading" aria-level="1">Documentation</h2>
 
 	<?php var_dump($docs); ?>
 

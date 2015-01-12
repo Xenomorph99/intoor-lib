@@ -27,14 +27,14 @@ $label_tag_open = ( !empty( $form['label_tag'] ) ) ? '<' . $form['label_tag'] . 
 $label_tag_close = ( !empty( $form['label_tag'] ) ) ? '</' . $form['label_tag'] . '>' : '</label>';
 
 ?>
-<form id="<?= $form['id']; ?>" class="mailing-list-form" method="POST" action="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
+<form id="<?= $form['id']; ?>" class="mailing-list-form" method="POST" action="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>" role="form">
 	<?= ( !empty( $form['label'] ) ) ? $label_tag_open . $form['label'] . $label_tag_close : ''; ?>
 	<input id="mailing-list-form-action" class="action" type="hidden" name="action" value="subscribe">
 	<input id="mailing-list-form-api-key" class="api-key" type="hidden" name="api_key" value="<?= API::get_key( 'mailing_list' ); ?>">
 	<input id="mailing-list-form-redirect" class="redirect" type="hidden" name="redirect" value="<?= $form['redirect']; ?>">
 	<input id="mailing-list-form-email" class="email" type="text" name="email" value="" placeholder="<?= $form['placeholder']; ?>" required>
 	<input id="mailing-list-form-cc" class="cc" type="text" name="cc" value="" placeholder="Leave this field blank" style="visibility:hidden; position:absolute; left:-9999px;">
-	<input id="mailing-list-form-submit" class="subscribe" type="submit" value="<?= $form['submit_btn']; ?>">
+	<input id="mailing-list-form-submit" class="subscribe" type="submit" value="<?= $form['submit_btn']; ?>" role="button">
 	<?= ( !empty( $_GET['status'] ) ) ? '<p class="message">' . urldecode( base64_decode( $_GET['display'] ) ) . '</p>' : '<p class="message" style="display:none;"></p>'; ?>
 </form>
 
