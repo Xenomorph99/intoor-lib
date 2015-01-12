@@ -210,6 +210,7 @@ class Mailing_List {
 			'title' => 'Mailing List Stats',
 			'menu_title' => 'Stats',
 			'parent' => 'mailing_list',
+			'capability' => 'edit_posts',
 			'view' => INTOOR_VIEWS_DIR . 'admin/mailing-list-stats.php',
 			'table' => static::$table
 		];
