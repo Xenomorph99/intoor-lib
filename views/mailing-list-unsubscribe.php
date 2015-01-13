@@ -30,11 +30,11 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 	<?php wp_head(); ?>
 </head>
 
-<body>
+<body role="document">
 
-	<h1>Mailing List Unsubscribe Confirmation</h1>
+	<h1 role="heading" aria-level="1">Mailing List Unsubscribe Confirmation</h1>
 
-	<form id="mailing-list-unsubscribe-form" method="POST" action="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>">
+	<form id="mailing-list-unsubscribe-form" method="POST" action="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/api/mailing-list.php'; ?>" role="form">
 		<?php if( !empty( $_GET['recipient'] ) ) : ?>
 		<div id="unsubscribe-form">
 			<p>Are you sure you want to unsubscribe from our mailing list?</p>
@@ -43,7 +43,7 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 			<input id="mailing-list-unsubscribe-redirect" class="redirect" type="hidden" name="redirect" value="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/views/mailing-list-unsubscribe.php' ?>">
 			<input id="mailing-list-unsubscribe-email" class="email" type="text" name="email" value="<?= $_GET['recipient']; ?>" placeholder="Email" required>
 			<input id="mailing-list-unsubscribe-cc" class="cc" type="text" name="cc" value="" placeholder="Leave this field blank" style="visibility:hidden; position:absolute; left:-9999px;">
-			<input id="mailing-list-unsubscribe-submit" class="unsubscribe" type="submit" value="Unsubscribe">
+			<input id="mailing-list-unsubscribe-submit" class="unsubscribe" type="submit" value="Unsubscribe" role="button">
 		</div><!--#unsubscribe-form-->
 		<?php endif; ?>
 		<?= ( !empty( $_GET['status'] ) ) ? '<p class="message">' . urldecode( base64_decode( $_GET['display'] ) ) . '</p>' : '<p class="message" style="display:none;"></p>'; ?>

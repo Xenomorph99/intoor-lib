@@ -160,8 +160,8 @@ class Database {
 				foreach( $db as $row ) {
 					$value_array = array();
 					foreach( $row as $col => $col_value) {
-						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : html_entity_decode( $col_value );
-						$value = stripslashes( $value );
+						$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : $col_value;
+						$value = stripslashes( html_entity_decode( $value ) );
 						$value_array[$col] = $value;
 					}
 					$data[$count] = $value_array;
@@ -172,10 +172,12 @@ class Database {
 
 				$defaults = array();
 				foreach( $table['structure'] as $col => $args ) {
-					if( $col === 'post_id' ) {
-						$defaults[$col] = $post->ID;
-					} else {
-						$defaults[$col] = !empty( $args['default'] ) ? $args['default'] : '';
+					if( in_array( $col, $col_arr ) || empty( $col_arr ) ) {
+						if( $col === 'post_id' ) {
+							$defaults[$col] = $post->ID;
+						} else {
+							$defaults[$col] = !empty( $args['default'] ) ? $args['default'] : '';
+						}
 					}
 				}
 				$data[0] = $defaults;
@@ -203,8 +205,8 @@ class Database {
 			if( !empty( $db ) ) :
 
 				foreach( $db as $col => $col_value ) {
-					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : html_entity_decode( $col_value );
-					$value = stripslashes( $value );
+					$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::decrypt( $col_value, $key ) : $col_value;
+					$value = stripslashes( html_entity_decode( $value ) );
 					$data[$col] = $value;
 				}
 
@@ -226,7 +228,7 @@ class Database {
 
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'posts';
-		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %s WHERE post_type = '%s'", $table_name, $post_type ), ARRAY_A );
+		$data = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name WHERE post_type = '$post_type'", array() ), ARRAY_A );
 		$posts = array();
 		
 		foreach( $data as $row ) {
@@ -265,8 +267,8 @@ class Database {
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : htmlentities( $col_value );
-				$row[$col] = $value;
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : $col_value;
+				$row[$col] = htmlentities( $value );
 			}
 
 			$wpdb->insert( $table_name, $row );
@@ -289,8 +291,8 @@ class Database {
 			$row = array();
 
 			foreach( $data as $col => $col_value ) {
-				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : htmlentities( $col_value );
-				$row[$col] = $value;
+				$value = ( $table['structure'][$col]['encrypt'] ) ? Encryption::encrypt( $col_value, $key ) : $col_value;
+				$row[$col] = htmlentities( $value );
 			}
 
 			$wpdb->update( $table_name, $row, array( $unique_key => $unique_value ) );

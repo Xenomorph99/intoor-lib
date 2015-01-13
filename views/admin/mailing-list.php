@@ -73,7 +73,7 @@ $table_cols = [
 		?>
 	</ul>
 
-	<form id="mailing-list-form" action method="GET">
+	<form id="mailing-list-form" action method="GET" role="form">
 
 		<input type="hidden" name="page" value="mailing_list">
 		<input type="hidden" name="v" value="<?php echo $current_view; ?>">

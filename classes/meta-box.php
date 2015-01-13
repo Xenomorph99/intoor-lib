@@ -35,9 +35,9 @@ class Meta_Box {
 		'table' => array(),             // Database table array
 	];
 
-	public function __construct( $arr ) {
+	public function __construct( $args) {
 
-		$this->args = wp_parse_args( $arr, $this->args );
+		$this->args = wp_parse_args( $args, $this->args );
 		$this->args['meta_box_id'] = Functions::str_smash( $this->args['title'] );
 		$this->args['table']['structure'] = ( $this->args['ref_post_id'] ) ? array_merge( array( 'post_id' => [ 'sql' => 'BIGINT(20)', 'type' => 'hidden' ] ), $this->args['table']['structure'] ) : $this->args['table']['structure'];
 
@@ -128,7 +128,8 @@ class Meta_Box {
 
 	public function create_meta_box_structure( $data ) {
 		
-		$prefix = $this->args['table']['prefix'] . "_";
+		global $post;
+		$prefix = $this->args['table']['prefix'] . '_';
 		$s = "";
 
 		for( $i = 0; $i < count( $data ); $i++ ) {
@@ -141,7 +142,11 @@ class Meta_Box {
 
 			foreach( $data[$i] as $column => $value ) {
 				if( $column !== 'id' ) {
-					$s .= $this->field( $i, $prefix, $column, $value );
+					if( $column == 'post_id' ) {
+						$s .= $this->field( $column, $post->ID );
+					} else {
+						$s .= $this->field( $column, $value );
+					}
 				}
 			}
 
@@ -155,13 +160,18 @@ class Meta_Box {
 
 	public function create_hidden_defaults() {
 
+		global $post;
 		$prefix = $this->args['table']['prefix'] . '_';
 		$s = "<div class='meta-box-form-defaults' style='display:none; visibility:hidden;'>";
 		$s .= "<input type='hidden' class='meta-box-section-id' name='{$prefix}id[]' value='0'>";
 
 		foreach( $this->args['table']['structure'] as $column => $value ) {
 			if( $column !== 'id' ) {
-				$s .= $this->field( NULL, $prefix, $column, $value['default'] );
+				if( $column == 'post_id' ) {
+					$s .= $this->field( $column, $post->ID );
+				} else {
+					$s .= $this->field( $column, $value['default'] );
+				}
 			}
 		}
 
@@ -191,10 +201,11 @@ class Meta_Box {
 
 	}
 
-	public function field( $i, $prefix, $column, $value ) {
+	public function field( $column, $value ) {
 
 		$col = $this->args['table']['structure'][$column];
 		$type = !empty( $col['type'] ) ? $col['type'] : '';
+		$prefix = $this->args['table']['prefix'] . '_';
 		$name = $prefix . $column . "[]";
 		$options = !empty( $col['options'] ) ? $col['options'] : array();
 		$class = 'meta-box-form-field';
@@ -209,7 +220,7 @@ class Meta_Box {
 
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -217,7 +228,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -225,7 +236,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -233,7 +244,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -241,7 +252,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -249,7 +260,7 @@ class Meta_Box {
 				
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<input type='$type' class='$class' id='$id' name='$name' value='$value' placeholder='$placeholder'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '" placeholder="' . $placeholder . '">';
 				$field .= "</span><br>";
 
 				break;
@@ -257,7 +268,7 @@ class Meta_Box {
 
 				$field .= "<span class='field-type-$type'>";
 				$field .= "<label for='$id'>$label:</label><br>";
-				$field .= "<textarea class='$class' id='$id' name='$name'>$value</textarea>";
+				$field .= '<textarea class="' . $class . '" id="' . $id . '" name="' . $name . '">' . $value . '</textarea>';
 				$field .= "</span><br>";
 
 				break;
@@ -300,7 +311,7 @@ class Meta_Box {
 				break;
 			case 'hidden' :
 
-				$field .= "<input type='$type' class='$class' name='$name' value='$value'>";
+				$field .= '<input type="' . $type . '" class="' . $class . '" id="' . $id . '" name="' . $name . '" value="' . $value . '">';
 
 				break;
 			case 'checkbox-list' :
@@ -333,46 +344,50 @@ class Meta_Box {
 		// Run this method only once
 		if( $this->save_count < 1 ) :
 
-			$prefix = $this->args['table']['prefix'] . '_';
-			$total = isset( $_POST[$prefix.'id'] ) ? count( $_POST[$prefix.'id'] ) : 1;
-			$num = 0;
+			if( in_array( get_post_type(), $this->args['post_type'] ) ) :
 
-			if( $this->args['recursive'] ) {
-				$num = 1;
-			}
-			if( $this->args['admin_menu'] ) {
-				$num = 1;
-			}
+				$prefix = $this->args['table']['prefix'] . '_';
+				$total = isset( $_POST[$prefix.'id'] ) ? count( $_POST[$prefix.'id'] ) : 1;
+				$num = 0;
 
-			// Loop through the posted data
-			for( $i = $num; $i < $total; $i++ ) {
+				if( $this->args['recursive'] ) {
+					$num = 1;
+				}
+				if( $this->args['admin_menu'] ) {
+					$num = 1;
+				}
 
-				// Delete data
-				if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
+				// Loop through the posted data
+				for( $i = $num; $i < $total; $i++ ) {
 
-					$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
-					Database::delete_row( $this->args['table'], 'id', $row_id );
+					// Delete data
+					if( isset( $_POST[$prefix.'id'] ) && $_POST[$prefix.'id'][$i] < 0 ) :
 
-				// Save data
-				else :
+						$row_id = str_replace( '-', '', $_POST[$prefix.'id'][$i] );
+						Database::delete_row( $this->args['table'], 'id', $row_id );
 
-					$data = array();
-					foreach( $this->args['table']['structure'] as $column => $value ) {
-						$data[$column] = isset( $_POST[$prefix.$column][$i] ) ? $_POST[$prefix.$column][$i] : '';
-					}
+					// Save data
+					else :
 
-					if( isset( $_POST[$prefix.'id'] ) ) {
-						$row_id = $_POST[$prefix.'id'][$i];
-						if( !empty( $row_id ) ) {
-							Database::update_row( $this->args['table'], 'id', $row_id, $data );
-						} else {
-							Database::insert_row( $this->args['table'], $data );
+						$data = array();
+						foreach( $this->args['table']['structure'] as $column => $value ) {
+							$data[$column] = isset( $_POST[$prefix.$column][$i] ) ? $_POST[$prefix.$column][$i] : '';
 						}
-					}
-				
-				endif;
 
-			}
+						if( isset( $_POST[$prefix.'id'] ) ) {
+							$row_id = $_POST[$prefix.'id'][$i];
+							if( !empty( $row_id ) ) {
+								Database::update_row( $this->args['table'], 'id', $row_id, $data );
+							} else {
+								Database::insert_row( $this->args['table'], $data );
+							}
+						}
+					
+					endif;
+
+				}
+
+			endif;
 
 		endif;
 

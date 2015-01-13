@@ -16,7 +16,7 @@ if( !defined( 'INTOOR_RESTRICT_ACCESS' ) || !INTOOR_RESTRICT_ACCESS ) { die( 'Un
 require_once INTOOR_ADMIN_MENU_CLASS;
 require_once INTOOR_API_CLASS;
 require_once INTOOR_CATEGORY_FORM_CLASS;
-//require_once INTOOR_COOKIE_CLASS;
+require_once INTOOR_COOKIE_CLASS;
 require_once INTOOR_CSV_CLASS;
 require_once INTOOR_DATABASE_CLASS;
 //require_once INTOOR_DOCS_CLASS;
@@ -30,6 +30,7 @@ require_once INTOOR_META_BOX_CLASS;
 require_once INTOOR_POPULAR_CLASS;
 require_once INTOOR_POST_TYPE_CLASS;
 //require_once INTOOR_QUICK_EDIT_CLASS;
+require_once INTOOR_SEO_CLASS;
 require_once INTOOR_SHORTCODES_CLASS;
 require_once INTOOR_SOCIAL_CLASS;
 //require_once INTOOR_TAXONOMY_CLASS;

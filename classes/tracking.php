@@ -152,7 +152,8 @@ class Tracking {
 		$params = static::get_params();
 
 		foreach( $params as $name => $value ) {
-			$_SESSION[$name] = ( isset( $_GET[$name] ) ) ? $_GET[$name] : $value;
+			$_SESSION[$name] = ( isset( $_SESSION[$name] ) ) ? $_SESSION[$name] : $value;
+			$_SESSION[$name] = ( isset( $_GET[$name] ) ) ? $_GET[$name] : $_SESSION[$name];
 		}
 
 	}
