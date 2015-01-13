@@ -86,7 +86,7 @@ class Mailing_List {
 		],
 		'color_text_heading' => [
 			'type' => 'text',
-			'label' => 'Primary Text Color #',
+			'label' => 'Heading Text Color #',
 			'placeholder' => '000000',
 			'default' => '58595b'
 		],
