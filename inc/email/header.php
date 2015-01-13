@@ -54,6 +54,8 @@ $social = [
 foreach( $social as $network => $url ) {
 	if( empty( $url ) ) {
 		unset( $social[$network] );
+	} else {
+		$social[$network] = Social::get_social_media_url( $network );
 	}
 }
 
@@ -69,56 +71,56 @@ $count = count( $posts );
 <html <?php language_attributes(); ?>>
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
-	<title><?php echo $subject . ' | ' . get_bloginfo( 'blogname' ); ?></title>
+	<title><?= $subject . ' | ' . get_bloginfo( 'blogname' ) ?></title>
 </head>
 
-<body style="color:#<?php echo $color['text_secondary']; ?>; font:300 13px/19px <?php echo $helvetica; ?>; background-color:#<?php echo $color['body']; ?>; <?php echo $reset; ?>">
+<body style="color:#<?= $color['text_secondary'] ?>; font:300 13px/19px <?= $helvetica ?>; background-color:#<?= $color['body'] ?>; <?= $reset ?>" role="document">
 
 	<table style="border-collapse:collapse; width:600px; margin:0 auto; padding:0; border:none; line-height:0;" cellpadding="0" cellspacing="0">
-		<tbody style="<?php echo $reset; ?>">
+		<tbody style="<?= $reset ?>" role="rowgroup">
 
-			<tr style="<?php echo $reset; ?>">
-				<td style="width:600px; <?php echo $reset; ?>">
+			<tr style="<?= $reset ?>">
+				<td style="width:600px; <?= $reset ?>">
 					<?php if( $template_name == 'unsubscribe' ) : ?>
-					<p style="line-height:19px; text-align:center; margin:8px 0 16px 0; padding:0;">View in <a href="<?php echo $web_url; ?>" style="color:#<?php echo $color['text_secondary']; ?>; <?php echo $reset; ?>">Web Browser</a></p>
+					<p style="line-height:19px; text-align:center; margin:8px 0 16px 0; padding:0;">View in <a href="<?= $web_url ?>" role="link" style="color:#<?= $color['text_secondary'] ?>; <?= $reset ?>">Web Browser</a></p>
 					<?php else : ?>
-					<p style="line-height:19px; text-align:center; margin:8px 0 16px 0; padding:0;">View in <a href="<?php echo $web_url; ?>" style="color:#<?php echo $color['text_secondary']; ?>; <?php echo $reset; ?>">Web Browser</a> | <a href="<?php echo $unsubscribe_url; ?>" style="color:#<?php echo $color['text_secondary']; ?>; <?php echo $reset; ?>">Unsubscribe</a></p>
+					<p style="line-height:19px; text-align:center; margin:8px 0 16px 0; padding:0;">View in <a href="<?= $web_url ?>" role="link" style="color:#<?= $color['text_secondary'] ?>; <?= $reset ?>">Web Browser</a> | <a href="<?= $unsubscribe_url ?>" role="link" style="color:#<?= $color['text_secondary'] ?>; <?= $reset ?>">Unsubscribe</a></p>
 					<?php endif; ?>
 				</td>
 			</tr>
 
-			<tr style="<?php echo $reset; ?>">
-				<td style="width:600px; <?php echo $reset; ?>">
+			<tr style="<?= $reset ?>">
+				<td style="width:600px; <?= $reset ?>">
 
-					<table style="color:#<?php echo $color['text_primary']; ?>; background-color:#<?php echo $color['container']; ?>; border-collapse:collapse; width:600px; margin:0 auto; padding:0; line-height:0; border:none;" cellpadding="0" cellspacing="0">
+					<table style="color:#<?= $color['text_primary'] ?>; background-color:#<?= $color['container'] ?>; border-collapse:collapse; width:600px; margin:0 auto; padding:0; line-height:0; border:none;" cellpadding="0" cellspacing="0">
 
-						<thead style="<?php echo $reset; ?>">
+						<thead style="<?= $reset ?>" role="rowgroup">
 
-							<tr class="email-header" style="<?php echo $reset; ?>">
-								<td style="width:20px; display:block; <?php echo $reset; ?>">&nbsp;</td>
-								<td style="<?php echo $reset; ?>">
+							<tr class="email-header" style="<?= $reset ?>">
+								<td style="width:20px; display:block; <?= $reset ?>">&nbsp;</td>
+								<td style="<?= $reset ?>">
 									<table style="border-collapse:collapse; width:560px; border:none; margin:0 auto; padding:0; line-height:0;" cellpadding="0" cellspacing="0">
-										<tbody style="<?php echo $reset; ?>">
-											<tr style="height:90px; <?php echo $reset; ?>">
+										<tbody style="<?= $reset ?>" role="rowgroup">
+											<tr style="height:90px; <?= $reset ?>">
 
 												<?php if( empty( $social ) ) : ?>
-												<td id="logo" style="text-align:center; <?php echo $reset; ?>">
+												<td id="logo" style="text-align:center; <?= $reset ?>">
 												<?php else : ?>
-												<td id="logo" style="<?php echo $reset; ?>">
+												<td id="logo" style="<?= $reset ?>">
 												<?php endif; ?>
-													<a href="<?php bloginfo( 'url' ); ?>" style="display:inline-block; <?php echo $reset; ?>">
+													<a href="<?php bloginfo( 'url' ); ?>" role="link" style="display:inline-block; <?= $reset ?>">
 														<?php if( get_option( $prefix . 'logo' ) !== '' ) : ?>
-														<img src="<?php echo get_option( $prefix . 'logo' ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="<?php echo get_option( $prefix . 'logo_width' ); ?>" height="90" style="<?php echo $reset; ?>" ondragstart="return false;">
+														<img src="<?= get_option( $prefix . 'logo' ) ?>" alt="<?php bloginfo( 'name' ); ?>" width="<?= get_option( $prefix . 'logo_width' ) ?>" height="90" role="img" style="<?= $reset ?>" ondragstart="return false;">
 														<?php else : ?>
-														<h1 style="font:300 32px/90px <?php echo $helvetica; ?>; <?php echo $reset; ?>"><?php bloginfo( 'name' ); ?></h1>
+														<h1 role="heading" aria-level="1" style="font:300 32px/90px <?= $helvetica ?>; <?= $reset ?>"><?php bloginfo( 'name' ); ?></h1>
 														<?php endif; ?>
 													</a>
 												</td>
 
-												<?php foreach( $social as $name => $url ) : ?>
+												<?php foreach( $social as $network => $url ) : ?>
 												<td style="width:26px; margin:0; padding:0 4px;">
-													<a href="<?php echo $url; ?>" style="width:26px; height:26px; display:block; <?php echo $reset; ?>" target="_blank">
-														<img src="<?php echo get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/images/email/social/' . $name . '.png'; ?>" alt="<?php echo $name; ?>" width="26" height="26" style="<?php echo $reset; ?>" ondragstart="return false;">
+													<a href="<?= $url ?>" style="width:26px; height:26px; display:block; <?= $reset ?>" role="link" target="_blank">
+														<img src="<?= get_template_directory_uri() . '/' . INTOOR_DIR_NAME . '/images/email/social/' . $network . '.png' ?>" alt="<?= $network ?>" width="26" height="26" role="img" style="<?= $reset ?>" ondragstart="return false;">
 													</a>
 												</td>
 												<?php endforeach; ?>
@@ -127,7 +129,7 @@ $count = count( $posts );
 										</tbody>
 									</table>
 								</td>
-								<td style="width:20px; display:block; <?php echo $reset; ?>">&nbsp;</td>
+								<td style="width:20px; display:block; <?= $reset ?>">&nbsp;</td>
 							</tr>
 
 						</thead>
