@@ -1,3 +1,5 @@
+composer.phar
+vendor/
 codekit-config.json
 config.codekit
 .DS_Store/
