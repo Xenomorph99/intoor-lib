@@ -1,0 +1,19 @@
+{
+	"name": "alekhen/intoor-lib",
+	"type": "library",
+	"description": "Wordpress Theme Functionality",
+	"keywords": ["wordpress", "theme"],
+	"homepage": "https://github.com/Alekhen/intoor-lib",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Colton James Wiscombe",
+			"email": "mail@coltn.me",
+			"homepage": "http://coltonjameswiscombe.com",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.5.0"
+	}
+ }
