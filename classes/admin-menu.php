@@ -20,6 +20,7 @@ class Admin_Menu {
 		'type' => 'options_page',           // Defines the type of page to create ('options_page' = child of settings, 'menu_page' = root level menu item, 'submenu_page' = child of root level menu item)
 		'title' => '',                      // Admin menu title (will be converted and used as html ID attr)
 		'menu_title' => '',                 // Display name that appears in the sidebar
+		'description' => '',                // Paragraph of text to appear below the title
 		'icon' => '',                       // Icon displayed in the sidebar (ONLY if 'type' = 'menu_page')
 		'menu_position' => 100,             // Location in the sidebar (ONLY if 'type' = 'menu_page') (5 - below Posts, 10 - below Media, 15 - below Links, 20 - below Pages, 25 - below comments, 60 - below first separator, 65 - below Plugins, 70 - below Users, 75 - below Tools, 80 - below Settings, 100 - below second separator)
 		'parent' => 'options-general.php',  // ID of the parent underwhich to display the submenu (ONLY if 'type' = 'submenu_page')
@@ -121,11 +122,13 @@ class Admin_Menu {
 
 		$id = $this->args['id'];
 		$title = $this->args['title'];
+		$description = $this->args['description'];
 		$action = ( $this->args['type'] == 'menu_page' || $this->args['type'] == 'submenu_page' ) ? "admin.php?page=$id" : "options-general.php?page=$id";
 
 		// Title
 		$s = "<div id='$id' class='wrap'>";
 		$s .= "<h2>$title</h2>";
+		$s .= !empty( $description ) ? "<p>$description</p>" : '';
 		$s .= "<form method='post' action='$action'>";
 
 		// Form Fields

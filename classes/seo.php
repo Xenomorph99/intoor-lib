@@ -18,6 +18,19 @@ class SEO {
 		'post_type' => array( 'post', 'page' ),  // Type of screen(s) on which to show the meta box
 	];
 
+	public static $settings = [
+		'google_publisher' => [
+			'type' => 'url',
+			'label' => 'Google+ Publisher URL',
+			'placeholder' => 'https://plus.google.com/[PUBLISHER PROFILE]'
+		],
+		'google_author' => [
+			'type' => 'url',
+			'label' => 'Google+ Author URL <small>(default)</small>',
+			'placeholder' => 'https://plus.google.com/[AUTHOR PROFILE]'
+		]
+	];
+
 	public static $table = [
 		'name' => 'seo',
 		'prefix' => 'seo',
@@ -70,7 +83,20 @@ class SEO {
 
 		$this->args = !empty( $args ) ? wp_parse_args( $args, $this->args ) : $this->args;
 
+		$this->setup_admin_menu();
 		$this->setup_meta_box();
+
+	}
+
+	protected function setup_admin_menu() {
+
+		$seo = [
+			'title' => 'SEO Settings',
+			'menu_title' => 'SEO',
+			'fields' => static::$settings
+		];
+
+		new Admin_Menu( $seo );
 
 	}
 
@@ -288,6 +314,32 @@ class SEO {
 
 	}
 
+	public static function get_google_author() {
+
+		$author = stripslashes( get_option( 'seo_settings_google_author', '' ) );
+		return !empty( $author ) ? '<link rel="author" href="' . $author . '">' : '';
+
+	}
+
+	public static function google_author() {
+
+		echo static::get_google_author();
+
+	}
+
+	public static function get_google_publisher() {
+
+		$publisher = stripslashes( get_option( 'seo_settings_google_publisher', '' ) );
+		return !empty( $publisher ) ? '<link rel="publisher" href="' . $publisher . '">' : '';
+
+	}
+
+	public static function google_publisher() {
+
+		echo static::get_google_publisher();
+
+	}
+
 	public static function meta_tags( $data = array() ) {
 
 		$n = "\n";
@@ -302,7 +354,8 @@ class SEO {
 		$s .= static::get_twitter_url() . $n;
 		$s .= static::get_twitter_title( $data ) . $n;
 		$s .= static::get_twitter_image( $data ) . $n;
-		$s .= static::get_twitter_description( $data );
+		$s .= static::get_twitter_description( $data ) . $n;
+		$s .= static::get_google_publisher();
 
 		return $s;
 

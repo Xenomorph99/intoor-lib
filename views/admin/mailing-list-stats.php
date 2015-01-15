@@ -51,7 +51,7 @@ foreach( $data as $row => $val ) {
 	<p>Server: <?= date( 'l, F j, Y | G:i a (T)' ) ?></p>
 
 	<table class="form-table">
-		<tbody>
+		<tbody role="rowgroup">
 			<tr>
 				<th scope="row">Total Subscribers</th>
 				<td style="font-size:1.2em;"><?= $total_count; ?></td>
@@ -74,9 +74,9 @@ foreach( $data as $row => $val ) {
 	<br>
 	<hr>
 
-	<h3 role="heading" aria-level="1"><em>This Month</em></h3>
+	<h3 role="heading" aria-level="1"><em>Past 30 Days</em></h3>
 	<table class="form-table">
-		<tbody>
+		<tbody role="rolegroup">
 			<tr>
 				<th scope="row">New Subscribers</th>
 				<td style="font-size:1.2em;"><?= $month_count; ?></td>
@@ -91,9 +91,9 @@ foreach( $data as $row => $val ) {
 	<br>
 	<hr>
 
-	<h3 role="heading" aria-level="2"><em>This Week</em></h3>
+	<h3 role="heading" aria-level="2"><em>Past 7 Days</em></h3>
 	<table class="form-table">
-		<tbody>
+		<tbody role="rowgroup">
 			<tr>
 				<th scope="row">New Subscribers</th>
 				<td style="font-size:1.2em;"><?= $week_count; ?></td>
@@ -110,7 +110,7 @@ foreach( $data as $row => $val ) {
 
 	<h3 role="heading" aria-level="3"><em>Today</em></h3>
 	<table class="form-table">
-		<tbody>
+		<tbody role="rowgroup">
 			<tr>
 				<th scope="row">New Subscribers</th>
 				<td style="font-size:1.2em;"><?= $day_count; ?></td>
